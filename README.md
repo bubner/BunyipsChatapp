@@ -1,4 +1,6 @@
-# BunyipsChatapp
-Source code for a chatapp between the members of the Murray Bridge Bunyips Robotics Team.
+# BunyipsChatapp Source Code
+### Custom chat app for the MURRAY BRIDGE BUNYIPS
 
-This is a simple chat app made for the members of the Murray Bridge Robotics Team to use to communicate efficentally to optimise work done for FTC and other projects within the club. It'll employ the basic features used in other chatapps, as well as some custom of our own that caters towards our needs to work as efficently and as enjoyably as possible. 
+This is a simple chat app made for the members of the Murray Bridge Bunyips Robotics Club to use to communicate efficiently to optimise work done for FTC and other projects within the club. It'll employ the basic features used in other chatapps, as well as some custom of our own that caters towards our needs to work as efficently and as optimally as possible. 
+
+###### Lucas Bubner [@holo-lb](https://github.com/holo-lb), <br> Lachlan Paul [@BanjoTheBot](https://github.com/BanjoTheBot), <br> 2023
