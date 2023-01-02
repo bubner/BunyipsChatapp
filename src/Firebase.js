@@ -13,6 +13,7 @@ try {
     app = getApp();
 } catch (error) {
     const firebaseConfig = {
+        // IMPORTANT: API key is exposed. This will need to be changed at some stage.
         apiKey: "AIzaSyDtsmCd5dKHhW5nqS_tlZSgrbmADdheHtI",
         authDomain: "bunyips-chatapp.firebaseapp.com",
         projectId: "bunyips-chatapp",
