@@ -3,14 +3,12 @@
  *    ID: bunyips-chatapp
  */
 
-// Import the functions you need from the SDKs you need
 // https://firebase.google.com/docs/web/setup#available-libraries
 import { initializeApp, getApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
-// Your web app's Firebase configuration
 let app;
 let storage;
 
@@ -35,5 +33,13 @@ storage = getStorage(app);
 // Initialise Firebase authentication and database
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+// Provide Google sign in functionality and automatically registers a user into the auth instance
+export function signInWithGoogle() {
+    signInWithPopup(auth, new GoogleAuthProvider())
+        .catch((error) => {
+            console.error('Google Auth Error: ' + error.code + ' : ' + error.message + ' on email: ' + error.customData.email);
+        });
+}
 
 export { auth, db, storage };

@@ -7,7 +7,7 @@ import './App.css';
 
 // Firebase imports and configuration
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, db, storage } from './Firebase';
+import { auth } from './Firebase';
 
 // Import application login and chatroom modules
 import Chat from "./Chat";
