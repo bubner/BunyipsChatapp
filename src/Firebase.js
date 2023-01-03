@@ -8,6 +8,7 @@ import { initializeApp, getApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
+import { collection } from "firebase/firestore";
 
 let app;
 let storage;
@@ -40,6 +41,10 @@ export function signInWithGoogle() {
         .catch((error) => {
             console.error('Google Auth Error: ' + error.code + ' : ' + error.message + ' on email: ' + error.customData.email);
         });
+}
+
+export function getCollection(e) {
+    return collection(db, e);
 }
 
 export { auth, db, storage };
