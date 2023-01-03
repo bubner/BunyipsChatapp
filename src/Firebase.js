@@ -1,3 +1,8 @@
+/*
+ *    Firebase configuration module for access to authentication and message storage.
+ *    ID: bunyips-chatapp
+ */
+
 // Import the functions you need from the SDKs you need
 // https://firebase.google.com/docs/web/setup#available-libraries
 import { initializeApp, getApp } from "firebase/app";
@@ -13,7 +18,8 @@ try {
     app = getApp();
 } catch (error) {
     const firebaseConfig = {
-        // IMPORTANT: API key is exposed. This will need to be changed at some stage.
+        // Exposure of these Firebase API configurations are not a security risk,
+        // and as such will not be put into a system environment variable.
         apiKey: "AIzaSyDtsmCd5dKHhW5nqS_tlZSgrbmADdheHtI",
         authDomain: "bunyips-chatapp.firebaseapp.com",
         projectId: "bunyips-chatapp",
@@ -26,7 +32,7 @@ try {
 }
 storage = getStorage(app);
 
-// Initialize Firebase authentication and database
+// Initialise Firebase authentication and database
 const auth = getAuth(app);
 const db = getFirestore(app);
 
