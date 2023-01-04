@@ -56,11 +56,13 @@ function Chat() {
 
             <form onSubmit={(e) => sendMsg(e)}>
                 {/* Standard user input box for text */}
-                <input
-                    type="text"
-                    onChange={(e) => setFormVal(e.target.value)}
-                    value={formVal}
-                />
+                <div className="input-group input-group-sm mb-3">
+                <div className="input-group-prepend">
+                    <span className="input-group-text" id="inputGroup-sizing-sm">Input Message</span> {/*TODO: Make this a file upload button*/}
+                </div>
+                <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" onChange={(e) => setFormVal(e.target.value)} value={formVal} class="p-3 mb-2 bg-primary text-white" />
+{/* TODO: Stop this from changing the box blue and shortening it. */}
+                </div>
 
                 {/* Submit button for messages, also prevents sending if there is no form value */}
                 <button type="submit" disabled={formVal ? false : true}>
