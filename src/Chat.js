@@ -30,6 +30,7 @@ function Chat() {
         // Add to Firestore with UID, content, and user info
         await addDoc(msgRef, {
             uid: auth.currentUser.uid,
+            displayName: auth.currentUser.displayName,
             text: formVal,
             photoURL: auth.currentUser.photoURL,
             createdAt: serverTimestamp(),
