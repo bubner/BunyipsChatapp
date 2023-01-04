@@ -1,23 +1,23 @@
-import logo from './logo.svg';
+/*
+ *    Primary application configuration to manage all operations of the application.
+ *    Manages Firebase integrations, and provides operation to the app.
+ */
+
 import './App.css';
 
+// Firebase imports and configuration
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from './Firebase';
+
+// Import application login and chatroom modules
+import Chat from "./Chat";
+import Login from "./Login";
+
 function App() {
+  const [user] = useAuthState(auth);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        {user ? <Chat /> : <Login />}
     </div>
   );
 }
