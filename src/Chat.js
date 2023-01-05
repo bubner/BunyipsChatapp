@@ -8,6 +8,7 @@ import { useCollectionData } from "react-firebase-hooks/firestore";
 import { serverTimestamp } from 'firebase/firestore';
 import { collection, query, orderBy, limitToLast, addDoc } from "firebase/firestore";
 import Message from './Message';
+import FileUploads from './FileUploads';
 
 function Chat() {
     // Query Firestore for the last 100 messages
@@ -47,6 +48,7 @@ function Chat() {
         <br></br>
         <button onClick={async () => await auth.signOut()}>Sign out</button>
         <p>Messages:</p>
+        <FileUploads />
         <div className="messages">
             {/* Display all messages currently in Firestore */}
             {messages && messages.map((msg) => <Message message={msg} key={msg.id} />)}
