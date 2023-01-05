@@ -1,4 +1,6 @@
 import { auth } from './Firebase';
+import './App.css'
+import './Message.css'
 
 const addZero = (value) => {
     return value < 10 ? '0' + value : value;

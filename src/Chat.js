@@ -8,6 +8,7 @@ import { useCollectionData } from "react-firebase-hooks/firestore";
 import { serverTimestamp } from 'firebase/firestore';
 import { collection, query, orderBy, limitToLast, addDoc } from "firebase/firestore";
 import Message from './Message';
+import './Message.css';
 
 function Chat() {
     // Query Firestore for the last 100 messages
@@ -56,12 +57,11 @@ function Chat() {
 
             <form onSubmit={(e) => sendMsg(e)}>
                 {/* Standard user input box for text */}
-                <div className="input-group input-group-sm mb-3">
+                <div className="input-group input-group-sm mb-2">
                 <div className="input-group-prepend">
                     <span className="input-group-text" id="inputGroup-sizing-sm">Input Message</span> {/*TODO: Make this a file upload button*/}
                 </div>
-                <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" onChange={(e) => setFormVal(e.target.value)} value={formVal} class="p-3 mb-2 bg-primary text-white" />
-{/* TODO: Stop this from changing the box blue and shortening it. */}
+                <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" onChange={(e) => setFormVal(e.target.value)} value={formVal} class="p-1 mb-2 bg-secondary text-white" />
                 </div>
 
                 {/* Submit button for messages, also prevents sending if there is no form value */}
