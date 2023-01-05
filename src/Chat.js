@@ -44,8 +44,8 @@ function Chat() {
     return (
         <>
         <p>Logged in as {auth.currentUser.displayName}</p>
-        <img src={auth.currentUser.photoURL} alt="Profile"></img>
-        <br></br>
+        <img src={auth.currentUser.photoURL} alt="Profile" referrerPolicy="no-referrer" />
+        <br />
         <button onClick={async () => await auth.signOut()}>Sign out</button>
         <p>Messages:</p>
         <FileUploads />

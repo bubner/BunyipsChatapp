@@ -1,0 +1,16 @@
+/*
+ *    Module styles for file upload menu
+ */
+
+.barload {
+    width: 300px;
+}
+
+.outerload {
+    background-color: black;
+}
+
+.innerload {
+    background-color: red;
+    color: white;
+}
