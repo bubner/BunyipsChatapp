@@ -20,14 +20,14 @@ function Message({ message }) {
         // Determine whether the message was sent or recieved by checking the author and current user
         <div className={`message ${auth.currentUser.uid === message.uid ? 'sent' : 'received'}`}>
             {/* Generate profile picture based on the photoURL attached with the message */}
-            <img src={message.photoURL} alt={`Profile of ${message.displayName}`} referrerPolicy="no-referrer" />
+            <img className = "pfp" src={message.photoURL} alt={`Profile of ${message.displayName}`} referrerPolicy="no-referrer" />
 
-            <p>{message.displayName}</p>
+            <p className='name'>{message.displayName}</p>
 
             {/* Display the proper formatted date and time metadata with each message */}
-            <p>{addZero(timestamp.getDate()) + '/' + (addZero(timestamp.getMonth() + 1)) + '/' + timestamp.getFullYear() + ' at ' + addZero(timestamp.getHours()) + ':' + addZero(timestamp.getMinutes())}</p>
+            <p className='date'>{addZero(timestamp.getDate()) + '/' + (addZero(timestamp.getMonth() + 1)) + '/' + timestamp.getFullYear() + ' at ' + addZero(timestamp.getHours()) + ':' + addZero(timestamp.getMinutes())}</p>
 
-            <p>{message.text}</p>
+            <p className = "text">{message.text}</p>
         </div>
     );
 }
