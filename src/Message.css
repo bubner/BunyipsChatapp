@@ -24,11 +24,21 @@
 }
 
 .text {
-    width: 50%;
+    width: 80%;
     height: 100%;
+    word-wrap: break-word;
+
 }
 
 .name{
     position: relative; right:-70px; top:-15px;
 }
 
+.login{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 100vh;
+}
