@@ -11,6 +11,7 @@ function FileUploads() {
     const [isFilePicked, setIsFilePicked] = useState(false);
     const [progressPercent, setProgressPercent] = useState(0);
     const [isFileUploading, setIsFileUploading] = useState(false);
+    const [isFileUploaded, setIsFileUploaded] = useState(false);
 
     const changeHandler = (event) => {
         setSelectedFile(event.target.files[0]);
@@ -37,34 +38,47 @@ function FileUploads() {
                 setIsFileUploading(false);
                 setSelectedFile(null);
                 setIsFilePicked(false);
+                setIsFileUploaded(true);
             });
     };
 
 
     return (
-        <div>
-            <input type="file" name="file" onChange={changeHandler} />
-            {
-                (isFilePicked && selectedFile != null) && (
-                    <div>
-                        <p>Filename: {selectedFile.name}</p>
-                        <p>Filetype: {selectedFile.type}</p>
-                        <p>Size in bytes: {selectedFile.size}</p>
-                    </div>
-                )
-            }
-            <div>
-                <button onClick={handleSubmission}>Upload</button>
-            </div>
-            {
-                isFileUploading && (
-                    <div className='barload'>
-                        <div className='outerload'>
-                            <div className='innerload' style={{ width: `${progressPercent}%` }}>Uploading... {progressPercent}%</div>
+        <div className="uploadWindow">
+            <div className='innerUploadWindow'>
+                <h3>File Upload Menu</h3>
+                <input type="file" name="file" onChange={changeHandler} />
+                {
+                    isFileUploaded && (
+                        <div>
+                            File uploaded.
                         </div>
-                    </div>
-                )
-            }
+                    )
+                }
+                {
+                    (isFilePicked && selectedFile != null && !isFileUploaded) && (
+                        <div>
+                            <p><i>File name:</i> {selectedFile.name}</p>
+                            <p><i>Filetype:</i> {selectedFile.type}</p>
+                            <p><i>Size in bytes:</i> {selectedFile.size}</p>
+                            <p><b>Upload file?</b></p>
+                            <div>
+                                <button onClick={handleSubmission}>Upload</button>
+                            </div>
+                        </div>
+                    )
+                }
+                <br />
+                {
+                    isFileUploading && (
+                        <div className='barload'>
+                            <div className='outerload'>
+                                <div className='innerload' style={{ width: `${progressPercent}%` }}>Uploading... {progressPercent}%</div>
+                            </div>
+                        </div>
+                    )
+                }
+            </div>
         </div>
     )
 }
