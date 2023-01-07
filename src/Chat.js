@@ -13,7 +13,7 @@ import FileUploads from './FileUploads';
 function Chat() {
     // Query Firestore for the last 100 messages
     const msgRef = collection(db, 'messages');
-    const messageQuery = query(msgRef, orderBy('createdAt', 'asc'), limitToLast(3));
+    const messageQuery = query(msgRef, orderBy('createdAt', 'asc'), limitToLast(100));
 
     // Set stock parameters for message creation and clear input
     const [formVal, setFormVal] = useState("");
@@ -30,6 +30,7 @@ function Chat() {
         e.preventDefault();
         // Add to Firestore with UID, content, and user info
         await addDoc(msgRef, {
+            isMsg: true,
             uid: auth.currentUser.uid,
             displayName: auth.currentUser.displayName,
             text: formVal,
