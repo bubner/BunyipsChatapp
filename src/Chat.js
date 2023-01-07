@@ -8,12 +8,13 @@ import { useCollectionData } from "react-firebase-hooks/firestore";
 import { serverTimestamp } from 'firebase/firestore';
 import { collection, query, orderBy, limitToLast, addDoc } from "firebase/firestore";
 import Message from './Message';
+import FileUploads from './FileUploads';
 import './Message.css';
 
 function Chat() {
     // Query Firestore for the last 100 messages
     const msgRef = collection(db, 'messages');
-    const messageQuery = query(msgRef, orderBy('createdAt', 'asc'), limitToLast(3));
+    const messageQuery = query(msgRef, orderBy('createdAt', 'asc'), limitToLast(100));
 
     // Set stock parameters for message creation and clear input
     const [formVal, setFormVal] = useState("");
@@ -30,6 +31,7 @@ function Chat() {
         e.preventDefault();
         // Add to Firestore with UID, content, and user info
         await addDoc(msgRef, {
+            isMsg: true,
             uid: auth.currentUser.uid,
             displayName: auth.currentUser.displayName,
             text: formVal,
@@ -44,13 +46,14 @@ function Chat() {
     return (
         <>
         <p>Logged in as {auth.currentUser.displayName}</p>
-        <img src={auth.currentUser.photoURL} alt="Profile"></img>
-        <br></br>
+        <img src={auth.currentUser.photoURL} alt="Profile" referrerPolicy="no-referrer" />
+        <br />
         <button onClick={async () => await auth.signOut()}>Sign out</button>
         <p>Messages:</p>
+        <FileUploads />
         <div className="messages">
             {/* Display all messages currently in Firestore */}
-            {messages && messages.map((msg) => <Message message={msg} key={msg.id} />)}
+            {messages && messages.map(msg => <Message message={msg} key={msg.id} />)}
 
             {/* Dummy element for fluid interface */}
             <div id="dummy" ref={dummy}></div>

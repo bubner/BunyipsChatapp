@@ -1,0 +1,47 @@
+/*
+ *    Module styles for file upload menu
+ */
+
+.barload {
+    width: 100%;
+}
+
+.outerload {
+    background-color: black;
+}
+
+.innerload {
+    background-color: red;
+    color: white;
+}
+
+.uploadWindow {
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    margin: auto;
+    padding: 12px;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.innerUploadWindow {
+    background-color: aliceblue;
+    border-radius: 10px;
+    padding: 12px;
+    position: relative;
+    margin: auto;
+    width: 50%;
+    top: 33%;
+}
+
+.close {
+    cursor: pointer;
+    font-size: 45px;
+    font-weight: 600;
+    float: right;
+    padding: 12px;
+}
