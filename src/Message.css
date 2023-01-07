@@ -1,40 +1,43 @@
-/* File for editing the appearance of the info that appears for each message, as well as the message. */
-/* I probably made a lot of unessacary imports trying to import things in and out of here */
+/*
+ *    Styles for editing the appearance of the info that appears for each message, as well as the message content.
+ *    Author: Lachlan Paul, 2023
+ */
 
 .pfp {
     border-radius: 50%;
     width: 5%;
-    position:relative; top: 30px;
+    position: relative;
+    top: 30px;
 }
 
 .message {
-    
 }
 
 .sent {
-    
 }
 
 .received {
-
 }
 
 .date {
-    position: absolute; transform: translate(50px, -30px); right: 1205px;
+    position: absolute;
+    transform: translate(50px, -30px);
+    right: 1205px;
 }
 
 .text {
     width: 80%;
     height: 100%;
     word-wrap: break-word;
-
 }
 
-.name{
-    position: relative; right:-70px; top:-15px;
+.name {
+    position: relative;
+    right: -70px;
+    top: -15px;
 }
 
-.login{
+.login {
     display: flex;
     flex-direction: column;
     justify-content: center;

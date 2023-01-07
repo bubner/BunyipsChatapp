@@ -1,5 +1,6 @@
 /*
- *    Module styles for file upload menu
+ *    Module styles for file upload menu.
+ *    Author: Lucas Bubner, 2023
  */
 
 .barload {
@@ -29,6 +30,7 @@
 }
 
 .innerUploadWindow {
+    color: black;
     background-color: aliceblue;
     border-radius: 10px;
     padding: 12px;
@@ -38,10 +40,15 @@
     top: 33%;
 }
 
-.close {
+.close,
+.spanbutton {
     cursor: pointer;
     font-size: 45px;
     font-weight: 600;
     float: right;
     padding: 12px;
+}
+
+.spanbutton {
+    font-size: 18px;
 }

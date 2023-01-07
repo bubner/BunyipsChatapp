@@ -1,6 +1,6 @@
-/*
+/**
  *    Firebase configuration module for access to authentication and message storage.
- *    ID: bunyips-chatapp
+ *    @author Lucas Bubner, 2023
  */
 
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -24,7 +24,7 @@ try {
         storageBucket: "bunyips-chatapp.appspot.com",
         messagingSenderId: "310936661036",
         appId: "1:310936661036:web:b654ba95b6414966c8f589",
-        measurementId: "G-JN89PXFP9N"
+        measurementId: "G-JN89PXFP9N",
     };
     app = initializeApp(firebaseConfig);
 }
@@ -36,10 +36,16 @@ const db = getFirestore(app);
 
 // Provide Google sign in functionality and automatically registers a user into the auth instance
 export function signInWithGoogle() {
-    signInWithPopup(auth, new GoogleAuthProvider())
-        .catch((error) => {
-            console.error('Google Auth Error: ' + error.code + ' : ' + error.message + ' on email: ' + error.customData.email);
-        });
+    signInWithPopup(auth, new GoogleAuthProvider()).catch((error) => {
+        console.error(
+            "Google Auth Error: " +
+                error.code +
+                " : " +
+                error.message +
+                " on email: " +
+                error.customData.email
+        );
+    });
 }
 
 export { auth, db, storage };

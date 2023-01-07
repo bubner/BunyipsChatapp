@@ -1,10 +1,17 @@
-import { auth } from './Firebase';
-import './App.css'
-import './Message.css'
+/**
+ *    Template module for message and file rendering.
+ *    Generates a div with message or file content for each message in Firestore.
+ *    @author Lucas Bubner, 2023
+ *    @author Lachlan Paul, 2023
+ */
+
+import { auth } from "./Firebase";
+import "./App.css";
+import "./Message.css";
 
 const addZero = (value) => {
-    return value < 10 ? '0' + value : value;
-}
+    return value < 10 ? "0" + value : value;
+};
 
 function Message({ message }) {
     let timestamp;
@@ -18,16 +25,35 @@ function Message({ message }) {
 
     return (
         // Determine whether the message was sent or recieved by checking the author and current user
-        <div className={`message ${auth.currentUser.uid === message.uid ? 'sent' : 'received'}`}>
+        <div
+            className={`message ${
+                auth.currentUser.uid === message.uid ? "sent" : "received"
+            }`}
+        >
             {/* Generate profile picture based on the photoURL attached with the message */}
-            <img className = "pfp" src={message.photoURL} alt={`Profile of ${message.displayName}`} referrerPolicy="no-referrer" />
+            <img
+                className="pfp"
+                src={message.photoURL}
+                alt={`Profile of ${message.displayName}`}
+                referrerPolicy="no-referrer"
+            />
 
-            <p className='name'>{message.displayName}</p>
+            <p className="name">{message.displayName}</p>
 
             {/* Display the proper formatted date and time metadata with each message */}
-            <p className='date'>{addZero(timestamp.getDate()) + '/' + (addZero(timestamp.getMonth() + 1)) + '/' + timestamp.getFullYear() + ' at ' + addZero(timestamp.getHours()) + ':' + addZero(timestamp.getMinutes())}</p>
+            <p className="date">
+                {addZero(timestamp.getDate()) +
+                    "/" +
+                    addZero(timestamp.getMonth() + 1) +
+                    "/" +
+                    timestamp.getFullYear() +
+                    " at " +
+                    addZero(timestamp.getHours()) +
+                    ":" +
+                    addZero(timestamp.getMinutes())}
+            </p>
 
-            <p className = "text">{message.text}</p>
+            <p className="text">{message.text}</p>
         </div>
     );
 }
