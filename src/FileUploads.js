@@ -15,14 +15,15 @@ function FileUploads() {
     const [isFileUploaded, setIsFileUploaded] = useState(false);
 
     const changeHandler = (event) => {
-        if (!event.target.files[0]) {
-            setIsFileUploading(false);
-            setSelectedFile(null);
-            setIsFilePicked(false);
-            return;
-        }
         setSelectedFile(event.target.files[0]);
         setIsFilePicked(true);
+    };
+
+    const resetElement = () => {
+        setIsFileUploading(false);
+        setSelectedFile(null);
+        setIsFilePicked(false);
+        setIsFileUploaded(false);
     };
 
     const handleSubmission = () => {
@@ -42,27 +43,26 @@ function FileUploads() {
                 alert(error);
             },
             () => {
-                setIsFileUploading(false);
-                setSelectedFile(null);
-                setIsFilePicked(false);
+                resetElement();
                 setIsFileUploaded(true);
             });
     };
 
 
     return (
-        <Popup trigger={<button>Upload File</button>}>
+        <Popup trigger={<button>Upload File</button>} onClose={resetElement}>
             {close => (
                 <div className="uploadWindow">
                     <div className='innerUploadWindow'>
                         <span className="close" onClick={close}>&times;</span>
                         <h3>File Upload Menu</h3>
-                        <input type="file" name="file" onChange={changeHandler} />
                         {
-                            isFileUploaded && (
+                            isFileUploaded ? (
                                 <div>
                                     File uploaded.
                                 </div>
+                            ) : (
+                                <input type="file" name="file" onChange={changeHandler} />
                             )
                         }
                         {

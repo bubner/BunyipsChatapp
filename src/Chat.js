@@ -51,7 +51,7 @@ function Chat() {
         <FileUploads />
         <div className="messages">
             {/* Display all messages currently in Firestore */}
-            {messages && messages.map((msg) => <Message message={msg} key={msg.id} />)}
+            {messages && messages.map(msg => <Message message={msg} key={msg.id} />)}
 
             {/* Dummy element for fluid interface */}
             <div id="dummy" ref={dummy}></div>
