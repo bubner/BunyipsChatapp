@@ -16,7 +16,7 @@
 }
 
 .uploadWindow {
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0, 0, 0, 0.5);
     position: fixed;
     margin: auto;
     padding: 12px;
@@ -36,4 +36,12 @@
     margin: auto;
     width: 50%;
     top: 33%;
+}
+
+.close {
+    cursor: pointer;
+    font-size: 45px;
+    font-weight: 600;
+    float: right;
+    padding: 12px;
 }
