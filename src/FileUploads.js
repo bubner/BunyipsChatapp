@@ -4,8 +4,9 @@
  */
 
 import { useState } from "react";
-import { storage } from "./Firebase";
-import { ref, uploadBytesResumable } from "firebase/storage";
+import { storage, db, auth } from "./Firebase";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import Popup from "reactjs-popup";
 import "./FileUploads.css";
 
@@ -28,11 +29,22 @@ function FileUploads() {
         setIsFileUploaded(false);
     };
 
+    async function uploadFileDoc(url, type) {
+        await addDoc(collection(db, "messages"), {
+            isMsg: false,
+            uid: auth.currentUser.uid,
+            displayName: auth.currentUser.displayName,
+            text: type + ":" + url,
+            photoURL: auth.currentUser.photoURL,
+            createdAt: serverTimestamp(),
+        });
+    }
+
     const handleSubmission = () => {
         if (!isFilePicked) return;
         setIsFileUploading(true);
 
-        const storageRef = ref(storage, `${selectedFile.name}`);
+        const storageRef = ref(storage, `images/${selectedFile.name}`);
         const uploadTask = uploadBytesResumable(storageRef, selectedFile);
 
         uploadTask.on(
@@ -47,6 +59,15 @@ function FileUploads() {
                 alert(error);
             },
             () => {
+                // Handle uploading the file URL into a message doc
+                getDownloadURL(ref(storage, 'images/' + selectedFile.name))
+                    .then((url) => {
+                        uploadFileDoc(url, selectedFile.type);
+                    })
+                    .catch((error) => {
+                        alert(error);
+                    });
+
                 resetElement();
                 setIsFileUploaded(true);
             }
