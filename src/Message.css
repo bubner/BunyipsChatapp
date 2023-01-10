@@ -21,9 +21,9 @@
 }
 
 .date {
-    position: absolute;
+    position: relative;
     transform: translate(50px, -30px);
-    right: 1148px;
+    right: -18px;
     width: 200px;
     min-width: 200px;
 }
