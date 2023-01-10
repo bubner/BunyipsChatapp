@@ -17,6 +17,22 @@ function FileUploads() {
     const [isFileUploading, setIsFileUploading] = useState(false);
     const [isFileUploaded, setIsFileUploaded] = useState(false);
 
+    // Return 8 characters that are legal for making file names unique
+    const generateChars = () =>
+        [...Array(8)]
+            .map(() => Math.random().toString(36).substring(2, 3))
+            .join("");
+
+    function generateUniqueFileName(filename) {
+        // <original filename> + _ + <random 8 chars> + <file extension>
+        return (
+            filename.substr(0, filename.lastIndexOf(".")) +
+            "_" +
+            generateChars() +
+            filename.slice(filename.lastIndexOf(".") - 1)
+        );
+    }
+
     const changeHandler = (event) => {
         setSelectedFile(event.target.files[0]);
         setIsFilePicked(true);
@@ -44,7 +60,8 @@ function FileUploads() {
         if (!isFilePicked) return;
         setIsFileUploading(true);
 
-        const storageRef = ref(storage, `images/${selectedFile.name}`);
+        const fileName = generateUniqueFileName(selectedFile.name);
+        const storageRef = ref(storage, `files/${fileName}`);
         const uploadTask = uploadBytesResumable(storageRef, selectedFile);
 
         uploadTask.on(
@@ -60,7 +77,7 @@ function FileUploads() {
             },
             () => {
                 // Handle uploading the file URL into a message doc
-                getDownloadURL(ref(storage, 'images/' + selectedFile.name))
+                getDownloadURL(ref(storage, "files/" + fileName))
                     .then((url) => {
                         uploadFileDoc(url, selectedFile.type);
                     })
