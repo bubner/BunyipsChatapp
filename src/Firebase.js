@@ -56,6 +56,12 @@ export async function sendMsg(event, msgRef, formVal) {
     // Prevent adding blank messages into Firestore
     if (!formVal) return;
 
+    // Stop requests that have too many characters (>4000)
+    if (formVal.length > 4000) {
+        alert("Message exceeds the maximum length of 4000 characters. Please shorten your message.");
+        return;
+    }
+
     // Add to Firestore with UID, content, and user info
     await addDoc(msgRef, {
         isMsg: true,

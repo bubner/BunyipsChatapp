@@ -82,7 +82,7 @@ function FileUploads() {
 
     return (
         <Popup
-            trigger={<span className="spanbutton">Upload File</span>}
+            trigger={<span className="popupbutton" />}
             onClose={resetElement}
         >
             {(close) => (

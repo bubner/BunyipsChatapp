@@ -13,7 +13,7 @@ function Login() {
         <center>
             <div className="login center">
                 <h2>Bunyips Chatapp</h2>
-                <button onClick={signInWithGoogle} className="btn">
+                <button onClick={signInWithGoogle} className="googlebtn">
                     Sign in with Google
                 </button>
             </div>
