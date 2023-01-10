@@ -97,6 +97,7 @@ function Message({ message }) {
                         <audio
                             controls
                             src={getFileURL(message.text)}
+                            autoplay="0"
                             title={`Audio upload by ${message.displayName}`}
                             type={getFileFormat(message.text)}
                             className="fileaudio"
