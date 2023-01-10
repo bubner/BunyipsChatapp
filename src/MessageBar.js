@@ -4,6 +4,7 @@
  *    @author Lachlan Paul, 2023
  */
 
+import "./MessageBar.css";
 import { useState } from "react";
 import { collection } from "firebase/firestore";
 import FileUploads from "./FileUploads";
@@ -19,28 +20,20 @@ function MessageBar() {
             }}
         >
             {/* Standard user input box for text */}
-            <div className="input-group input-group-sm mb-2">
-                <div className="input-group-prepend">
-                    <FileUploads
-                        className="input-group-text"
-                        id="inputGroup-sizing-sm"
-                    />
-                </div>
+            <div className="input-group">
+                <FileUploads />
                 <input
                     type="text"
-                    className="form-control p-1 mb-2 bg-secondary text-white"
-                    aria-label="Sizing example input"
-                    aria-describedby="inputGroup-sizing-sm"
                     onChange={(e) => setFormVal(e.target.value)}
                     value={formVal}
                 />
+                {/* Submit button for messages, also prevents sending if there is no form value */}
+                <button
+                    type="submit"
+                    disabled={formVal ? false : true}
+                    className="sendbutton"
+                />
             </div>
-
-            {/* Submit button for messages, also prevents sending if there is no form value */}
-            <button type="submit" disabled={formVal ? false : true}>
-                {/* TODO: Add a send asset here instead of just text */}
-                Send
-            </button>
         </form>
     );
 }
