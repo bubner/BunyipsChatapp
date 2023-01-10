@@ -3,6 +3,25 @@
  *    or any styles that are specific to this scope of the application.
  */
 
- * {
-    padding: 2px;
- }
+* {
+    overflow-x: hidden;
+}
+
+body {
+   scrollbar-width: auto;
+   scrollbar-color: #fff, #36393f;
+}
+
+body::-webkit-scrollbar {
+    width: 11px;
+}
+
+body::-webkit-scrollbar-track {
+    background: #36393f;
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: #fff;
+    border-radius: 8px;
+    border: 3px solid #36393f;
+}

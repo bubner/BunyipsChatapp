@@ -101,12 +101,16 @@ function Message({ message }) {
                             type={getFileFormat(message.text)}
                             className="fileaudio"
                         />
-                    ) : null}
-                    <br />
-                    {/* Fallback view file attachment to each file upload incase of an unknown file type, or if a client-side issue occurs */}
-                    <a target="_blank" rel="noreferrer" href={getFileURL(message.text)}>
-                        <b>View file uploaded by {message.displayName}</b>
-                    </a>
+                    ) : (
+                        // Fallback view file attachment to each file upload incase of an unknown file type
+                        <a
+                            target="_blank"
+                            rel="noreferrer"
+                            href={getFileURL(message.text)}
+                        >
+                            <b>View file uploaded by {message.displayName}</b>
+                        </a>
+                    )}
                 </div>
             )}
         </div>

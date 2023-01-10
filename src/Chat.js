@@ -40,10 +40,9 @@ function Chat() {
                     messages.map((msg) => (
                         <Message message={msg} key={msg.id} />
                     ))}
-
                 {/* Dummy element for fluid interface */}
                 <div id="dummy" ref={dummy}></div>
-
+                <br /> <br /> <br />
                 {/* Message bar with end-user options to add files and message */}
                 <MessageBar />
             </div>
