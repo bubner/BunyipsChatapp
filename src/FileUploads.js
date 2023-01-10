@@ -4,8 +4,8 @@
  */
 
 import { useState } from "react";
-import { storage, db, auth } from "./Firebase";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { storage } from "./Firebase";
+import { uploadFileDoc } from "./Firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import Popup from "reactjs-popup";
 import "./FileUploads.css";
@@ -44,17 +44,6 @@ function FileUploads() {
         setIsFilePicked(false);
         setIsFileUploaded(false);
     };
-
-    async function uploadFileDoc(url, type) {
-        await addDoc(collection(db, "messages"), {
-            isMsg: false,
-            uid: auth.currentUser.uid,
-            displayName: auth.currentUser.displayName,
-            text: type + ":" + url,
-            photoURL: auth.currentUser.photoURL,
-            createdAt: serverTimestamp(),
-        });
-    }
 
     const handleSubmission = () => {
         if (!isFilePicked) return;
