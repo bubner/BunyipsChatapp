@@ -50,3 +50,12 @@
     text-align: center;
     min-height: 100vh;
 }
+
+/* File upload message style */
+iframe {
+    border: 0;
+}
+
+.fileimage, .filevideo {
+    max-height: 250px;
+}

@@ -6,11 +6,20 @@
  */
 
 import { auth } from "./Firebase";
+import Linkify from "react-linkify";
 import "./App.css";
 import "./Message.css";
 
 const addZero = (value) => {
     return value < 10 ? "0" + value : value;
+};
+
+const getFileFormat = (fileURL) => {
+    return fileURL.slice(0, fileURL.indexOf(":"));
+};
+
+const getFileURL = (fileURL) => {
+    return fileURL.substr(fileURL.indexOf(":") + 1);
 };
 
 function Message({ message }) {
@@ -53,7 +62,53 @@ function Message({ message }) {
                     addZero(timestamp.getMinutes())}
             </p>
 
-            <p className="text">{message.text}</p>
+            {message.isMsg ? (
+                // If it is a normal message, pass it through Linkify which will auto hyperlink any links
+                <Linkify
+                    componentDecorator={(decoratedHref, decoratedText, key) => (
+                        <a target="blank" href={decoratedHref} key={key}>
+                            {decoratedText}
+                        </a>
+                    )}
+                >
+                    <p className="text">{message.text}</p>
+                </Linkify>
+            ) : (
+                // Otherwise, it must be a file and we can display the downloadURL depending on it's type
+                // The type for the URL is prepended to the downloadURL with a colon
+                <div className="file">
+                    {/* Use file format to determine if we can outright display the downloadURL in an img, video, etc. tag */}
+                    {getFileFormat(message.text).startsWith("image") ? (
+                        // If we can display the image through an img tag, define a height maximum and render it
+                        <img
+                            src={getFileURL(message.text)}
+                            alt={`Upload by ${message.displayName}`}
+                            className="fileimage"
+                        />
+                    ) : getFileFormat(message.text).startsWith("video") ? (
+                        // Video tags don't seem to work that well, so we're using iframes instead to display video.
+                        <iframe
+                            src={getFileURL(message.text)}
+                            title={`Video upload by ${message.displayName}`}
+                            className="filevideo"
+                        />
+                    ) : getFileFormat(message.text).startsWith("audio") ? (
+                        // Display an audio file as an audio element if we can.
+                        <audio
+                            controls
+                            src={getFileURL(message.text)}
+                            title={`Audio upload by ${message.displayName}`}
+                            type={getFileFormat(message.text)}
+                            className="fileaudio"
+                        />
+                    ) : null}
+                    <br />
+                    {/* Fallback view file attachment to each file upload incase of an unknown file type, or if a client-side issue occurs */}
+                    <a target="_blank" rel="noreferrer" href={getFileURL(message.text)}>
+                        <b>View file uploaded by {message.displayName}</b>
+                    </a>
+                </div>
+            )}
         </div>
     );
 }
