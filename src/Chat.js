@@ -18,6 +18,7 @@ import {
 } from "firebase/firestore";
 import Message from "./Message";
 import FileUploads from "./FileUploads";
+import Navbar from "./Navbar";
 import "./Message.css";
 
 function Chat() {
@@ -59,7 +60,7 @@ function Chat() {
 
     return (
         <>
-            <button onClick={async () => await auth.signOut()}>Sign out</button>
+            <Navbar />
             <div className="messages">
                 {/* Display all messages currently in Firestore */}
                 {messages &&
