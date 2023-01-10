@@ -36,7 +36,7 @@ function Chat() {
     // Set custom properties to allow messages to appear fluidly
     const [messages] = useCollectionData(messageQuery, { idField: "id" });
     useEffect(
-        () => dummy.current.scrollIntoView({ behavaior: "smooth" }),
+        () => dummy.current.scrollIntoView({ behavior: "smooth" }),
         [messages]
     );
 
@@ -81,12 +81,11 @@ function Chat() {
                         </div>
                         <input
                             type="text"
-                            className="form-control"
+                            className="form-control p-1 mb-2 bg-secondary text-white"
                             aria-label="Sizing example input"
                             aria-describedby="inputGroup-sizing-sm"
                             onChange={(e) => setFormVal(e.target.value)}
                             value={formVal}
-                            class="p-1 mb-2 bg-secondary text-white"
                         />
                     </div>
 
