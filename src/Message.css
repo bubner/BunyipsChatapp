@@ -50,3 +50,7 @@
 iframe {
     border: 0;
 }
+
+.fileimage, .filevideo {
+    max-height: 250px;
+}

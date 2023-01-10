@@ -11,7 +11,7 @@ import "./Login.css";
 function Login() {
     return (
         <center>
-            <div className="login" class="center">
+            <div className="login center">
                 <h2>Bunyips Chatapp</h2>
                 <button onClick={signInWithGoogle} className="btn">
                     Sign in with Google
