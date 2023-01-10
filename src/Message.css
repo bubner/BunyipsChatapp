@@ -6,6 +6,7 @@
 .pfp {
     border-radius: 50%;
     width: 5%;
+    min-width: 5%;
     position: relative;
     top: 30px;
 }
@@ -22,11 +23,14 @@
 .date {
     position: absolute;
     transform: translate(50px, -30px);
-    right: 1205px;
+    right: 1148px;
+    width: 200px;
+    min-width: 200px;
 }
 
 .text {
     width: 80%;
+    min-width: 80%;
     height: 100%;
     word-wrap: break-word;
 }
@@ -35,6 +39,7 @@
     position: relative;
     right: -70px;
     top: -15px;
+    min-width:auto;
 }
 
 .login {
