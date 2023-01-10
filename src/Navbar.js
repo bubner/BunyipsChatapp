@@ -11,7 +11,7 @@ import { auth } from "./Firebase";
 function Navbar() {
     return (
         <div className="navbar">
-                <img className="navbar-brand" src={auth.currentUser.photoURL} alt={`Profile of ${auth.currentUser.displayName}`} />
+                <img className="navbar-brand" src={auth.currentUser.photoURL} referrerPolicy="no-referrer" alt={`Profile of ${auth.currentUser.displayName}`} />
                 <p className="navbar-name">
                     Signed in as {auth.currentUser.displayName}
                 </p>
