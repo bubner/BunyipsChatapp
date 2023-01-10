@@ -6,6 +6,7 @@
 // https://firebase.google.com/docs/web/setup#available-libraries
 import { initializeApp, getApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { serverTimestamp, addDoc, collection } from "firebase/firestore";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
@@ -45,6 +46,35 @@ export function signInWithGoogle() {
                 " on email: " +
                 error.customData.email
         );
+    });
+}
+
+// Function to add a message to Firestore
+export async function sendMsg(event, msgRef, formVal) {
+    event.preventDefault();
+
+    // Prevent adding blank messages into Firestore
+    if (!formVal) return;
+
+    // Add to Firestore with UID, content, and user info
+    await addDoc(msgRef, {
+        isMsg: true,
+        uid: auth.currentUser.uid,
+        displayName: auth.currentUser.displayName,
+        text: formVal,
+        photoURL: auth.currentUser.photoURL,
+        createdAt: serverTimestamp(),
+    });
+}
+
+export async function uploadFileDoc(url, type) {
+    await addDoc(collection(db, "messages"), {
+        isMsg: false,
+        uid: auth.currentUser.uid,
+        displayName: auth.currentUser.displayName,
+        text: type + ":" + url,
+        photoURL: auth.currentUser.photoURL,
+        createdAt: serverTimestamp(),
     });
 }
 
