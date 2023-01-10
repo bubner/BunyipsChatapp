@@ -8,8 +8,8 @@
 }
 
 body {
-   scrollbar-width: auto;
-   scrollbar-color: #fff, #36393f;
+    scrollbar-width: auto;
+    scrollbar-color: #fff, #36393f;
 }
 
 body::-webkit-scrollbar {

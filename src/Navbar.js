@@ -5,21 +5,27 @@
 import "./Navbar.css";
 import "./Firebase.js";
 import "./Message.js";
-import {auth} from "./Firebase";
+import { auth } from "./Firebase";
 // import {message} from "./Message";
 
 function Navbar() {
     return (
         <div className="navbar">
-        <div><p><nav className="navbar2"/></p>
-        <img className="navbar-brand" src={auth.currentUser.photoURL}/>
-        <p className="navbar-name">Signed in as {auth.currentUser.displayName}</p>
-        <button className="sobtn" onClick={async () => await auth.signOut()}>Sign out</button>
-        <button className="joke" onClick={async () => alert("lol no")}>Enable Light Mode</button>
-        </div>
+                <img className="navbar-brand" src={auth.currentUser.photoURL} alt={`Profile of ${auth.currentUser.displayName}`} />
+                <p className="navbar-name">
+                    Signed in as {auth.currentUser.displayName}
+                </p>
+                <button
+                    className="sobtn"
+                    onClick={async () => await auth.signOut()}
+                >
+                    Sign out
+                </button>
+                <button className="joke" onClick={async () => alert("lol no")}>
+                    Enable Light Mode
+                </button>
         </div>
     );
 }
-
 
 export default Navbar;

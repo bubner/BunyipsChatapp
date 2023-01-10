@@ -58,7 +58,9 @@ export async function sendMsg(event, msgRef, formVal) {
 
     // Stop requests that have too many characters (>4000)
     if (formVal.length > 4000) {
-        alert("Message exceeds the maximum length of 4000 characters. Please shorten your message.");
+        alert(
+            "Message exceeds the maximum length of 4000 characters. Please shorten your message."
+        );
         return;
     }
 

@@ -10,7 +10,12 @@ function Scroll() {
     useEffect(() => {
         window.addEventListener("scroll", () => {
             // If the window is 1000 pixels above the bottom of the page, then display the scroll to bottom button.
-            if (window.scrollY < document.documentElement.scrollHeight - document.documentElement.clientHeight - 1000) {
+            if (
+                window.scrollY <
+                document.documentElement.scrollHeight -
+                    document.documentElement.clientHeight -
+                    1000
+            ) {
                 setShowBtn(true);
             } else {
                 setShowBtn(false);
@@ -26,9 +31,7 @@ function Scroll() {
     }
 
     return (
-        <>
-            {showBtn && <button className="scroll" onClick={scrollToBottom} />}
-        </>
+        <>{showBtn && <button className="scroll" onClick={scrollToBottom} />}</>
     );
 }
 
