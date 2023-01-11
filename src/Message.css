@@ -1,6 +1,6 @@
 /*
  *    Styles for editing the appearance of the info that appears for each message, as well as the message content.
- *    Author: Lachlan Paul, 2023
+ *    Authors: Lachlan Paul, Lucas Bubner, 2023
  */
 
 .pfp {
@@ -29,12 +29,6 @@
 
 .message:hover {
     background-color: #32353b;
-}
-
-.sent {
-}
-
-.received {
 }
 
 .namedate {

@@ -50,7 +50,9 @@ function FileUploads() {
         // If the file is greater than 10 megabytes, restrict upload
         if (event.target.files[0].size > 10000000) {
             alert(
-                `File size exceeds the limit of 10 MB. Your file is ${formatBytes(event.target.files[0].size)}.`
+                `File size exceeds the limit of 10 MB. Your file is ${formatBytes(
+                    event.target.files[0].size
+                )}.`
             );
             setSelectedFile(null);
             return;
@@ -113,8 +115,7 @@ function FileUploads() {
     return (
         <Popup
             trigger={<span className="popupbutton" />}
-            onClose={resetElement}
-        >
+            onClose={resetElement}>
             {(close) => (
                 <div className="uploadWindow">
                     <div className="innerUploadWindow">
@@ -151,8 +152,7 @@ function FileUploads() {
                                     <div>
                                         <button
                                             className="uploadButton"
-                                            onClick={handleSubmission}
-                                        >
+                                            onClick={handleSubmission}>
                                             Upload
                                         </button>
                                     </div>
@@ -164,8 +164,9 @@ function FileUploads() {
                                 <div className="outerload">
                                     <div
                                         className="innerload"
-                                        style={{ width: `${progressPercent}%` }}
-                                    >
+                                        style={{
+                                            width: `${progressPercent}%`,
+                                        }}>
                                         Uploading... {progressPercent}%
                                     </div>
                                 </div>

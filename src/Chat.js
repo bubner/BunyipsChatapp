@@ -30,7 +30,9 @@ function Chat() {
                 }
             });
             if (!readAccess) {
-                alert("Access denied. You do not have sufficient permissions to view this chat. Please email lbubner21@mbhs.sa.edu.au to continue.");
+                alert(
+                    "Access denied. You do not have sufficient permissions to view this chat. Please email lbubner21@mbhs.sa.edu.au to continue."
+                );
                 auth.signOut();
             }
         });
