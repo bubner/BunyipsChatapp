@@ -21,19 +21,24 @@ import MessageBar from "./MessageBar";
 
 function Chat() {
     // Authenticate that the email is able to read messages
-    let readAccess = false;
-
-    onSnapshot(collection(db, "read"), (doc) => {
-        doc.forEach((doc) => {
-            if (auth.currentUser.email === doc.id) {
-                readAccess = true;
+    useEffect(() => {
+        const unsubscribe = onSnapshot(collection(db, "read"), (doc) => {
+            let readAccess = false;
+            doc.forEach((doc) => {
+                if (auth.currentUser.email === doc.id) {
+                    readAccess = true;
+                }
+            });
+            if (!readAccess) {
+                alert("Access denied. You do not have sufficient permissions to view this chat. Please email lbubner21@mbhs.sa.edu.au to continue.");
+                auth.signOut();
             }
         });
-        if (!readAccess) {
-            alert("Access denied. You do not have sufficient permissions to view this chat. Please email lbubner21@mbhs.sa.edu.au to continue.");
-            auth.signOut();
-        }
-    });
+
+        return () => {
+            unsubscribe();
+        };
+    }, []);
 
     // Query Firestore for the last 100 messages
     const msgRef = collection(db, "messages");

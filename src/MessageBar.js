@@ -5,7 +5,7 @@
  */
 
 import "./MessageBar.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { collection, onSnapshot } from "firebase/firestore";
 import FileUploads from "./FileUploads";
 import Scroll from "./Scroll";
@@ -15,19 +15,25 @@ function MessageBar() {
     const [formVal, setFormVal] = useState("");
     const [writePerms, setWritePerms] = useState(false);
 
-    let allowWrite = false;
-    onSnapshot(collection(db, "write"), (doc) => {
-        doc.forEach((doc) => {
-            if (auth.currentUser.email === doc.id) {
-                allowWrite = true;
+    useEffect(() => {
+        const unsubscribe = onSnapshot(collection(db, "write"), (doc) => {
+            let allowWrite = false;
+            doc.forEach((doc) => {
+                if (auth.currentUser.email === doc.id) {
+                    allowWrite = true;
+                }
+            });
+            if (allowWrite) {
+                setWritePerms(true);
+            } else {
+                setWritePerms(false);
             }
         });
-        if (allowWrite) {
-            setWritePerms(true);
-        } else {
-            setWritePerms(false);
-        }
-    });
+
+        return () => {
+            unsubscribe();
+        };
+    }, []);
 
     return (
         <div className="messagebar">

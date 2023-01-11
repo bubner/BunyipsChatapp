@@ -1,0 +1,56 @@
+/*
+ *    Styles for display of permission nodes
+ *    Author: Lucas Bubner, 2023
+ */
+
+/* Ah... CSS Element "Button"... You may not go any further... My... employers have grown quite fond of their... formatless buttons... */
+.authorised button {
+    transition: color 0.3s;
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+}
+
+.authorised {
+    display: grid;
+    grid-template-columns: max-content max-content;
+    grid-template-rows: auto;
+    gap: 0px 0px;
+    grid-template-areas: "read write";
+}
+
+.authorised ul {
+    list-style: none;
+}
+
+.authorised p {
+    margin: 0px;
+    padding: 0px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.authorised button:hover:not(.new) {
+    color: red;
+}
+
+.new:hover {
+    color: rgb(0, 190, 0);
+}
+
+.read {
+    grid-area: read;
+}
+
+.write {
+    grid-area: write;
+}
+
+.new {
+    position: relative;
+    left: 25%;
+}
