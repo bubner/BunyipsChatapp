@@ -82,7 +82,7 @@ function Message({ message }) {
                             controls
                             src={getFileURL(message.text)}
                             alt={`Video upload by ${message.displayName}`}
-                            autoPlay="0"
+                            autostart="false"
                             className="filevideo"
                         />
                     ) : getFileFormat(message.text).startsWith("audio") ? (
