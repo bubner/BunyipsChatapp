@@ -16,6 +16,21 @@
     color: white;
 }
 
+.uploadButton,
+.fileInput {
+    background-color: rgb(240, 240, 240);
+    transition: background-color 0.3s;
+    border: 0;
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.uploadButton:hover,
+.fileInput:hover {
+    cursor: pointer;
+    background-color: rgb(200, 200, 200);
+}
+
 .uploadWindow {
     background-color: rgba(0, 0, 0, 0.5);
     position: fixed;

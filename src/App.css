@@ -3,10 +3,6 @@
  *    or any styles that are specific to this scope of the application.
  */
 
-* {
-    overflow-x: hidden;
-}
-
 body {
     scrollbar-width: auto;
     scrollbar-color: #fff, #36393f;

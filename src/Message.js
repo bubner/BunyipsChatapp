@@ -10,10 +10,6 @@ import Linkify from "react-linkify";
 import "./App.css";
 import "./Message.css";
 
-const addZero = (value) => {
-    return value < 10 ? "0" + value : value;
-};
-
 const getFileFormat = (fileURL) => {
     return fileURL.slice(0, fileURL.indexOf(":"));
 };
@@ -46,21 +42,16 @@ function Message({ message }) {
                 alt={`Profile of ${message.displayName}`}
                 referrerPolicy="no-referrer"
             />
+            <div className="namedate">
+                <p className="name">
+                    <b>{message.displayName}</b>
+                </p>
 
-            <p className="name">{message.displayName}</p>
-
-            {/* Display the proper formatted date and time metadata with each message */}
-            <p className="date">
-                {addZero(timestamp.getDate()) +
-                    "/" +
-                    addZero(timestamp.getMonth() + 1) +
-                    "/" +
-                    timestamp.getFullYear() +
-                    " at " +
-                    addZero(timestamp.getHours()) +
-                    ":" +
-                    addZero(timestamp.getMinutes())}
-            </p>
+                {/* Display the proper formatted date and time metadata with each message */}
+                <p className="date">
+                    {timestamp.toLocaleString("en-AU", { hour12: true })}
+                </p>
+            </div>
 
             {message.isMsg ? (
                 // If it is a normal message, pass it through Linkify which will auto hyperlink any links
@@ -86,10 +77,12 @@ function Message({ message }) {
                             className="fileimage"
                         />
                     ) : getFileFormat(message.text).startsWith("video") ? (
-                        // Video tags don't seem to work that well, so we're using iframes instead to display video.
-                        <iframe
+                        // Swapped to using a video tag instead of an iframe, it seems to work now...
+                        <video
+                            controls
                             src={getFileURL(message.text)}
-                            title={`Video upload by ${message.displayName}`}
+                            alt={`Video upload by ${message.displayName}`}
+                            autoPlay="0"
                             className="filevideo"
                         />
                     ) : getFileFormat(message.text).startsWith("audio") ? (
@@ -109,7 +102,10 @@ function Message({ message }) {
                             rel="noreferrer"
                             href={getFileURL(message.text)}
                         >
-                            <b>View file uploaded by {message.displayName}</b>
+                            <b>
+                                View {getFileFormat(message.text) || "unknown"}{" "}
+                                file uploaded by {message.displayName}
+                            </b>
                         </a>
                     )}
                 </div>

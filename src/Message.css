@@ -4,15 +4,31 @@
  */
 
 .pfp {
+    grid-area: pfp;
     border-radius: 50%;
-    width: 5%;
-    min-width: 5%;
-    position: relative;
-    top: 30px;
+    max-width: 66px;
 }
 
 .message {
+    border-radius: 15px;
+    transition: background-color 0.3s;
+    padding: 8px;
+    display: grid;
+    margin: 0;
+    grid-template-columns: auto 1.2fr;
+    grid-template-rows: auto auto;
+    gap: 0px 0px;
+    grid-template-areas:
+        "pfp namedate"
+        "pfp text";
+}
+
+.message:has(+ div) {
     padding: 12px;
+}
+
+.message:hover {
+    background-color: #32353b;
 }
 
 .sent {
@@ -21,30 +37,41 @@
 .received {
 }
 
+.namedate {
+    max-width: fit-content;
+    place-items: center;
+    grid-area: namedate;
+}
+
 .date {
-    position: relative;
-    transform: translate(50px, -30px);
-    right: -18px;
-    width: 200px;
-    min-width: 200px;
+    font-size: 12px;
+    max-width: fit-content;
+    padding: 12px;
+    margin: 0;
+}
+
+.text,
+.file {
+    transform: translateX(12px);
+    grid-area: text;
 }
 
 .text {
-    width: 80%;
+    width: 98%;
     min-width: 80%;
     height: 100%;
     word-wrap: break-word;
+    margin: 0;
 }
 
 .name {
-    position: relative;
-    right: -70px;
-    top: -15px;
-    min-width: auto;
+    padding-top: 6px;
+    padding-left: 12px;
+    max-width: fit-content;
+    margin: 0;
 }
 
 .login {
-    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -59,5 +86,6 @@ iframe {
 
 .fileimage,
 .filevideo {
-    max-height: 250px;
+    max-height: 350px;
+    max-width: 90%;
 }

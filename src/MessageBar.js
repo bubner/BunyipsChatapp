@@ -28,6 +28,7 @@ function MessageBar() {
                         type="text"
                         onChange={(e) => setFormVal(e.target.value)}
                         value={formVal}
+                        className="msginput"
                     />
                     {/* Submit button for messages, also prevents sending if there is no form value */}
                     <button

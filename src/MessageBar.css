@@ -11,7 +11,7 @@
     width: 100%;
 }
 
-input {
+.msginput {
     position: relative;
     background-color: #fff;
     border: 1px solid #ccc;
