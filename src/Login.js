@@ -11,8 +11,8 @@ import "./Login.css";
 function Login() {
     return (
         <>
-            <div class="bg-wrapper">
-                <ul class="bg-bubbles">
+            <div className="bg-wrapper">
+                <ul className="bg-bubbles">
                     <li></li>
                     <li></li>
                     <li></li>

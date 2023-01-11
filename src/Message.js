@@ -33,8 +33,7 @@ function Message({ message }) {
         <div
             className={`message ${
                 auth.currentUser.uid === message.uid ? "sent" : "received"
-            }`}
-        >
+            }`}>
             {/* Generate profile picture based on the photoURL attached with the message */}
             <img
                 className="pfp"
@@ -60,8 +59,7 @@ function Message({ message }) {
                         <a target="blank" href={decoratedHref} key={key}>
                             {decoratedText}
                         </a>
-                    )}
-                >
+                    )}>
                     <p className="text">{message.text}</p>
                 </Linkify>
             ) : (
@@ -100,8 +98,7 @@ function Message({ message }) {
                         <a
                             target="_blank"
                             rel="noreferrer"
-                            href={getFileURL(message.text)}
-                        >
+                            href={getFileURL(message.text)}>
                             <b>
                                 View {getFileFormat(message.text) || "unknown"}{" "}
                                 file uploaded by {message.displayName}

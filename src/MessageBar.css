@@ -22,6 +22,18 @@
     outline: none;
 }
 
+.nomsg {
+    color: black;
+    border-radius: 10px;
+    width: 98vw;
+    padding: 8px;
+}
+
+.nomsg p {
+    text-align: center;
+    transform: translateY(8px);
+}
+
 .sendbutton {
     min-width: 50px;
     min-height: 50px;

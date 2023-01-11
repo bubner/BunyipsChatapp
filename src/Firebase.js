@@ -72,7 +72,7 @@ export async function sendMsg(event, msgRef, formVal) {
         text: formVal,
         photoURL: auth.currentUser.photoURL,
         createdAt: serverTimestamp(),
-    });
+    }).catch((error) => alert(error));
 }
 
 export async function uploadFileDoc(url, type) {
@@ -83,7 +83,7 @@ export async function uploadFileDoc(url, type) {
         text: type + ":" + url,
         photoURL: auth.currentUser.photoURL,
         createdAt: serverTimestamp(),
-    });
+    }).catch((error) => alert(error));
 }
 
 export { auth, db, storage };
