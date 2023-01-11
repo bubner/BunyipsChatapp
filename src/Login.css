@@ -58,10 +58,9 @@
 .login-inner {
     background-color: rgba(72, 148, 85, 0.75);
     padding: 48px;
-    padding-left: 200px;
-    padding-right: 200px;
+    padding-left: 10%;
+    padding-right: 10%;
     border-radius: 12px;
-    margin-bottom: 20px;
 }
 
 .login-inner h2 {
@@ -75,8 +74,8 @@
     font-weight: bold;
 }
 
-.login-inner footer a {
-    color: #87bfff;
+.login-inner a {
+    color: #a4cfff;
 }
 
 .clubimg {
@@ -114,11 +113,12 @@
 
 .bg-bubbles li {
     position: absolute;
+    transition: all 2s;
     list-style: none;
     display: block;
     width: 40px;
     height: 40px;
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(255, 255, 255, 0.3);
     bottom: -160px;
     -webkit-animation: square 25s infinite;
     animation: square 25s infinite;

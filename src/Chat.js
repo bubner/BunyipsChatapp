@@ -42,12 +42,12 @@ function Chat() {
         };
     }, []);
 
-    // Query Firestore for the last 100 messages
+    // Query Firestore for the last 300 messages
     const msgRef = collection(db, "messages");
     const messageQuery = query(
         msgRef,
         orderBy("createdAt", "asc"),
-        limitToLast(100)
+        limitToLast(300)
     );
     const [messages] = useCollectionData(messageQuery, { idField: "id" });
 
@@ -63,6 +63,8 @@ function Chat() {
             {/* Navbar element with profile information */}
             <Navbar />
             <div className="messages">
+                {/* Allow space for Navbar to fit */}
+                <br /> <br /> <br /> <br />
                 {/* Display all messages currently in Firestore */}
                 {messages &&
                     messages.map((msg) => (
