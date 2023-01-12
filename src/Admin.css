@@ -15,6 +15,20 @@
     outline: inherit;
 }
 
+.cleardb {
+    position: relative;
+    left: 75%;
+    transition: color 0.3s;
+    text-align: center;
+    width: fit-content;
+    padding: 6px;
+    border-radius: 8px;
+}
+
+.authorised span:hover {
+    cursor: pointer;
+}
+
 .authorised {
     display: grid;
     grid-template-columns: max-content max-content;
@@ -35,22 +49,43 @@
 }
 
 .authorised button:hover:not(.new) {
-    color: red;
-}
-
-.new:hover {
-    color: rgb(0, 190, 0);
+    color: rgb(255, 48, 48);
 }
 
 .read {
     grid-area: read;
+    font-size: 18px;
 }
 
 .write {
     grid-area: write;
+    font-size: 18px;
+}
+
+.authorised button:not(.new), .cleardb, .new {
+    border-radius: 8px;
+    padding: 8px !important;
 }
 
 .new {
+    transition: background-color 0.3s;
+    background-color: rgba(0, 87, 4, 0.384) !important;
     position: relative;
     left: 25%;
+}
+
+.new:hover {
+    color: black;
+    font-weight: 500;
+    background-color: rgba(0, 199, 10, 0.877) !important;
+}
+
+.authorised button:not(.new), .cleardb {
+    background-color: rgba(245, 122, 122, 0.308);
+}
+
+.authorised button:not(.new):hover, .cleardb:hover {
+    color: black;
+    font-weight: 500;
+    background-color: rgba(255, 47, 47, 0.884);
 }

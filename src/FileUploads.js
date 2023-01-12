@@ -167,7 +167,7 @@ function FileUploads() {
                                         style={{
                                             width: `${progressPercent}%`,
                                         }}>
-                                        Uploading... {progressPercent}%
+                                        <p>Uploading... {progressPercent}%</p>
                                     </div>
                                 </div>
                             </div>

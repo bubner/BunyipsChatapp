@@ -3,7 +3,8 @@
  *    @author Lucas Bubner, 2023
  */
 import { useState, useEffect } from "react";
-import { auth, db } from "./Firebase";
+import { auth, db, storage } from "./Firebase";
+import { ref, deleteObject, listAll } from "firebase/storage";
 import {
     collection,
     onSnapshot,
@@ -75,6 +76,46 @@ function Admin() {
         await setDoc(doc(db, "write", email), {})
             .catch((error) => alert(error))
             .then(() => alert("Operation completed."));
+    }
+
+    // Clear all database messages and media content
+    async function clearDatabase() {
+        if (
+            !window.confirm(
+                "WARNING: You are about to delete all database messages. Are you sure you want to continue?"
+            )
+        )
+            return;
+
+        const nums = Math.floor(Math.random() * (9999 - 1000 + 1) + 1000);
+        if (
+            window.prompt(
+                `Please enter these four numbers in order to complete the database transaction: ${nums}`
+            ) !== nums.toString()
+        ) {
+            alert("Operation cancelled.");
+            return;
+        }
+
+        // Delete all Firestore messages
+        await onSnapshot(collection(db, "messages"), (snapshot) => {
+            snapshot.forEach((message) => {
+                deleteDoc(doc(db, "messages", message.id)).catch((err) =>
+                    console.error(err)
+                );
+            });
+        });
+
+        // Delete all media uploaded
+        await listAll(ref(storage, "files")).then((listResults) => {
+            const promises = listResults.items.map((item) => {
+                return deleteObject(item);
+            });
+            Promise.all(promises);
+        });
+
+        alert("Operation completed. A reload is required.");
+        window.location.reload();
     }
 
     const [readDocs, setReadDocs] = useState([]);
@@ -153,6 +194,9 @@ function Admin() {
                             Add a new writer
                         </button>
                     </div>
+                    <span className="cleardb" onClick={() => clearDatabase()}>
+                        CLEAR DATABASES
+                    </span>
                 </div>
             ) : (
                 <p>Unauthorised usage of the admin module.</p>
