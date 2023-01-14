@@ -64,7 +64,7 @@ function Chat() {
             <Navbar />
             <div className="messages">
                 {/* Allow space for Navbar to fit */}
-                <br /> <br /> <br /> <br />
+                <br /> <br /> <br /> <br /> <br />
                 {/* Display all messages currently in Firestore */}
                 {messages &&
                     messages.map((msg) => (

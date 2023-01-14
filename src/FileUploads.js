@@ -16,6 +16,7 @@ function FileUploads() {
     const [progressPercent, setProgressPercent] = useState(0);
     const [isFileUploading, setIsFileUploading] = useState(false);
     const [isFileUploaded, setIsFileUploaded] = useState(false);
+    const [isClipboard, setIsClipboard] = useState(false);
 
     const uploadTaskRef = useRef();
 
@@ -62,11 +63,19 @@ function FileUploads() {
     };
 
     const resetElement = () => {
-        uploadTaskRef.current.cancel();
+        try {
+            uploadTaskRef.current.cancel();
+        } catch (e) {
+            // An exception is thrown when the upload menu is closed before a file is present.
+            // However, the error causes the reset element functionality to not work properly, so
+            // you will not stop me and I will eat all the cake.
+            console.debug(e);
+        }
         setIsFileUploading(false);
         setSelectedFile(null);
         setIsFilePicked(false);
         setIsFileUploaded(false);
+        setIsClipboard(false);
     };
 
     const uploadFile = (name) => {
@@ -75,7 +84,7 @@ function FileUploads() {
     };
 
     const handleSubmission = () => {
-        if (!isFilePicked) return;
+        if (!isFilePicked || !selectedFile) return;
         setIsFileUploading(true);
 
         // Generate a random string of characters to supplement the file name to avoid duplicates
@@ -112,8 +121,54 @@ function FileUploads() {
         );
     };
 
+    const pasteListener = clipboardHandler;
+    window.addEventListener("paste", pasteListener);
+
+    function clipboardHandler(e) {
+        // Only activate if the target was towards the chat box to avoid goofy interface issues
+        const validInputZones = [
+            "msginput",
+            "",
+            "fileimage",
+            "text",
+            "date",
+            "navbar-name",
+            "navbar-brand",
+        ];
+
+        // Avoid starting any potential cataclysmic quantum events
+        window.removeEventListener("paste", pasteListener);
+
+        if (!validInputZones.includes(e.target.className)) return;
+
+        // Intercept the paste event contents
+        const clip = e.clipboardData.items;
+
+        // Check if any of the clipboard items are files
+        for (let i = 0; i < clip.length; i++) {
+            if (clip[i].kind === "file") {
+                setSelectedFile(clip[i].getAsFile());
+                setIsClipboard(true);
+                setIsFilePicked(true);
+                break;
+            }
+        }
+
+        // Allow other clipboard data to pass right through
+        if (!isClipboard) return;
+
+        // Prevent any side effects from taking over the pasting event
+        e.stopPropagation();
+
+        // Open popup window and supply file information
+        popupRef.current.open();
+    }
+
+    const popupRef = useRef();
+
     return (
         <Popup
+            ref={popupRef}
             trigger={<span className="popupbutton" />}
             onClose={resetElement}>
             {(close) => (
@@ -125,13 +180,18 @@ function FileUploads() {
                         <h3>File Upload Menu</h3>
                         {isFileUploaded ? (
                             <div>File uploaded.</div>
-                        ) : (
+                        ) : !isClipboard ? (
+                            // <div className="fileInputContainer">
                             <input
                                 type="file"
                                 name="file"
                                 onChange={changeHandler}
                                 className="fileInput"
                             />
+                        ) : (
+                            <div>
+                                <i>File supplied by clipboard paste.</i>
+                            </div>
                         )}
                         {isFilePicked &&
                             selectedFile != null &&

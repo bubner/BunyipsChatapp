@@ -13,11 +13,11 @@
     background-size: 50%;
     position: fixed;
     bottom: 75px;
-    right: 1%;
+    right: calc(0% + 10px);
     height: 50px;
     width: 50px;
-    border: none;
-    outline: none;
+    border: none !important;
+    outline: none !important;
 }
 
 .scroll:hover {

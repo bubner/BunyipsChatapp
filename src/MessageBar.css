@@ -17,7 +17,7 @@
     border: 1px solid #ccc;
     height: auto;
     flex: 1;
-    width: 93.3vw;
+    width: calc(100vw - 28px);
     border: 0;
     outline: none;
 }
@@ -25,13 +25,14 @@
 .nomsg {
     color: black;
     border-radius: 10px;
-    width: 98vw;
+    width: calc(100vw - 28px);
     padding: 8px;
 }
 
 .nomsg p {
     text-align: center;
     transform: translateY(8px);
+    font-size: 16px;
 }
 
 .sendbutton {
