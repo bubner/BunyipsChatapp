@@ -9,6 +9,7 @@ import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { serverTimestamp, addDoc, collection } from "firebase/firestore";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
+import Filter from "bad-words"
 
 let app;
 let storage;
@@ -50,7 +51,7 @@ export function signInWithGoogle() {
 }
 
 // Function to add a message to Firestore
-export async function sendMsg(event, msgRef, formVal) {
+export async function sendMsg(event, msgRef, formVal,) {
     event.preventDefault();
 
     // Prevent adding blank messages into Firestore
@@ -65,11 +66,12 @@ export async function sendMsg(event, msgRef, formVal) {
     }
 
     // Add to Firestore with UID, content, and user info
+    const word = new Filter()
     await addDoc(msgRef, {
         isMsg: true,
         uid: auth.currentUser.uid,
         displayName: auth.currentUser.displayName,
-        text: formVal,
+        text: word.clean(formVal),
         photoURL: auth.currentUser.photoURL,
         createdAt: serverTimestamp(),
     }).catch((error) => alert(error));
@@ -85,5 +87,8 @@ export async function uploadFileDoc(url, type) {
         createdAt: serverTimestamp(),
     }).catch((error) => alert(error));
 }
+
+    
+
 
 export { auth, db, storage };
