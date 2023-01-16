@@ -28,13 +28,18 @@
 }
 
 .message:hover {
-    background-color: #32353b;
+    background-color: #313a35;
 }
 
 .namedate {
     max-width: fit-content;
     place-items: center;
     grid-area: namedate;
+}
+
+.date, .name {
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .date {

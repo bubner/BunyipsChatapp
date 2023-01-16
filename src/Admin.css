@@ -5,7 +5,7 @@
 
 /* Ah... CSS Element "Button"... You may not go any further... My... employers have grown quite fond of their... formatless buttons... */
 .authorised button {
-    transition: color 0.3s;
+    transition: background-color 0.3s;
     background: none;
     color: inherit;
     border: none;
@@ -18,7 +18,7 @@
 .cleardb {
     position: relative;
     left: 75%;
-    transition: color 0.3s;
+    transition: background-color 0.3s;
     text-align: center;
     width: fit-content;
     padding: 6px;

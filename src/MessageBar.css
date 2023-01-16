@@ -13,7 +13,7 @@
 
 .msginput {
     position: relative;
-    background-color: #fff;
+    background-color: #beffc6;
     border: 1px solid #ccc;
     height: auto;
     flex: 1;
@@ -44,7 +44,7 @@
     background-position: center;
     transition: background-color 0.3s;
     border-radius: 0 10px 10px 0;
-    background-color: #fff;
+    background-color: #beffc6;
     color: black;
     border: none;
     font: inherit;
@@ -55,5 +55,5 @@
 }
 
 .sendbutton:hover {
-    background-color: rgb(190, 190, 190);
+    background-color: rgb(142, 251, 155);
 }
