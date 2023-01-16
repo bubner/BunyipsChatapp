@@ -1,11 +1,14 @@
-/*
- *    Module to handle uploading files to Firebase storage through a button element
+/**
+ *    Module to handle uploading files to Firebase storage and having a corresponding popup window to do so.
+ *    @author Lucas Bubner, 2023
  */
-import { useState } from 'react';
-import { storage } from './Firebase';
-import { ref, uploadBytesResumable } from 'firebase/storage';
-import Popup from 'reactjs-popup';
-import './FileUploads.css';
+
+import { useState, useRef } from "react";
+import { storage } from "./Firebase";
+import { uploadFileDoc } from "./Firebase";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import Popup from "reactjs-popup";
+import "./FileUploads.css";
 
 function FileUploads() {
     const [selectedFile, setSelectedFile] = useState();
@@ -13,86 +16,227 @@ function FileUploads() {
     const [progressPercent, setProgressPercent] = useState(0);
     const [isFileUploading, setIsFileUploading] = useState(false);
     const [isFileUploaded, setIsFileUploaded] = useState(false);
+    const [isClipboard, setIsClipboard] = useState(false);
+
+    const uploadTaskRef = useRef();
+
+    // Return 8 characters that are legal for making file names unique
+    const generateChars = () =>
+        [...Array(8)]
+            .map(() => Math.random().toString(36).substring(2, 3))
+            .join("");
+
+    // Convert byte numbers to their corresponding format
+    const formatBytes = (a, b = 2) => {
+        const c = Math.max(0, b);
+        const d = Math.floor(Math.log(a) / Math.log(1024));
+        return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
+            ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+        }`;
+    };
+
+    function generateUniqueFileName(filename) {
+        // <original filename> + _ + <random 8 chars> + <file extension>
+        return (
+            filename.substr(0, filename.lastIndexOf(".")) +
+            "_" +
+            generateChars() +
+            filename.slice(filename.lastIndexOf(".") - 1)
+        );
+    }
 
     const changeHandler = (event) => {
         setSelectedFile(event.target.files[0]);
+
+        // If the file is greater than 10 megabytes, restrict upload
+        if (event.target.files[0].size > 10000000) {
+            alert(
+                `File size exceeds the limit of 10 MB. Your file is ${formatBytes(
+                    event.target.files[0].size
+                )}.`
+            );
+            setSelectedFile(null);
+            return;
+        }
+
         setIsFilePicked(true);
     };
 
     const resetElement = () => {
+        try {
+            uploadTaskRef.current.cancel();
+        } catch (e) {
+            // An exception is thrown when the upload menu is closed before a file is present.
+            // However, the error causes the reset element functionality to not work properly, so
+            // you will not stop me and I will eat all the cake.
+            console.debug(e);
+        }
         setIsFileUploading(false);
         setSelectedFile(null);
         setIsFilePicked(false);
         setIsFileUploaded(false);
+        setIsClipboard(false);
+    };
+
+    const uploadFile = (name) => {
+        const storageRef = ref(storage, `files/${name}`);
+        uploadTaskRef.current = uploadBytesResumable(storageRef, selectedFile);
     };
 
     const handleSubmission = () => {
-        if (!isFilePicked) return;
+        if (!isFilePicked || !selectedFile) return;
         setIsFileUploading(true);
 
-        const storageRef = ref(storage, `${selectedFile.name}`);
-        const uploadTask = uploadBytesResumable(storageRef, selectedFile);
+        // Generate a random string of characters to supplement the file name to avoid duplicates
+        const fileName = generateUniqueFileName(selectedFile.name);
 
-        uploadTask.on("state_changed",
+        // Upload the file to Firebase Storage
+        uploadFile(fileName);
+
+        uploadTaskRef.current.on(
+            "state_changed",
             (snapshot) => {
-                const progress =
-                    Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                const progress = Math.round(
+                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                );
                 setProgressPercent(progress);
             },
             (error) => {
                 alert(error);
             },
             () => {
-                resetElement();
+                // Handle uploading the file URL into a message doc
+                getDownloadURL(ref(storage, `files/${fileName}`))
+                    .then((url) => {
+                        uploadFileDoc(url, selectedFile.type);
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                        alert(
+                            "Something went wrong adding your file to the messages database. This error has been logged to the console."
+                        );
+                    });
                 setIsFileUploaded(true);
-            });
+            }
+        );
     };
 
+    const pasteListener = clipboardHandler;
+    window.addEventListener("paste", pasteListener);
+
+    function clipboardHandler(e) {
+        // Only activate if the target was towards the chat box to avoid goofy interface issues
+        const validInputZones = [
+            "msginput",
+            "",
+            "fileimage",
+            "text",
+            "date",
+            "navbar-name",
+            "navbar-brand",
+        ];
+
+        // Avoid starting any potential cataclysmic quantum events
+        window.removeEventListener("paste", pasteListener);
+
+        if (!validInputZones.includes(e.target.className)) return;
+
+        // Intercept the paste event contents
+        const clip = e.clipboardData.items;
+
+        // Check if any of the clipboard items are files
+        for (let i = 0; i < clip.length; i++) {
+            if (clip[i].kind === "file") {
+                setSelectedFile(clip[i].getAsFile());
+                setIsClipboard(true);
+                setIsFilePicked(true);
+                break;
+            }
+        }
+
+        // Allow other clipboard data to pass right through
+        if (!isClipboard) return;
+
+        // Prevent any side effects from taking over the pasting event
+        e.stopPropagation();
+
+        // Open popup window and supply file information
+        popupRef.current.open();
+    }
+
+    const popupRef = useRef();
 
     return (
-        <Popup trigger={<button>Upload File</button>} onClose={resetElement}>
-            {close => (
+        <Popup
+            ref={popupRef}
+            trigger={<span className="popupbutton" />}
+            onClose={resetElement}>
+            {(close) => (
                 <div className="uploadWindow">
-                    <div className='innerUploadWindow'>
-                        <span className="close" onClick={close}>&times;</span>
+                    <div className="innerUploadWindow">
+                        <span className="close" onClick={close}>
+                            &times;
+                        </span>
                         <h3>File Upload Menu</h3>
-                        {
-                            isFileUploaded ? (
+                        {isFileUploaded ? (
+                            <div>File uploaded.</div>
+                        ) : !isClipboard ? (
+                            // <div className="fileInputContainer">
+                            <input
+                                type="file"
+                                name="file"
+                                onChange={changeHandler}
+                                className="fileInput"
+                            />
+                        ) : (
+                            <div>
+                                <i>File supplied by clipboard paste.</i>
+                            </div>
+                        )}
+                        {isFilePicked &&
+                            selectedFile != null &&
+                            !isFileUploaded && (
                                 <div>
-                                    File uploaded.
-                                </div>
-                            ) : (
-                                <input type="file" name="file" onChange={changeHandler} />
-                            )
-                        }
-                        {
-                            (isFilePicked && selectedFile != null && !isFileUploaded) && (
-                                <div>
-                                    <p><i>File name:</i> {selectedFile.name}</p>
-                                    <p><i>Filetype:</i> {selectedFile.type}</p>
-                                    <p><i>Size in bytes:</i> {selectedFile.size}</p>
-                                    <p><b>Upload file?</b></p>
+                                    <br />
+                                    <p>
+                                        <i>File name:</i> {selectedFile.name}{" "}
+                                        <br />
+                                        <i>Filetype:</i>{" "}
+                                        {selectedFile.type || "unknown"} <br />
+                                        <i>Size in bytes:</i>{" "}
+                                        {formatBytes(selectedFile.size)}
+                                    </p>
+                                    <p>
+                                        <b>Upload file?</b>
+                                    </p>
                                     <div>
-                                        <button onClick={handleSubmission}>Upload</button>
+                                        <button
+                                            className="uploadButton"
+                                            onClick={handleSubmission}>
+                                            Upload
+                                        </button>
                                     </div>
                                 </div>
-                            )
-                        }
+                            )}
                         <br />
-                        {
-                            isFileUploading && (
-                                <div className='barload'>
-                                    <div className='outerload'>
-                                        <div className='innerload' style={{ width: `${progressPercent}%` }}>Uploading... {progressPercent}%</div>
+                        {isFileUploading && !isFileUploaded && (
+                            <div className="barload">
+                                <div className="outerload">
+                                    <div
+                                        className="innerload"
+                                        style={{
+                                            width: `${progressPercent}%`,
+                                        }}>
+                                        <p>Uploading... {progressPercent}%</p>
                                     </div>
                                 </div>
-                            )
-                        }
+                            </div>
+                        )}
                     </div>
                 </div>
             )}
         </Popup>
-    )
+    );
 }
 
 export default FileUploads;

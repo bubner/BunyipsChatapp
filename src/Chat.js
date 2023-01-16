@@ -1,77 +1,81 @@
-/*
+/**
  *    Chat module to handle message rendering and management
  *    Will be shown to the user once login is verified.
+ *    @author Lucas Bubner, 2023
+ *    @author Lachlan Paul, 2023
  */
-import { auth, db } from './Firebase';
-import { useEffect, useRef, useState } from 'react';
+
+import { db, auth } from "./Firebase";
+import { useEffect, useRef } from "react";
 import { useCollectionData } from "react-firebase-hooks/firestore";
-import { serverTimestamp } from 'firebase/firestore';
-import { collection, query, orderBy, limitToLast, addDoc } from "firebase/firestore";
-import Message from './Message';
-import FileUploads from './FileUploads';
+import {
+    collection,
+    query,
+    orderBy,
+    limitToLast,
+    onSnapshot,
+} from "firebase/firestore";
+import Message from "./Message";
+import Navbar from "./Navbar";
+import MessageBar from "./MessageBar";
 
 function Chat() {
-    // Query Firestore for the last 100 messages
-    const msgRef = collection(db, 'messages');
-    const messageQuery = query(msgRef, orderBy('createdAt', 'asc'), limitToLast(100));
-
-    // Set stock parameters for message creation and clear input
-    const [formVal, setFormVal] = useState("");
-    const dummy = useRef();
-
-    // Set custom properties to allow messages to appear fluidly
-    const [messages] = useCollectionData(messageQuery, { idField: "id" });
-    useEffect(() => dummy.current.scrollIntoView({ behavaior: "smooth" }), [
-        messages,
-    ]);
-
-    // Function to add a message to Firestore
-    async function sendMsg(e) {
-        e.preventDefault();
-        // Add to Firestore with UID, content, and user info
-        await addDoc(msgRef, {
-            isMsg: true,
-            uid: auth.currentUser.uid,
-            displayName: auth.currentUser.displayName,
-            text: formVal,
-            photoURL: auth.currentUser.photoURL,
-            createdAt: serverTimestamp(),
+    // Authenticate that the email is able to read messages
+    useEffect(() => {
+        const unsubscribe = onSnapshot(collection(db, "read"), (doc) => {
+            let readAccess = false;
+            doc.forEach((doc) => {
+                if (auth.currentUser.email === doc.id) {
+                    readAccess = true;
+                }
+            });
+            if (!readAccess) {
+                alert(
+                    "Access denied. You do not have sufficient permissions to view this chat. Please email lbubner21@mbhs.sa.edu.au to continue."
+                );
+                auth.signOut();
+            }
         });
-        setFormVal("");
-        // Using a dummy element for fluid interface
-        dummy.current.scrollIntoView({ behavaior: "smooth" });
-    }
+
+        return () => {
+            unsubscribe();
+        };
+    }, []);
+
+    // Query Firestore for the last 300 messages
+    const msgRef = collection(db, "messages");
+    const messageQuery = query(
+        msgRef,
+        orderBy("createdAt", "asc"),
+        limitToLast(300)
+    );
+    const [messages] = useCollectionData(messageQuery, { idField: "id" });
+
+    // Set custom properties on a dummy object allow messages to appear fluidly
+    const dummy = useRef();
+    useEffect(
+        () => dummy.current.scrollIntoView({ behavior: "smooth" }),
+        [messages]
+    );
 
     return (
         <>
-        <p>Logged in as {auth.currentUser.displayName}</p>
-        <img src={auth.currentUser.photoURL} alt="Profile" referrerPolicy="no-referrer" />
-        <br />
-        <button onClick={async () => await auth.signOut()}>Sign out</button>
-        <p>Messages:</p>
-        <FileUploads />
-        <div className="messages">
-            {/* Display all messages currently in Firestore */}
-            {messages && messages.map(msg => <Message message={msg} key={msg.id} />)}
-
-            {/* Dummy element for fluid interface */}
-            <div id="dummy" ref={dummy}></div>
-
-            <form onSubmit={(e) => sendMsg(e)}>
-                {/* Standard user input box for text */}
-                <input
-                    type="text"
-                    onChange={(e) => setFormVal(e.target.value)}
-                    value={formVal}
-                />
-
-                {/* Submit button for messages, also prevents sending if there is no form value */}
-                <button type="submit" disabled={formVal ? false : true}>
-                    {/* TODO: Add a send asset here instead of just text */}
-                    Send
-                </button>
-            </form>
-        </div>
+            {/* Navbar element with profile information */}
+            <Navbar />
+            <div className="messages">
+                {/* Allow space for Navbar to fit */}
+                <br /> <br /> <br /> <br /> <br />
+                {/* Display all messages currently in Firestore */}
+                {messages &&
+                    messages.map((msg) => (
+                        <Message message={msg} key={msg.id} />
+                    ))}
+                {/* Dummy element for fluid interface */}
+                <div id="dummy" ref={dummy}></div>
+                <br /> <br /> <br />
+                {/* Message bar with end-user options to add files and message */}
+                <MessageBar />
+            </div>
         </>
     );
 }
