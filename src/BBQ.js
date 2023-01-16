@@ -9,7 +9,9 @@ import "./BBQ.css";
 function BBQ() {
     return (
         <Popup trigger={<svg className="bbqbtn" />}>
-            <div className="outwin">
+            {close => (
+                <>
+                <div className="outwin" onClick={close} />
                 <div className="inwin">
                     Sunao ni I LOVE YOU! todokeyou kitto YOU LOVE ME! tsutawaru
                     sa Kimi ni niau GLASS no kutsu wo sagasou Futari de STEP &
@@ -21,7 +23,8 @@ function BBQ() {
                     todokeyou Kitto YOU LOVE ME! tsutawaru sa Kimi ni niau GLASS
                     no kutsu wo sagasou
                 </div>
-            </div>
+                </>
+            )}
         </Popup>
     );
 }
