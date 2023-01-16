@@ -12,6 +12,7 @@ import {
     doc,
     setDoc,
 } from "firebase/firestore";
+import Popup from "reactjs-popup";
 import "./Admin.css";
 
 function Admin() {
@@ -41,8 +42,14 @@ function Admin() {
 
     // Delete the read permissions from an email address
     async function removeRead(email) {
+        if (email === auth.currentUser.email) {
+            alert("You cannot remove your own read permission as an administrator.");
+            return;
+        }
+
         if (!window.confirm("Remove read permission from " + email + "?"))
             return;
+
         await deleteDoc(doc(db, "read", email))
             .catch((error) => alert(error))
             .then(() => alert("Operation completed."));
@@ -98,7 +105,7 @@ function Admin() {
         }
 
         // Delete all Firestore messages
-        await onSnapshot(collection(db, "messages"), (snapshot) => {
+        onSnapshot(collection(db, "messages"), (snapshot) => {
             snapshot.forEach((message) => {
                 deleteDoc(doc(db, "messages", message.id)).catch((err) =>
                     console.error(err)
@@ -153,55 +160,96 @@ function Admin() {
     }, []);
 
     return (
-        <div className="admin">
-            {isAdminAuthorised ? (
-                <div className="authorised">
-                    <div className="read">
-                        <p>READ</p>
-                        <ul>
-                            {readDocs.map((doc) => {
-                                return (
-                                    <li>
-                                        <button
-                                            onClick={() => removeRead(doc)}
-                                            key={doc.id}>
-                                            {doc}
-                                        </button>
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                        <button onClick={() => addRead()} className="new">
-                            Add a new user
-                        </button>
+        <Popup
+            trigger={
+                <button className="bbqitem">
+                    1500 Megabyte App-Managing Heavy Duty Super-Admin Super
+                    Panel
+                </button>
+            }
+            nested>
+            {(close) => (
+                <>
+                    <div className="oadmin" />
+                    <div className="admin">
+                        <span className="close" onClick={close}>
+                            &times;
+                        </span>
+                        {isAdminAuthorised ? (
+                            <div className="authorised">
+                                <div className="title">
+                                    <h4>
+                                        Application Permissions Control Panel
+                                    </h4>
+                                    <p className="portalreference">
+                                        "Prolonged exposure to this module is
+                                        not part of the test."
+                                    </p>
+                                    <br />
+                                </div>
+                                <div className="read">
+                                    <p>READ</p>
+                                    <ul>
+                                        {readDocs.map((doc) => {
+                                            return (
+                                                <li>
+                                                    <button
+                                                        onClick={() =>
+                                                            removeRead(doc)
+                                                        }
+                                                        key={doc.id}>
+                                                        {doc}
+                                                    </button>
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+                                    <button
+                                        onClick={() => addRead()}
+                                        className="new">
+                                        Add a new user
+                                    </button>
+                                </div>
+                                <div className="write">
+                                    <p>WRITE</p>
+                                    <ul>
+                                        {writeDocs.map((doc) => {
+                                            return (
+                                                <li>
+                                                    <button
+                                                        onClick={() =>
+                                                            removeWrite(doc)
+                                                        }
+                                                        key={doc.id}>
+                                                        {doc}
+                                                    </button>
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+                                    <button
+                                        onClick={() => addWrite()}
+                                        className="new">
+                                        Add a new writer
+                                    </button>
+                                </div>
+                                <span
+                                    className="cleardb"
+                                    onClick={() => clearDatabase()}>
+                                    CLEAR DATABASES
+                                </span>
+                            </div>
+                        ) : (
+                            <p>
+                                Insufficient permissions to access the admin
+                                module. <br /> Please contact
+                                lbubner21@mbhs.sa.edu.au for further assistance.
+                            </p>
+                        )}
                     </div>
-                    <div className="write">
-                        <p>WRITE</p>
-                        <ul>
-                            {writeDocs.map((doc) => {
-                                return (
-                                    <li>
-                                        <button
-                                            onClick={() => removeWrite(doc)}
-                                            key={doc.id}>
-                                            {doc}
-                                        </button>
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                        <button onClick={() => addWrite()} className="new">
-                            Add a new writer
-                        </button>
-                    </div>
-                    <span className="cleardb" onClick={() => clearDatabase()}>
-                        CLEAR DATABASES
-                    </span>
-                </div>
-            ) : (
-                <p>Unauthorised usage of the admin module.</p>
+                </>
             )}
-        </div>
+        </Popup>
     );
 }
 

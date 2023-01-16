@@ -4,25 +4,21 @@
  */
 
 import Popup from "reactjs-popup";
+import Admin from "./Admin";
 import "./BBQ.css";
 
 function BBQ() {
     return (
-        <Popup trigger={<svg className="bbqbtn" />}>
-            {close => (
+        <Popup trigger={<svg className="bbqbtn" />} nested>
+            {(close) => (
                 <>
-                <div className="outwin" onClick={close} />
-                <div className="inwin">
-                    Sunao ni I LOVE YOU! todokeyou kitto YOU LOVE ME! tsutawaru
-                    sa Kimi ni niau GLASS no kutsu wo sagasou Futari de STEP &
-                    GO! itsu made mo Shin'ya juuni-ji wo sugitatte bokura no
-                    LOVE MAGIC wa toke wa shinai Oide meshimase ohime-sama Doku
-                    no ringo wo tabete nemucchai sou na Sunao sugiru kimi ga
-                    totemo itoshii Atarimae ＝ (iko) takaramono sa Chikyuu wa
-                    mawari hi wa nobori Kimi wa hohoemu Sunao ni I LOVE YOU!
-                    todokeyou Kitto YOU LOVE ME! tsutawaru sa Kimi ni niau GLASS
-                    no kutsu wo sagasou
-                </div>
+                    <div className="outwin" onClick={close} />
+                    <div className="inwin">
+                        <div className="buttonarea">
+                            <Admin />
+                        </div>
+                        <hr />
+                    </div>
                 </>
             )}
         </Popup>

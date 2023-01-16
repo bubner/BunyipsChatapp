@@ -3,7 +3,7 @@
  *    Author: Lachlan Paul, 2023
  */
 
- .outwin {
+.outwin {
     z-index: -1;
     background-color: rgba(0, 0, 0, 0.5);
     position: fixed;
@@ -28,8 +28,10 @@
     right: 0;
     bottom: 0;
     margin: auto;
-    width: 50%;
-    height: 50%;
+    padding-left: 15px;
+    padding-right: 15px;
+    width: fit-content;
+    height: 66%;
 }
 
 .bbqbtn {
@@ -49,6 +51,19 @@
     background-size: 66%;
     background-repeat: no-repeat;
     background-position: center;
+}
+
+/* Styles for all menu items in the hamburger menu */
+.buttonarea button {
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+    width: 100%;
+    height: fit-content;
 }
 
 .bbqbtn:hover {
