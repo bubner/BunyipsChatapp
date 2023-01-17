@@ -6,6 +6,7 @@
  */
 
 import { auth } from "./Firebase";
+import Msgman from "./Msgman";
 import "./App.css";
 import "./Message.css";
 import ReactMarkdown from "react-markdown";
@@ -94,6 +95,7 @@ function Message({ message }) {
                     )}
                 </div>
             )}
+            <Msgman id={message.id.id} />
         </div>
     );
 }
