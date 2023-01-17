@@ -122,12 +122,14 @@ function FileUploads() {
     };
 
     const clipboardHandler = useCallback((e) => {
+        console.debug("Pasted file at target:", e.target.className);
         // Only activate if the target was towards the chat box to avoid goofy interface issues
         const validInputZones = [
             "msginput",
             "pfp",
             "",
             "fileimage",
+            "sendbutton",
             "text",
             "date",
             "navbar-name",
