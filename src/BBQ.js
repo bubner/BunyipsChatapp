@@ -14,6 +14,12 @@ function BBQ() {
                 <>
                     <div className="outwin" onClick={close} />
                     <div className="inwin">
+                    <div className="buttonarea">
+                        <button onClick={() => alert("lol no")}>
+                            Enable Light Mode
+                            </button>
+                            </div>
+                            <hr />
                         <div className="buttonarea">
                             <Admin />
                         </div>
@@ -24,7 +30,7 @@ function BBQ() {
         </Popup>
     );
 }
-
+// i dont like this formatting either ask lucas why he did it like this
 export default BBQ;
 
 /* 

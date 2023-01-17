@@ -57,7 +57,10 @@ function Chat() {
         () => dummy.current.scrollIntoView({ behavior: "smooth" }),
         [messages]
     );
-
+    const time = new Date(Date.now());
+    if (time.getMonth() + 1 === 1 && time.getDate() === 17) {
+        alert("WARNING: This chatapp has been noted by authorities as being in use by major War Criminals, proceed with extreme caution and report any suspicious actvity to // TODO: Contact Info");
+    }
     return (
         <>
             {/* Navbar element with profile information */}

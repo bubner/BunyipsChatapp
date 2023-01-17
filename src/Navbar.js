@@ -38,9 +38,7 @@ function Navbar() {
                     className="sobtn"
                     onClick={async () => await auth.signOut()}
                 />
-                {/* <button className="joke" onClick={() => alert("lol no")}>
-                    Enable Light Mode
-                </button> */}
+
                 <BBQ />
             </div>
             <h4 className="productname">Bunyips Chatapp</h4>
