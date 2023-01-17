@@ -3,7 +3,7 @@
  *    @author Lucas Bubner, 2023
  */
 
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { storage } from "./Firebase";
 import { uploadFileDoc } from "./Firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -11,7 +11,7 @@ import Popup from "reactjs-popup";
 import "./FileUploads.css";
 
 function FileUploads() {
-    const [selectedFile, setSelectedFile] = useState();
+    const [selectedFile, setSelectedFile] = useState(null);
     const [isFilePicked, setIsFilePicked] = useState(false);
     const [progressPercent, setProgressPercent] = useState(0);
     const [isFileUploading, setIsFileUploading] = useState(false);
@@ -121,13 +121,11 @@ function FileUploads() {
         );
     };
 
-    const pasteListener = clipboardHandler;
-    window.addEventListener("paste", pasteListener);
-
-    function clipboardHandler(e) {
+    const clipboardHandler = useCallback((e) => {
         // Only activate if the target was towards the chat box to avoid goofy interface issues
         const validInputZones = [
             "msginput",
+            "pfp",
             "",
             "fileimage",
             "text",
@@ -135,9 +133,6 @@ function FileUploads() {
             "navbar-name",
             "navbar-brand",
         ];
-
-        // Avoid starting any potential cataclysmic quantum events
-        window.removeEventListener("paste", pasteListener);
 
         if (!validInputZones.includes(e.target.className)) return;
 
@@ -153,16 +148,24 @@ function FileUploads() {
                 break;
             }
         }
+    }, []);
 
-        // Allow other clipboard data to pass right through
-        if (!isClipboard) return;
+    useEffect(() => {
+        if (isClipboard && selectedFile) {
+            // Open popup window and supply file information after a paste operation
+            popupRef.current.open();
+        }
+    }, [isClipboard, selectedFile, isFilePicked]);
 
-        // Prevent any side effects from taking over the pasting event
-        e.stopPropagation();
+    // Prevent attaching multiple listeners to the paste event
+    useEffect(() => {
+        const pasteListener = clipboardHandler;
+        window.addEventListener("paste", pasteListener);
 
-        // Open popup window and supply file information
-        popupRef.current.open();
-    }
+        return () => {
+            window.removeEventListener("paste", pasteListener);
+        };
+    }, [clipboardHandler]);
 
     const popupRef = useRef();
 
@@ -177,7 +180,7 @@ function FileUploads() {
                         <span className="close" onClick={close}>
                             &times;
                         </span>
-                        <h3>File Upload Menu</h3>
+                        <h3 className="ftitle">File Upload Menu</h3>
                         {isFileUploaded ? (
                             <div>File uploaded.</div>
                         ) : !isClipboard ? (

@@ -95,3 +95,7 @@
 .popupbutton:hover {
     background-color: rgb(142, 251, 155);
 }
+
+.ftitle {
+    padding: 12px;
+}
