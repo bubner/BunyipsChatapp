@@ -18,6 +18,7 @@ function Msgman({ id }) {
     // Delete a message from Firestore based on the message id.
     // The message ID is stored as the same as the document ID.
     function deleteMsg() {
+        if (!window.confirm("Delete message: " + id + "?")) return;
         onSnapshot(collection(db, "messages"), (snapshot) => {
             snapshot.forEach((message) => {
                 if (message.id === id) {
