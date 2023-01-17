@@ -40,16 +40,14 @@
 }
 
 .admin {
-    color: black;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background-color: #fff;
+    color: black;
     border-radius: 10px;
     padding: 12px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: auto;
     width: fit-content;
     height: fit-content;
 }
@@ -59,6 +57,7 @@
 }
 
 .authorised {
+    width: fit-content;
     display: grid;
     grid-template-columns: max-content max-content;
     grid-template-rows: auto;
@@ -134,4 +133,15 @@
 .cleardb:hover {
     color: black;
     background-color: rgba(255, 47, 47, 0.884);
+}
+
+.close {
+    position: static;
+}
+
+@media screen and (max-width: 1341px) {
+    .close {
+        position: relative;
+        right: 44%;
+    }
 }
