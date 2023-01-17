@@ -19,8 +19,8 @@
     grid-template-rows: auto auto;
     gap: 0px 0px;
     grid-template-areas:
-        "pfp namedate"
-        "pfp text";
+        "pfp namedate msgman"
+        "pfp text text";
 }
 
 .message:has(+ div) {

@@ -7,6 +7,7 @@
 
 import { auth } from "./Firebase";
 import Linkify from "react-linkify";
+import Msgman from "./Msgman";
 import "./App.css";
 import "./Message.css";
 
@@ -107,6 +108,7 @@ function Message({ message }) {
                     )}
                 </div>
             )}
+            <Msgman id={message.id.id} />
         </div>
     );
 }
