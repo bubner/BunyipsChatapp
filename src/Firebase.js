@@ -6,10 +6,9 @@
 // https://firebase.google.com/docs/web/setup#available-libraries
 import { initializeApp, getApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { serverTimestamp, addDoc, collection } from "firebase/firestore";
-import { getFirestore } from "firebase/firestore";
+import { serverTimestamp, setDoc, collection, getFirestore, doc } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
-import Filter from "bad-words"
+import Filter from "bad-words";
 
 let app;
 let storage;
@@ -51,9 +50,7 @@ export function signInWithGoogle() {
 }
 
 // Function to add a message to Firestore
-export async function sendMsg(event, msgRef, formVal,) {
-    event.preventDefault();
-
+export async function sendMsg(formVal) {
     // Prevent adding blank messages into Firestore
     if (!formVal) return;
 
@@ -66,9 +63,11 @@ export async function sendMsg(event, msgRef, formVal,) {
     }
 
     // Add to Firestore with UID, content, and user info
-    const word = new Filter()
-    await addDoc(msgRef, {
+    const word = new Filter();
+    const msgID = doc(collection(db, "messages"));
+    await setDoc(msgID, {
         isMsg: true,
+        id: msgID,
         uid: auth.currentUser.uid,
         displayName: auth.currentUser.displayName,
         text: word.clean(formVal),
@@ -78,8 +77,10 @@ export async function sendMsg(event, msgRef, formVal,) {
 }
 
 export async function uploadFileDoc(url, type) {
-    await addDoc(collection(db, "messages"), {
+    const msgID = doc(collection(db, "messages"));
+    await setDoc(msgID, {
         isMsg: false,
+        id: msgID,
         uid: auth.currentUser.uid,
         displayName: auth.currentUser.displayName,
         text: type + ":" + url,
@@ -87,8 +88,5 @@ export async function uploadFileDoc(url, type) {
         createdAt: serverTimestamp(),
     }).catch((error) => alert(error));
 }
-
-    
-
 
 export { auth, db, storage };

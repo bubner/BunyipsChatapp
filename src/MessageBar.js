@@ -39,7 +39,8 @@ function MessageBar() {
         <div className="messagebar">
             <form
                 onSubmit={(e) => {
-                    sendMsg(e, collection(db, "messages"), formVal);
+                    e.preventDefault();
+                    sendMsg(formVal);
                     setFormVal("");
                 }}>
                 {/* Standard user input box for text */}
