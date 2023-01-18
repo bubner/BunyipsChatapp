@@ -16,7 +16,7 @@ const getFileFormat = (fileURL) => {
     return fileURL.slice(0, fileURL.indexOf(":"));
 };
 
-const getFileURL = (fileURL) => {
+export const getFileURL = (fileURL) => {
     return fileURL.substr(fileURL.indexOf(":") + 1);
 };
 
