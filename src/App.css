@@ -5,7 +5,11 @@
 
 body {
     scrollbar-width: auto;
-    scrollbar-color: #beffc6, #2c3032;
+    scrollbar-color: rgb(0, 90, 31), #2c3032;
+}
+
+hr {
+    border-top: 1px solid #fff;
 }
 
 body::-webkit-scrollbar {
@@ -17,7 +21,7 @@ body::-webkit-scrollbar-track {
 }
 
 body::-webkit-scrollbar-thumb {
-    background-color: #beffc6;
+    background-color: rgb(0, 90, 31);
     border-radius: 8px;
     border: 3px solid #2c3032;
 }

@@ -3,29 +3,29 @@
  *    Author: Lucas Bubner, 2023
  */
 
- .msgman {
+.msgman {
     transition: background-color 0.4s;
     position: relative;
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: #fff;
+    background-color: rgb(150, 150, 150);
     border: 0;
     margin: 0;
     background-size: 66%;
     background-repeat: no-repeat;
     background-position: center;
     background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pg0KPCEtLSBVcGxvYWRlZCB0bzogU1ZHIFJlcG8sIHd3dy5zdmdyZXBvLmNvbSwgR2VuZXJhdG9yOiBTVkcgUmVwbyBNaXhlciBUb29scyAtLT4NCjxzdmcgZmlsbD0iIzAwMDAwMCIgaGVpZ2h0PSI4MDBweCIgd2lkdGg9IjgwMHB4IiB2ZXJzaW9uPSIxLjEiIGlkPSJDYXBhXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIA0KCSB2aWV3Qm94PSIwIDAgMzIuMDU1IDMyLjA1NSIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+DQo8Zz4NCgk8cGF0aCBkPSJNMy45NjgsMTIuMDYxQzEuNzc1LDEyLjA2MSwwLDEzLjgzNSwwLDE2LjAyN2MwLDIuMTkyLDEuNzczLDMuOTY3LDMuOTY4LDMuOTY3YzIuMTg5LDAsMy45NjYtMS43NzIsMy45NjYtMy45NjcNCgkJQzcuOTM0LDEzLjgzNSw2LjE1NywxMi4wNjEsMy45NjgsMTIuMDYxeiBNMTYuMjMzLDEyLjA2MWMtMi4xODgsMC0zLjk2OCwxLjc3My0zLjk2OCwzLjk2NWMwLDIuMTkyLDEuNzc4LDMuOTY3LDMuOTY4LDMuOTY3DQoJCXMzLjk3LTEuNzcyLDMuOTctMy45NjdDMjAuMjAxLDEzLjgzNSwxOC40MjMsMTIuMDYxLDE2LjIzMywxMi4wNjF6IE0yOC4wOSwxMi4wNjFjLTIuMTkyLDAtMy45NjksMS43NzQtMy45NjksMy45NjcNCgkJYzAsMi4xOSwxLjc3NCwzLjk2NSwzLjk2OSwzLjk2NWMyLjE4OCwwLDMuOTY1LTEuNzcyLDMuOTY1LTMuOTY1UzMwLjI3OCwxMi4wNjEsMjguMDksMTIuMDYxeiIvPg0KPC9nPg0KPC9zdmc+");
- }
+}
 
- .msgman:hover {
-    background-color: rgb(151, 151, 151);
+.msgman:hover {
+    background-color: rgb(141, 206, 125);
     cursor: pointer;
- }
+}
 
- .manouter {
+.manouter {
     z-index: -1;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.3);
     position: fixed;
     margin: auto;
     padding: 12px;
@@ -38,8 +38,8 @@
 }
 
 .maninner {
-    color: black;
-    background-color: #fff;
+    color: white;
+    background-color: #181a1b;
     border-radius: 10px;
     padding: 12px;
     position: fixed;
