@@ -34,7 +34,7 @@ function Chat() {
             // Note that Firebase will also reject database requests in the event this safeguard is exploited.
             if (!readAccess) {
                 alert(
-                    "Access denied. You do not have sufficient permissions to view this chat. Please email lbubner21@mbhs.sa.edu.au to continue."
+                    `Access denied to ${auth.currentUser.email}. You do not have sufficient permissions to view this chat. Please email lbubner21@mbhs.sa.edu.au to continue.`
                 );
                 auth.signOut();
             }
@@ -84,7 +84,7 @@ function Chat() {
     // Clear the hidden state and reset the timestamp to the latest message every time a new message
     // is received. This is done to know if the user has looked at the latest message or not.
     useEffect(() => {
-        if (!hidden && messages) {
+        if (!hidden && messages && messages.length > 0) {
             setLastSeenTimestamp(messages[messages.length - 1].createdAt);
             setNewMessage(false);
         }

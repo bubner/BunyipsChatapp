@@ -10,6 +10,7 @@ import {
     deleteDoc,
     doc,
     getDoc,
+    updateDoc,
 } from "firebase/firestore";
 import { db, auth, storage } from "./Firebase";
 import { ref, deleteObject } from "firebase/storage";
@@ -17,8 +18,21 @@ import { getFileURL } from "./Message";
 import Popup from "reactjs-popup";
 
 function Msgman({ id }) {
+    // Don't display retraction option if already retracted
+    const [isRetracted, setIsRetracted] = useState(false);
+    useEffect(() => {
+        async function checkRetraction() {
+            const document = await getDoc(doc(db, "messages", id));
+            if (document.data().isRetracted) {
+                setIsRetracted(true);
+            }
+        }
+        checkRetraction();
+    }, [id]);
+
     // Delete a message from Firestore based on the message id.
-    // The message ID is stored as the same as the document ID.
+    // This message deletion is irreversible, and is designed for actual deletion.
+    // Only administrator users can delete messages, as opposed to retracting them.
     async function deleteMsg() {
         if (!window.confirm("Delete message: " + id + "?")) return;
         const document = await getDoc(doc(db, "messages", id));
@@ -28,6 +42,16 @@ function Msgman({ id }) {
             await deleteObject(fileRef).catch((err) => alert(err));
         }
         deleteDoc(doc(db, "messages", id)).catch((err) => alert(err));
+    }
+
+    // Marks a message as deleted, and updates the message to show <deleted> as the text.
+    // The original content is still available to an administator and in the messages collection.
+    async function retractMsg() {
+        if (!window.confirm("Retract message: " + id + "?")) return;
+        await updateDoc(doc(db, "messages", id), {
+            isRetracted: true,
+        });
+        setIsRetracted(true);
     }
 
     // Using same admin authorisation from Admin.js
@@ -68,7 +92,7 @@ function Msgman({ id }) {
         const message = await getDoc(doc(db, "messages", id));
         const msgData = message.data();
         alert(
-            `Message author: ${msgData.displayName}\nAuthor UID: ${msgData.uid}\nMessage ID: ${msgData.id.id}\nMessage creation time: ${msgData.createdAt.seconds}\nIs a text message? ${msgData.isMsg}\nMessage content: "${msgData.text}"`
+            `Message author: ${msgData.displayName}\nAuthor UID: ${msgData.uid}\nMessage ID: ${msgData.id.id}\nMessage creation time: ${msgData.createdAt.seconds}\nIs a text message? ${msgData.isMsg}\nMessage retracted? ${msgData.isRetracted}\n\nMessage content:\n${msgData.text}`
         );
     }
 
@@ -82,18 +106,27 @@ function Msgman({ id }) {
                             <i>Managing message: {id}</i>
                         </p>
                         <hr />
-                        <button onClick={() => viewData()}>
-                            View message metadata
-                        </button>
-                        <hr />
-                        {(isAdminAuthorised || isAuthorised) && (
+                        {isAdminAuthorised && (
                             <>
+                                <button onClick={() => viewData()}>
+                                    View message metadata
+                                </button>
+                                <hr />
                                 <button onClick={() => deleteMsg()}>
-                                    Delete
+                                    Delete message
                                 </button>
                                 <hr />
                             </>
                         )}
+                        {(isAdminAuthorised || isAuthorised) &&
+                            !isRetracted && (
+                                <>
+                                    <button onClick={() => retractMsg()}>
+                                        Retract message
+                                    </button>
+                                    <hr />
+                                </>
+                            )}
                     </div>
                 </>
             )}

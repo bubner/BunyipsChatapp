@@ -38,14 +38,7 @@ const db = getFirestore(app);
 // Provide Google sign in functionality and automatically registers a user into the auth instance
 export function signInWithGoogle() {
     signInWithPopup(auth, new GoogleAuthProvider()).catch((error) => {
-        console.error(
-            "Google Auth Error: " +
-                error.code +
-                " : " +
-                error.message +
-                " on email: " +
-                error.customData.email
-        );
+        alert("Google Auth Error: " + error.code + " : " + error.message + " on email: " + error.customData.email);
     });
 }
 
@@ -56,9 +49,7 @@ export async function sendMsg(formVal) {
 
     // Stop requests that have too many characters (>4000)
     if (formVal.length > 4000) {
-        alert(
-            "Message exceeds the maximum length of 4000 characters. Please shorten your message."
-        );
+        alert("Message exceeds the maximum length of 4000 characters. Please shorten your message.");
         return;
     }
 
@@ -67,6 +58,7 @@ export async function sendMsg(formVal) {
     const msgID = doc(collection(db, "messages"));
     await setDoc(msgID, {
         isMsg: true,
+        isRetracted: false,
         id: msgID,
         uid: auth.currentUser.uid,
         displayName: auth.currentUser.displayName,
@@ -80,6 +72,7 @@ export async function uploadFileDoc(url, type) {
     const msgID = doc(collection(db, "messages"));
     await setDoc(msgID, {
         isMsg: false,
+        isRetracted: false,
         id: msgID,
         uid: auth.currentUser.uid,
         displayName: auth.currentUser.displayName,
