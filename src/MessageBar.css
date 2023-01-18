@@ -24,7 +24,7 @@
 }
 
 .nomsg {
-    color: black;
+    color: white;
     border-radius: 10px;
     width: calc(100vw - 28px);
     padding: 8px;
