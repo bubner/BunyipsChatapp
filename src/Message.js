@@ -5,6 +5,7 @@
  *    @author Lachlan Paul, 2023
  */
 
+import { useState } from "react";
 import { auth } from "./Firebase";
 import Linkify from "react-linkify";
 import Msgman from "./Msgman";
@@ -20,6 +21,10 @@ export const getFileURL = (fileURL) => {
 };
 
 function Message({ message }) {
+    const [isHovering, setIsHovering] = useState(false);
+    const handleMouseOver = () => setIsHovering(true);
+    const handleMouseOut = () => setIsHovering(false);
+
     let timestamp;
     try {
         // Attempt to retrieve a timestamp from the server
@@ -32,9 +37,9 @@ function Message({ message }) {
     return (
         // Determine whether the message was sent or recieved by checking the author and current user
         <div
-            className={`message ${
-                auth.currentUser.uid === message.uid ? "sent" : "received"
-            }`}>
+            className={`message ${auth.currentUser.uid === message.uid ? "sent" : "received"}`}
+            onMouseOver={handleMouseOver}
+            onMouseOut={handleMouseOut}>
             {/* Generate profile picture based on the photoURL attached with the message */}
             <img
                 className="pfp"
@@ -108,7 +113,7 @@ function Message({ message }) {
                     )}
                 </div>
             )}
-            <Msgman id={message.id.id} />
+            {isHovering && <Msgman id={message.id.id} />}
         </div>
     );
 }
