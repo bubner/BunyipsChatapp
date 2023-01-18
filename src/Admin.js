@@ -5,13 +5,7 @@
 import { useState, useEffect } from "react";
 import { auth, db, storage } from "./Firebase";
 import { ref, deleteObject, listAll } from "firebase/storage";
-import {
-    collection,
-    onSnapshot,
-    deleteDoc,
-    doc,
-    setDoc,
-} from "firebase/firestore";
+import { collection, onSnapshot, deleteDoc, doc, setDoc } from "firebase/firestore";
 import Popup from "reactjs-popup";
 import "./Admin.css";
 
@@ -43,14 +37,11 @@ function Admin() {
     // Delete the read permissions from an email address
     async function removeRead(email) {
         if (email === auth.currentUser.email) {
-            alert(
-                "You cannot remove your own read permission as an administrator."
-            );
+            alert("You cannot remove your own read permission as an administrator.");
             return;
         }
 
-        if (!window.confirm("Remove read permission from " + email + "?"))
-            return;
+        if (!window.confirm("Remove read permission from " + email + "?")) return;
 
         await deleteDoc(doc(db, "read", email))
             .catch((error) => alert(error))
@@ -59,8 +50,7 @@ function Admin() {
 
     // Delete the write permissions from an email address
     async function removeWrite(email) {
-        if (!window.confirm("Remove write permission from " + email + "?"))
-            return;
+        if (!window.confirm("Remove write permission from " + email + "?")) return;
         await deleteDoc(doc(db, "write", email))
             .catch((error) => alert(error))
             .then(() => alert("Operation completed."));
@@ -69,9 +59,7 @@ function Admin() {
     // Add read permissions to an email address by making a new doc with the email's name
     // No data is placed inside this doc, but is used for security purposes
     async function addRead() {
-        const email = prompt(
-            "Enter an email address to grant application access to."
-        );
+        const email = prompt("Enter an email address to grant application access to.");
         await setDoc(doc(db, "read", email), {})
             .catch((error) => alert(error))
             .then(() => alert("Operation completed."));
@@ -79,9 +67,7 @@ function Admin() {
 
     // Add write permissions to an email address by making a new doc with the email's name
     async function addWrite() {
-        const email = prompt(
-            "Enter an email address to grant message send access to."
-        );
+        const email = prompt("Enter an email address to grant message send access to.");
         await setDoc(doc(db, "write", email), {})
             .catch((error) => alert(error))
             .then(() => alert("Operation completed."));
@@ -98,9 +84,8 @@ function Admin() {
 
         const nums = Math.floor(Math.random() * (9999 - 1000 + 1) + 1000);
         if (
-            window.prompt(
-                `Please enter these four numbers in order to complete the database transaction: ${nums}`
-            ) !== nums.toString()
+            window.prompt(`Please enter these four numbers in order to complete the database transaction: ${nums}`) !==
+            nums.toString()
         ) {
             alert("Operation cancelled.");
             return;
@@ -109,9 +94,7 @@ function Admin() {
         // Delete all Firestore messages
         onSnapshot(collection(db, "messages"), (snapshot) => {
             snapshot.forEach((message) => {
-                deleteDoc(doc(db, "messages", message.id)).catch((err) =>
-                    console.error(err)
-                );
+                deleteDoc(doc(db, "messages", message.id)).catch((err) => console.error(err));
             });
         });
 
@@ -133,27 +116,21 @@ function Admin() {
     // There was a memory leak here that leaked hundreds of megabytes per second with these two listeners.
     // Thanks ChatGPT for fixing it...
     useEffect(() => {
-        const readListener = onSnapshot(
-            collection(db, "read"),
-            (querySnapshot) => {
-                const readArray = [];
-                querySnapshot.forEach((doc) => {
-                    readArray.push(doc.id);
-                });
-                setReadDocs(readArray);
-            }
-        );
+        const readListener = onSnapshot(collection(db, "read"), (querySnapshot) => {
+            const readArray = [];
+            querySnapshot.forEach((doc) => {
+                readArray.push(doc.id);
+            });
+            setReadDocs(readArray);
+        });
 
-        const writeListener = onSnapshot(
-            collection(db, "write"),
-            (querySnapshot) => {
-                const writeArray = [];
-                querySnapshot.forEach((doc) => {
-                    writeArray.push(doc.id);
-                });
-                setWriteDocs(writeArray);
-            }
-        );
+        const writeListener = onSnapshot(collection(db, "write"), (querySnapshot) => {
+            const writeArray = [];
+            querySnapshot.forEach((doc) => {
+                writeArray.push(doc.id);
+            });
+            setWriteDocs(writeArray);
+        });
 
         return () => {
             readListener();
@@ -163,12 +140,7 @@ function Admin() {
 
     return (
         <Popup
-            trigger={
-                <button className="bbqitem">
-                    1500 Megabyte App-Managing Heavy Duty Super-Admin Super
-                    Panel
-                </button>
-            }
+            trigger={<button className="bbqitem">1500 Megabyte App-Managing Heavy Duty Super-Admin SuperPanel</button>}
             nested>
             {(close) => (
                 <>
@@ -181,13 +153,9 @@ function Admin() {
                                 </span>
                                 <div className="authorised">
                                     <div className="title">
-                                        <h4>
-                                            Application Permissions Control
-                                            Panel
-                                        </h4>
+                                        <h4>Application Permissions Control Panel</h4>
                                         <p className="portalreference">
-                                            "Prolonged exposure to this module
-                                            is not part of the test."
+                                            "Prolonged exposure to this module is not part of the test."
                                         </p>
                                         <br />
                                     </div>
@@ -197,20 +165,14 @@ function Admin() {
                                             {readDocs.map((doc) => {
                                                 return (
                                                     <li>
-                                                        <button
-                                                            onClick={() =>
-                                                                removeRead(doc)
-                                                            }
-                                                            key={doc.id}>
+                                                        <button onClick={() => removeRead(doc)} key={doc.id}>
                                                             {doc}
                                                         </button>
                                                     </li>
                                                 );
                                             })}
                                         </ul>
-                                        <button
-                                            onClick={() => addRead()}
-                                            className="new">
+                                        <button onClick={() => addRead()} className="new">
                                             Add a new user
                                         </button>
                                     </div>
@@ -220,38 +182,30 @@ function Admin() {
                                             {writeDocs.map((doc) => {
                                                 return (
                                                     <li>
-                                                        <button
-                                                            onClick={() =>
-                                                                removeWrite(doc)
-                                                            }
-                                                            key={doc.id}>
+                                                        <button onClick={() => removeWrite(doc)} key={doc.id}>
                                                             {doc}
                                                         </button>
                                                     </li>
                                                 );
                                             })}
                                         </ul>
-                                        <button
-                                            onClick={() => addWrite()}
-                                            className="new">
+                                        <button onClick={() => addWrite()} className="new">
                                             Add a new writer
                                         </button>
                                     </div>
-                                    <span
-                                        className="cleardb"
-                                        onClick={() => clearDatabase()}>
+                                    <span className="cleardb" onClick={() => clearDatabase()}>
                                         CLEAR DATABASES
                                     </span>
                                 </div>
                             </>
                         ) : (
                             <>
-                                <span className="close override" onClick={close}>&times;</span>
+                                <span className="close override" onClick={close}>
+                                    &times;
+                                </span>
                                 <p>
-                                    Insufficient permissions to access the admin
-                                    module. <br /> Please contact
-                                    lbubner21@mbhs.sa.edu.au for further
-                                    assistance.
+                                    Insufficient permissions to access the admin module. <br /> Please contact
+                                    lbubner21@mbhs.sa.edu.au for further assistance.
                                 </p>
                             </>
                         )}

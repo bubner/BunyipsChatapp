@@ -38,9 +38,7 @@ function Message({ message }) {
     return (
         // Determine whether the message was sent or recieved by checking the author and current user
         <div
-            className={`message ${
-                auth.currentUser.uid === message.uid ? "sent" : "received"
-            }`}
+            className={`message ${auth.currentUser.uid === message.uid ? "sent" : "received"}`}
             onMouseOver={handleMouseOver}
             onMouseOut={handleMouseOut}>
             {/* Generate profile picture based on the photoURL attached with the message */}
@@ -96,14 +94,10 @@ function Message({ message }) {
                             />
                         ) : (
                             // Fallback view file attachment to each file upload incase of an unknown file type
-                            <a
-                                target="_blank"
-                                rel="noreferrer"
-                                href={getFileURL(message.text)}>
+                            <a target="_blank" rel="noreferrer" href={getFileURL(message.text)}>
                                 <b>
-                                    View{" "}
-                                    {getFileFormat(message.text) || "unknown"}{" "}
-                                    file uploaded by {message.displayName}
+                                    View {getFileFormat(message.text) || "unknown"} file uploaded by{" "}
+                                    {message.displayName}
                                 </b>
                             </a>
                         )}

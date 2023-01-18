@@ -8,13 +8,7 @@
 import { db, auth } from "./Firebase";
 import { useEffect, useRef, useState } from "react";
 import { useCollectionData } from "react-firebase-hooks/firestore";
-import {
-    collection,
-    query,
-    orderBy,
-    limitToLast,
-    onSnapshot,
-} from "firebase/firestore";
+import { collection, query, orderBy, limitToLast, onSnapshot } from "firebase/firestore";
 import Message from "./Message";
 import Navbar from "./Navbar";
 import MessageBar from "./MessageBar";
@@ -47,11 +41,7 @@ function Chat() {
 
     // Query Firestore for the last 300 messages
     const msgRef = collection(db, "messages");
-    const messageQuery = query(
-        msgRef,
-        orderBy("createdAt", "asc"),
-        limitToLast(300)
-    );
+    const messageQuery = query(msgRef, orderBy("createdAt", "asc"), limitToLast(300));
     const [messages] = useCollectionData(messageQuery, { idField: "id" });
 
     // Set custom properties on a dummy object allow messages to appear fluidly
@@ -66,7 +56,7 @@ function Chat() {
     const [newMessage, setNewMessage] = useState(false);
     const [hidden, setHidden] = useState(false);
     const [lastSeenTimestamp, setLastSeenTimestamp] = useState(Date.now());
-    
+
     // Set the state of the hidden variable depending on whether the user is on the chatapp or not.
     // We don't want to notify that there's a new message if they're already on the chatapp.
     useEffect(() => {
@@ -79,7 +69,6 @@ function Chat() {
             });
         };
     }, []);
-
 
     // Clear the hidden state and reset the timestamp to the latest message every time a new message
     // is received. This is done to know if the user has looked at the latest message or not.
@@ -95,16 +84,13 @@ function Chat() {
     // b) The viewport is not currently visible and the user is in another tab
     // c) The message that was added to Firestore has a timestamp that is greater than the last seen timestamp for the user
     useEffect(() => {
-        const unsubscribe = onSnapshot(
-            collection(db, "messages"),
-            (snapshot) => {
-                snapshot.docChanges().forEach((change) => {
-                    if (change.type === "added" && hidden && change.doc.data().createdAt > lastSeenTimestamp) {
-                        setNewMessage(true);
-                    }
-                });
-            }
-        );
+        const unsubscribe = onSnapshot(collection(db, "messages"), (snapshot) => {
+            snapshot.docChanges().forEach((change) => {
+                if (change.type === "added" && hidden && change.doc.data().createdAt > lastSeenTimestamp) {
+                    setNewMessage(true);
+                }
+            });
+        });
 
         return () => {
             unsubscribe();
@@ -117,12 +103,10 @@ function Chat() {
     useEffect(() => {
         if (newMessage && hidden) {
             document.title = "NEW MESSAGE!";
-            document.querySelector("link[rel='icon']").href =
-                "alert.ico";
+            document.querySelector("link[rel='icon']").href = "alert.ico";
         } else {
             document.title = "Bunyips Chatapp";
-            document.querySelector("link[rel='icon']").href =
-                "favicon.ico";
+            document.querySelector("link[rel='icon']").href = "favicon.ico";
         }
     }, [newMessage, hidden]);
 
@@ -134,10 +118,7 @@ function Chat() {
                 {/* Allow space for Navbar to fit */}
                 <br /> <br /> <br /> <br /> <br />
                 {/* Display all messages currently in Firestore */}
-                {messages &&
-                    messages.map((msg) => (
-                        <Message message={msg} key={msg.id.id} />
-                    ))}
+                {messages && messages.map((msg) => <Message message={msg} key={msg.id.id} />)}
                 {/* Dummy element for fluid interface */}
                 <div id="dummy" ref={dummy}></div>
                 <br /> <br /> <br />

@@ -42,13 +42,18 @@ export function signInWithGoogle() {
     });
 }
 
+// Function to check if a message is over the character limit
+export function isMessageOverLimit(message) {
+    return message.length > 4000;
+}
+
 // Function to add a message to Firestore
 export async function sendMsg(formVal) {
     // Prevent adding blank messages into Firestore
     if (!formVal) return;
 
     // Stop requests that have too many characters (>4000)
-    if (formVal.length > 4000) {
+    if (isMessageOverLimit(formVal)) {
         alert("Message exceeds the maximum length of 4000 characters. Please shorten your message.");
         return;
     }
