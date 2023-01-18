@@ -37,9 +37,7 @@ function Message({ message }) {
     return (
         // Determine whether the message was sent or recieved by checking the author and current user
         <div
-            className={`message ${
-                auth.currentUser.uid === message.uid ? "sent" : "received"
-            }`}
+            className={`message ${auth.currentUser.uid === message.uid ? "sent" : "received"}`}
             onMouseOver={handleMouseOver}
             onMouseOut={handleMouseOut}>
             {/* Generate profile picture based on the photoURL attached with the message */}
@@ -55,20 +53,14 @@ function Message({ message }) {
                 </p>
 
                 {/* Display the proper formatted date and time metadata with each message */}
-                <p className="date">
-                    {timestamp.toLocaleString("en-AU", { hour12: true })}
-                </p>
+                <p className="date">{timestamp.toLocaleString("en-AU", { hour12: true })}</p>
             </div>
             {/* If the message is declared as retracted, do not display the message content whatsoever. */}
             {!message.isRetracted ? (
                 message.isMsg ? (
                     // If it is a normal message, pass it through Linkify which will auto hyperlink any links
                     <Linkify
-                        componentDecorator={(
-                            decoratedHref,
-                            decoratedText,
-                            key
-                        ) => (
+                        componentDecorator={(decoratedHref, decoratedText, key) => (
                             <a target="blank" href={decoratedHref} key={key}>
                                 {decoratedText}
                             </a>
@@ -108,14 +100,10 @@ function Message({ message }) {
                             />
                         ) : (
                             // Fallback view file attachment to each file upload incase of an unknown file type
-                            <a
-                                target="_blank"
-                                rel="noreferrer"
-                                href={getFileURL(message.text)}>
+                            <a target="_blank" rel="noreferrer" href={getFileURL(message.text)}>
                                 <b>
-                                    View{" "}
-                                    {getFileFormat(message.text) || "unknown"}{" "}
-                                    file uploaded by {message.displayName}
+                                    View {getFileFormat(message.text) || "unknown"} file uploaded by{" "}
+                                    {message.displayName}
                                 </b>
                             </a>
                         )}

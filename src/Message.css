@@ -37,7 +37,8 @@
     grid-area: namedate;
 }
 
-.date, .name {
+.date,
+.name {
     white-space: nowrap;
     overflow: hidden;
 }

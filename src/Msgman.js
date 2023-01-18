@@ -4,14 +4,7 @@
  */
 import "./Msgman.css";
 import { useState, useEffect } from "react";
-import {
-    onSnapshot,
-    collection,
-    deleteDoc,
-    doc,
-    getDoc,
-    updateDoc,
-} from "firebase/firestore";
+import { onSnapshot, collection, deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db, auth, storage } from "./Firebase";
 import { ref, deleteObject } from "firebase/storage";
 import { getFileURL } from "./Message";
@@ -108,25 +101,18 @@ function Msgman({ id }) {
                         <hr />
                         {isAdminAuthorised && (
                             <>
-                                <button onClick={() => viewData()}>
-                                    View message metadata
-                                </button>
+                                <button onClick={() => viewData()}>View message metadata</button>
                                 <hr />
-                                <button onClick={() => deleteMsg()}>
-                                    Delete message
-                                </button>
+                                <button onClick={() => deleteMsg()}>Delete message</button>
                                 <hr />
                             </>
                         )}
-                        {(isAdminAuthorised || isAuthorised) &&
-                            !isRetracted && (
-                                <>
-                                    <button onClick={() => retractMsg()}>
-                                        Retract message
-                                    </button>
-                                    <hr />
-                                </>
-                            )}
+                        {(isAdminAuthorised || isAuthorised) && !isRetracted && (
+                            <>
+                                <button onClick={() => retractMsg()}>Retract message</button>
+                                <hr />
+                            </>
+                        )}
                     </div>
                 </>
             )}

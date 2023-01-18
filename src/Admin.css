@@ -91,9 +91,6 @@
     font-weight: bold;
 }
 
-.authorised button:hover:not(.new) {
-}
-
 .read {
     grid-area: read;
     font-size: 18px;

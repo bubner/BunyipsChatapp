@@ -9,7 +9,7 @@ import { useState, useEffect } from "react";
 import { collection, onSnapshot } from "firebase/firestore";
 import FileUploads from "./FileUploads";
 import Scroll from "./Scroll";
-import { sendMsg, db, auth } from "./Firebase";
+import { sendMsg, db, auth, isMessageOverLimit } from "./Firebase";
 
 function MessageBar() {
     const [formVal, setFormVal] = useState("");
@@ -48,25 +48,24 @@ function MessageBar() {
                     {writePerms ? (
                         <>
                             <FileUploads />
-                            <input
-                                type="text"
-                                onChange={(e) => setFormVal(e.target.value)}
+                            <textarea
+                                onChange={(e) => {
+                                    setFormVal(e.target.value);
+                                    if (isMessageOverLimit(formVal))
+                                        if (window.confirm("Caution! You have exceeded the 4000 character limit and will not be able to send your message! Trim message?"))
+                                            setFormVal(formVal.substring(0, 4000));
+                                }}
                                 value={formVal}
                                 className="msginput"
                             />
                             {/* Submit button for messages, also prevents sending if there is no form value */}
-                            <button
-                                type="submit"
-                                disabled={formVal ? false : true}
-                                className="sendbutton"
-                            />
+                            <button type="submit" disabled={formVal || isMessageOverLimit(formVal) ? false : true} className="sendbutton" />
                         </>
                     ) : (
                         <div className="msginput nomsg">
                             <p>
-                                You do not have permission to send any messages.
-                                Please contact lbubner21@mbhs.sa.edu.au to
-                                continue.
+                                You do not have permission to send any messages. Please contact lbubner21@mbhs.sa.edu.au
+                                to continue.
                             </p>
                         </div>
                     )}

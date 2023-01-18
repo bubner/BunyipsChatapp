@@ -14,9 +14,7 @@ function Navbar() {
 
     useEffect(() => {
         const timer = setInterval(() => {
-            setCurrentTime(
-                new Date().toLocaleTimeString("en-AU", { hour12: true })
-            );
+            setCurrentTime(new Date().toLocaleTimeString("en-AU", { hour12: true }));
         }, 1000);
 
         return () => {
@@ -34,15 +32,15 @@ function Navbar() {
                     alt={`Profile of ${auth.currentUser.displayName}`}
                 />
                 <p className="navbar-name">{auth.currentUser.displayName}</p>
-                <svg
-                    className="sobtn"
-                    onClick={async () => await auth.signOut()}
-                />
-
+                <svg className="sobtn" onClick={async () => await auth.signOut()} />
                 <BBQ />
             </div>
             <h4 className="productname">Bunyips Chatapp</h4>
-            <p className="currenttime"><i style={{fontSize: '12px'}}>Lucas Bubner, Lachlan Paul, 2023</i><br />{currentTime}</p>
+            <p className="currenttime">
+                <i style={{ fontSize: "12px" }}>Lucas Bubner, Lachlan Paul, 2023</i>
+                <br />
+                {currentTime}
+            </p>
         </>
     );
 }
