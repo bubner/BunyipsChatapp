@@ -60,7 +60,7 @@ function Message({ message }) {
             {!message.isRetracted ? (
                 message.isMsg ? (
                     // If it is a normal message, pass it through ReactMarkdown which will auto hyperlink any links, and add markdown
-                    <ReactMarkdown className="text" remarkPlugins={[gfm]}></ReactMarkdown>
+                    <ReactMarkdown className="text" remarkPlugins={[gfm]}>{message.text}</ReactMarkdown>
                 ) : (
                     // Otherwise, it must be a file and we can display the downloadURL depending on it's type
                     // The type for the URL is prepended to the downloadURL with a colon
