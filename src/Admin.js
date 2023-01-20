@@ -140,7 +140,7 @@ function Admin() {
 
     return (
         <Popup
-            trigger={<button className="bbqitem">1500 Megabyte App-Managing Heavy Duty Super-Admin SuperPanel</button>}
+            trigger={<button className="bbqitem">1500 Megabyte App-Managing Heavy Duty Super-Admin Super Panel</button>}
             nested>
             {(close) => (
                 <>
