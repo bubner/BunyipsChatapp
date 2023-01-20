@@ -9,7 +9,7 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: rgb(150, 150, 150);
+    background-color: rgba(150, 150, 150, 0.2);
     border: 0;
     margin: 0;
     background-size: 66%;
@@ -19,7 +19,7 @@
 }
 
 .msgman:hover {
-    background-color: rgb(141, 206, 125);
+    background-color: rgb(108, 173, 92);
     cursor: pointer;
 }
 
