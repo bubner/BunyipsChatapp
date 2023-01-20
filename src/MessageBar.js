@@ -48,7 +48,8 @@ function MessageBar() {
                     {writePerms ? (
                         <>
                             <FileUploads />
-                            <textarea
+                            <input
+                                type="text"
                                 onChange={(e) => {
                                     setFormVal(e.target.value);
                                     if (isMessageOverLimit(formVal))
