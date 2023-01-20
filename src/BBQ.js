@@ -15,9 +15,7 @@ function BBQ() {
                     <div className="outwin" onClick={close} />
                     <div className="inwin">
                         <div className="buttonarea">
-                            <button onClick={() => alert("lol no")}>
-                                Enable Light Mode
-                            </button>
+                            <button onClick={() => alert("lol no")}>Enable Light Mode</button>
                         </div>
                         <hr />
                         <div className="buttonarea">

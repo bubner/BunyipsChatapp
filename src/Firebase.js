@@ -38,15 +38,13 @@ const db = getFirestore(app);
 // Provide Google sign in functionality and automatically registers a user into the auth instance
 export function signInWithGoogle() {
     signInWithPopup(auth, new GoogleAuthProvider()).catch((error) => {
-        console.error(
-            "Google Auth Error: " +
-                error.code +
-                " : " +
-                error.message +
-                " on email: " +
-                error.customData.email
-        );
+        alert("Google Auth Error: " + error.code + " : " + error.message + " on email: " + error.customData.email);
     });
+}
+
+// Function to check if a message is over the character limit
+export function isMessageOverLimit(message) {
+    return message.length > 4000;
 }
 
 // Function to add a message to Firestore
@@ -55,10 +53,8 @@ export async function sendMsg(formVal) {
     if (!formVal) return;
 
     // Stop requests that have too many characters (>4000)
-    if (formVal.length > 4000) {
-        alert(
-            "Message exceeds the maximum length of 4000 characters. Please shorten your message."
-        );
+    if (isMessageOverLimit(formVal)) {
+        alert("Message exceeds the maximum length of 4000 characters. Please shorten your message.");
         return;
     }
 
@@ -67,8 +63,10 @@ export async function sendMsg(formVal) {
     const msgID = doc(collection(db, "messages"));
     await setDoc(msgID, {
         isMsg: true,
+        isRetracted: false,
         id: msgID,
         uid: auth.currentUser.uid,
+        email: auth.currentUser.email,
         displayName: auth.currentUser.displayName,
         text: word.clean(formVal),
         photoURL: auth.currentUser.photoURL,
@@ -80,8 +78,10 @@ export async function uploadFileDoc(url, type) {
     const msgID = doc(collection(db, "messages"));
     await setDoc(msgID, {
         isMsg: false,
+        isRetracted: false,
         id: msgID,
         uid: auth.currentUser.uid,
+        email: auth.currentUser.email,
         displayName: auth.currentUser.displayName,
         text: type + ":" + url,
         photoURL: auth.currentUser.photoURL,
