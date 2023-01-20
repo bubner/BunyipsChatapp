@@ -13,6 +13,8 @@ import { sendMsg, db, auth, isMessageOverLimit } from "./Firebase";
 
 function MessageBar() {
     const [formVal, setFormVal] = useState("");
+    const [timestamp, setLastTimestamp] = useState(null);
+    const [messagesSent, setMessagesSent] = useState(0);
     const [writePerms, setWritePerms] = useState(false);
 
     useEffect(() => {
@@ -35,14 +37,29 @@ function MessageBar() {
         };
     }, []);
 
+    function manageMsgSend(e) {
+        e.preventDefault();
+        setMessagesSent(messagesSent + 1);
+        setLastTimestamp(Date.now());
+
+        if (Date.now() - timestamp < 3000 && messagesSent > 3) {
+            alert("You're sending messages too fast! Please slow down.");
+            return;
+        }
+
+        sendMsg(formVal);
+        setFormVal("");
+    }
+
+    useEffect(() => {
+        setTimeout(() => {
+            setMessagesSent(0);
+        }, 2000);
+    }, []);
+
     return (
         <div className="messagebar">
-            <form
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    sendMsg(formVal);
-                    setFormVal("");
-                }}>
+            <form onSubmit={(e) => manageMsgSend(e)}>
                 {/* Standard user input box for text */}
                 <div className="input-group">
                     {writePerms ? (
@@ -53,14 +70,22 @@ function MessageBar() {
                                 onChange={(e) => {
                                     setFormVal(e.target.value);
                                     if (isMessageOverLimit(formVal))
-                                        if (window.confirm("Caution! You have exceeded the 4000 character limit and will not be able to send your message! Trim message?"))
+                                        if (
+                                            window.confirm(
+                                                "Caution! You have exceeded the 4000 character limit and will not be able to send your message! Trim message?"
+                                            )
+                                        )
                                             setFormVal(formVal.substring(0, 4000));
                                 }}
                                 value={formVal}
                                 className="msginput"
                             />
                             {/* Submit button for messages, also prevents sending if there is no form value */}
-                            <button type="submit" disabled={formVal || isMessageOverLimit(formVal) ? false : true} className="sendbutton" />
+                            <button
+                                type="submit"
+                                disabled={formVal || isMessageOverLimit(formVal) ? false : true}
+                                className="sendbutton"
+                            />
                         </>
                     ) : (
                         <div className="msginput nomsg">
