@@ -57,7 +57,7 @@ function Chat() {
     // Set custom properties on a dummy object allow messages to appear fluidly
     const dummy = useRef();
     useEffect(
-        () => dummy.current.scrollIntoView({ behavior: "smooth" }),
+        () => dummy.current.scrollIntoView({ behavior: "auto" }),
         [messages]
     );
 
