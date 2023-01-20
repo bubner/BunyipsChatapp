@@ -46,7 +46,10 @@ function Chat() {
 
     // Set custom properties on a dummy object allow messages to appear fluidly
     const dummy = useRef();
-    useEffect(() => dummy.current.scrollIntoView({ behavior: "smooth" }), [messages]);
+    useEffect(
+        () => dummy.current.scrollIntoView({ behavior: "auto" }),
+        [messages]
+    );
 
     // Handle new messages and provide notifications for them. Who knew this would take so many React hooks?
     // Using a timestamp store variable to determine whether the messages that appear are new

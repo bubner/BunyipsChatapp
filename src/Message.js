@@ -7,10 +7,11 @@
 
 import { useState } from "react";
 import { auth } from "./Firebase";
-import Linkify from "react-linkify";
 import Msgman from "./Msgman";
 import "./App.css";
 import "./Message.css";
+import ReactMarkdown from "react-markdown";
+import gfm from "remark-gfm";
 
 const getFileFormat = (fileURL) => {
     return fileURL.slice(0, fileURL.indexOf(":"));
@@ -55,18 +56,14 @@ function Message({ message }) {
                 {/* Display the proper formatted date and time metadata with each message */}
                 <p className="date">{timestamp.toLocaleString("en-AU", { hour12: true })}</p>
             </div>
+
             {/* If the message is declared as retracted, do not display the message content whatsoever. */}
             {!message.isRetracted ? (
                 message.isMsg ? (
-                    // If it is a normal message, pass it through Linkify which will auto hyperlink any links
-                    <Linkify
-                        componentDecorator={(decoratedHref, decoratedText, key) => (
-                            <a target="blank" href={decoratedHref} key={key}>
-                                {decoratedText}
-                            </a>
-                        )}>
-                        <p className="text">{message.text}</p>
-                    </Linkify>
+                    // If it is a normal message, pass it through ReactMarkdown which will auto hyperlink any links, and add markdown
+                    <ReactMarkdown className="text" remarkPlugins={[gfm]}>
+                        {message.text}
+                    </ReactMarkdown>
                 ) : (
                     // Otherwise, it must be a file and we can display the downloadURL depending on it's type
                     // The type for the URL is prepended to the downloadURL with a colon
