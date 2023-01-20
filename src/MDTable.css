@@ -1,9 +1,9 @@
 /*
- *    
+ *    Styles for table and popup elements that show on MDTable cells
  *    Author: Lachlan Paul, 2023
  */
 
- .mdouter {
+.mdouter {
     z-index: -1;
     background-color: rgba(0, 0, 0, 0.5);
     position: fixed;
@@ -28,4 +28,8 @@
     padding: 12px;
     width: fit-content;
     height: fit-content;
+}
+
+.mdinner td {
+    padding: 3px;
 }

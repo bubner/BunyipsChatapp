@@ -8,8 +8,8 @@
 import { auth } from "./Firebase";
 import "./App.css";
 import "./Message.css";
-import ReactMarkdown from 'react-markdown'
-import gfm from 'remark-gfm'
+import ReactMarkdown from "react-markdown";
+import gfm from "remark-gfm";
 
 const getFileFormat = (fileURL) => {
     return fileURL.slice(0, fileURL.indexOf(":"));
@@ -31,10 +31,7 @@ function Message({ message }) {
 
     return (
         // Determine whether the message was sent or recieved by checking the author and current user
-        <div
-            className={`message ${
-                auth.currentUser.uid === message.uid ? "sent" : "received"
-            }`}>
+        <div className={`message ${auth.currentUser.uid === message.uid ? "sent" : "received"}`}>
             {/* Generate profile picture based on the photoURL attached with the message */}
             <img
                 className="pfp"
@@ -48,14 +45,14 @@ function Message({ message }) {
                 </p>
 
                 {/* Display the proper formatted date and time metadata with each message */}
-                <p className="date">
-                    {timestamp.toLocaleString("en-AU", { hour12: true })}
-                </p>
+                <p className="date">{timestamp.toLocaleString("en-AU", { hour12: true })}</p>
             </div>
 
             {message.isMsg ? (
                 // If it is a normal message, pass it through ReactMarkdown which will auto hyperlink any links, and add markdown
-                <ReactMarkdown className="text" remarkPlugins={[gfm]}>{message.text}</ReactMarkdown>
+                <ReactMarkdown className="text" remarkPlugins={[gfm]}>
+                    {message.text}
+                </ReactMarkdown>
             ) : (
                 // Otherwise, it must be a file and we can display the downloadURL depending on it's type
                 // The type for the URL is prepended to the downloadURL with a colon
@@ -89,13 +86,9 @@ function Message({ message }) {
                         />
                     ) : (
                         // Fallback view file attachment to each file upload incase of an unknown file type
-                        <a
-                            target="_blank"
-                            rel="noreferrer"
-                            href={getFileURL(message.text)}>
+                        <a target="_blank" rel="noreferrer" href={getFileURL(message.text)}>
                             <b>
-                                View {getFileFormat(message.text) || "unknown"}{" "}
-                                file uploaded by {message.displayName}
+                                View {getFileFormat(message.text) || "unknown"} file uploaded by {message.displayName}
                             </b>
                         </a>
                     )}
