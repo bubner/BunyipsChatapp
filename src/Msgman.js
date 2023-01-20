@@ -87,16 +87,23 @@ function Msgman({ id, isActive }) {
         const message = await getDoc(doc(db, "messages", id));
         const msgData = message.data();
         alert(
-            `Message author: ${msgData.displayName}\nAuthor UID: ${msgData.uid}\nMessage ID: ${msgData.id.id}\nMessage creation time: ${msgData.createdAt.seconds}\nIs a text message? ${msgData.isMsg}\nMessage retracted? ${msgData.isRetracted}\n\nMessage content:\n${msgData.text}`
+            `Message author: ${msgData.displayName}\nAuthor email: ${msgData.email}\nAuthor UID: ${msgData.uid}\nMessage ID: ${msgData.id.id}\nMessage creation time: ${msgData.createdAt.seconds}\nMessage type: ${msgData.isMsg ? "text" : "file"}\nMessage retracted? ${msgData.isRetracted ? "yes" : "no"}\n\nMessage content:\n${msgData.text}`
         );
     }
 
     // Function to copy the text field of the message into the clipboard. If it is a file, copy the URL.
     async function copyMsg() {
         const message = await getDoc(doc(db, "messages", id));
+
+        if (message.data().isRetracted) {
+            alert("Can't copy a deleted message!");
+            return;
+        }
+
         let copyData = message.data().text;
         if (!message.data().isMsg)
             copyData = getFileURL(message.data().text);
+
         navigator.clipboard.writeText(copyData).then(
             () => {
                 alert("Copied message content to your clipboard.");
