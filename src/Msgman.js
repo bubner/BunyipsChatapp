@@ -91,6 +91,23 @@ function Msgman({ id, isActive }) {
         );
     }
 
+    // Function to copy the text field of the message into the clipboard. If it is a file, copy the URL.
+    async function copyMsg() {
+        const message = await getDoc(doc(db, "messages", id));
+        let copyData = message.data().text;
+        if (!message.data().isMsg)
+            copyData = getFileURL(message.data().text);
+        navigator.clipboard.writeText(copyData).then(
+            () => {
+                alert("Copied message content to your clipboard.");
+            },
+            (e) => {
+                alert("Something went wrong copying this message. The error has been logged to the console.");
+                console.error(e);
+            }
+        );
+    }
+
     useEffect(() => {
         if (isActive)
             setShouldDisplay(true);
@@ -120,6 +137,8 @@ function Msgman({ id, isActive }) {
                                 <hr />
                             </>
                         )}
+                        <button onClick={() => copyMsg()}>Copy message content</button>
+                        <hr />
                     </div>
                 </>
             )}
