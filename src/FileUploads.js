@@ -181,7 +181,7 @@ function FileUploads() {
                             </div>
                         )}
                         {isFilePicked && selectedFile != null && !isFileUploaded && (
-                            <div>
+                            <div className="fileinfo">
                                 <br />
                                 <p>
                                     <i>File name:</i> {selectedFile.name} <br />

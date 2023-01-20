@@ -108,7 +108,7 @@ function Message({ message }) {
                     <i>&lt;message deleted&gt;</i>
                 </p>
             )}
-            {isHovering && <Msgman id={message.id.id} />}
+            <Msgman id={message.id.id} isActive={isHovering} />
         </div>
     );
 }
