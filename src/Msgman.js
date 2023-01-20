@@ -10,7 +10,9 @@ import { ref, deleteObject } from "firebase/storage";
 import { getFileURL } from "./Message";
 import Popup from "reactjs-popup";
 
-function Msgman({ id }) {
+function Msgman({ id, isActive }) {
+    const [shouldDisplay, setShouldDisplay] = useState(false);
+
     // Don't display retraction option if already retracted
     const [isRetracted, setIsRetracted] = useState(false);
     useEffect(() => {
@@ -89,11 +91,16 @@ function Msgman({ id }) {
         );
     }
 
+    useEffect(() => {
+        if (isActive)
+            setShouldDisplay(true);
+    }, [isActive]);
+
     return (
-        <Popup trigger={<button className="msgman" />}>
+        <Popup trigger={<button className="msgman" style={{ display: shouldDisplay && isActive ? "block" : "none" }}/>}>
             {(close) => (
                 <>
-                    <div className="manouter" onClick={close} />
+                    <div className="manouter" onClick={() => {close(); setShouldDisplay(false)}} />
                     <div className="maninner">
                         <p>
                             <i>Managing message: {id}</i>

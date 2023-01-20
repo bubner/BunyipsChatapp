@@ -25,6 +25,10 @@
     padding: 10px;
 }
 
+.fileinfo {
+    padding: 8px;
+}
+
 .uploadButton,
 .fileInput {
     color: white;
