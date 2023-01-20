@@ -95,7 +95,7 @@ function Msgman({ id, isActive }) {
     async function copyMsg() {
         const message = await getDoc(doc(db, "messages", id));
 
-        if (message.data().isRetracted) {
+        if (message.data().isRetracted && !isAdminAuthorised) {
             alert("Can't copy a deleted message!");
             return;
         }
