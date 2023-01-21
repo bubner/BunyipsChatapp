@@ -172,11 +172,11 @@ function FileUploads() {
                         </span>
                         <h3 className="ftitle">File Upload Menu</h3>
                         {isFileUploaded ? (
-                            <div>File uploaded.</div>
+                            <div className="ftext">File uploaded.</div>
                         ) : !isClipboard ? (
                             <input type="file" name="file" onChange={changeHandler} className="fileInput" />
                         ) : (
-                            <div>
+                            <div className="ftext">
                                 <i>File supplied by clipboard paste.</i>
                             </div>
                         )}

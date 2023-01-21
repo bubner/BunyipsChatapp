@@ -79,9 +79,8 @@
     min-height: 100vh;
 }
 
-/* File upload message style */
-iframe {
-    border: 0;
+.fileimage:hover {
+    cursor: pointer;
 }
 
 .fileimage,

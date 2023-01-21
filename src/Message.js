@@ -72,6 +72,7 @@ function Message({ message }) {
                         {getFileFormat(message.text).startsWith("image") ? (
                             // If we can display the image through an img tag, define a height maximum and render it
                             <img
+                                onClick={() => window.open(getFileURL(message.text), '_blank')}
                                 src={getFileURL(message.text)}
                                 alt={`Upload by ${message.displayName}`}
                                 className="fileimage"
