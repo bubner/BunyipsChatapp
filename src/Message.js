@@ -25,15 +25,7 @@ function Message({ message }) {
     const [isHovering, setIsHovering] = useState(false);
     const handleMouseOver = () => setIsHovering(true);
     const handleMouseOut = () => setIsHovering(false);
-
-    // let timestamp;
-    // try {
-        // Attempt to retrieve a timestamp from the server
     const timestamp = new Date(message.createdAt);
-    // } catch (error) {
-    //     // If it fails, this must mean the message is being sent, and we can use the current Unix time
-    //     timestamp = new Date(Date.now());
-    // }
 
     return (
         // Determine whether the message was sent or recieved by checking the author and current user
@@ -112,7 +104,7 @@ function Message({ message }) {
                     <i>&lt;message deleted&gt;</i>
                 </p>
             )}
-            {/* <Msgman id={message.id.id} isActive={isHovering} /> */}
+            <Msgman id={message.id} isActive={isHovering} />
         </div>
     );
 }

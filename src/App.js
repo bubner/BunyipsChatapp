@@ -17,7 +17,6 @@ import Login from "./Login";
 
 function App() {
     const [user] = useAuthState(auth);
-    // Make sure we have the user's uid as a datapoint in the users node
     useAuthStateChanged();
 
     // April Fool's joke alert upon application load

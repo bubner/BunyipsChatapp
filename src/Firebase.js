@@ -1,5 +1,6 @@
 /**
  *    Firebase configuration module for access to authentication and message storage.
+ *    Contains utility methods for accessing user data and authorising internal application functions.
  *    @author Lucas Bubner, 2023
  */
 
@@ -7,7 +8,7 @@
 import { useEffect } from "react";
 import { initializeApp, getApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "firebase/auth";
-import { getDatabase, ref, set, push, child, onValue } from "firebase/database";
+import { getDatabase, ref, set, push, child, onValue, get, update } from "firebase/database";
 import { getStorage } from "firebase/storage";
 import Filter from "bad-words";
 
@@ -84,7 +85,7 @@ export async function uploadMsg(formVal) {
     // Prevent adding blank messages into Firebase
     if (!formVal) return;
 
-    // Stop requests that have too many characters (>4000)
+    // Stop requests that have too many characters (> 4000)
     if (isMessageOverLimit(formVal)) {
         alert("Message exceeds the maximum length of 4000 characters. Please shorten your message.");
         return;
@@ -121,13 +122,21 @@ export async function uploadFileMsg(url, type) {
     }).catch((error) => alert(error));
 }
 
-export async function isAdminAuthorised(user) {}
+export async function updateMsg(id, content) {
+    await update(ref(db, "messages/" + id), content);
+}
 
-export async function isReadAuthorised(user) {}
+export async function deleteMsg(id) {}
 
-export async function isWriteAuthorised(user) {}
-
-export async function messageOwner(message) {}
+export async function getData(endpoint, id) {
+    let datavalue = null;
+    await get(child(ref(db), `${endpoint}/${id}`)).then((snapshot) => {
+        if (snapshot.exists()) {
+            datavalue = snapshot.val();
+        }
+    });
+    return datavalue;
+}
 
 export async function removeRead(user) {}
 
