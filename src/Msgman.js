@@ -86,9 +86,8 @@ function Msgman({ id, isActive }) {
     async function viewData() {
         const message = await getDoc(doc(db, "messages", id));
         const msgData = message.data();
-        alert(
-            `Message author: ${msgData.displayName}\nAuthor email: ${msgData.email}\nAuthor UID: ${msgData.uid}\nMessage ID: ${msgData.id.id}\nMessage creation time: ${msgData.createdAt.seconds}\nMessage type: ${msgData.isMsg ? "text" : "file"}\nMessage retracted? ${msgData.isRetracted ? "yes" : "no"}\n\nMessage content:\n${msgData.text}`
-        );
+        // prettier-ignore
+        alert(`Message author: ${msgData.displayName}\nAuthor email: ${msgData.email}\nAuthor UID: ${msgData.uid}\nMessage ID: ${msgData.id.id}\nMessage creation time: ${msgData.createdAt.seconds}\nMessage type: ${msgData.isMsg ? "text" : "file"}\nMessage retracted? ${msgData.isRetracted ? "yes" : "no"}\n\nMessage content:\n${msgData.text}`);
     }
 
     // Function to copy the text field of the message into the clipboard. If it is a file, copy the URL.
@@ -101,6 +100,7 @@ function Msgman({ id, isActive }) {
         }
 
         let copyData = message.data().text;
+        // prettier-ignore
         if (!message.data().isMsg)
             copyData = getFileURL(message.data().text);
 
@@ -116,15 +116,21 @@ function Msgman({ id, isActive }) {
     }
 
     useEffect(() => {
-        if (isActive)
-            setShouldDisplay(true);
+        if (isActive) setShouldDisplay(true);
     }, [isActive]);
 
     return (
-        <Popup trigger={<button className="msgman" style={{ display: shouldDisplay && isActive ? "block" : "none" }}/>}>
+        <Popup
+            trigger={<button className="msgman" style={{ display: shouldDisplay && isActive ? "block" : "none" }} />}>
             {(close) => (
                 <>
-                    <div className="manouter" onClick={() => {close(); setShouldDisplay(false)}} />
+                    <div
+                        className="manouter"
+                        onClick={() => {
+                            close();
+                            setShouldDisplay(false);
+                        }}
+                    />
                     <div className="maninner">
                         <p>
                             <i>Managing message: {id}</i>

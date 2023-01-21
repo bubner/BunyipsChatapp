@@ -17,6 +17,7 @@ function MessageBar() {
     const [messagesSent, setMessagesSent] = useState(0);
     const [writePerms, setWritePerms] = useState(false);
 
+    // Ensure the user has permission to write messages to the database.
     useEffect(() => {
         const unsubscribe = onSnapshot(collection(db, "write"), (doc) => {
             let allowWrite = false;
@@ -37,6 +38,7 @@ function MessageBar() {
         };
     }, []);
 
+    // Enforce cooldown on users that send too many messages at once.
     function manageMsgSend(e) {
         e.preventDefault();
         setMessagesSent(messagesSent + 1);
@@ -51,11 +53,21 @@ function MessageBar() {
         setFormVal("");
     }
 
+    // Reset cooldown every 2 seconds on rerender
     useEffect(() => {
         setTimeout(() => {
             setMessagesSent(0);
         }, 2000);
     }, []);
+
+    // Alert the user if their message has exceeded the 4000 character limit and update the formVal state.
+    function handleMessageChange(e) {
+        setFormVal(e.target.value);
+        // prettier-ignore
+        if (isMessageOverLimit(formVal))
+            if (window.confirm("Caution! You have exceeded the 4000 character limit and will not be able to send your message! Trim message?"))
+                setFormVal(formVal.substring(0, 4000));
+    }
 
     return (
         <div className="messagebar">
@@ -67,16 +79,7 @@ function MessageBar() {
                             <FileUploads />
                             <input
                                 type="text"
-                                onChange={(e) => {
-                                    setFormVal(e.target.value);
-                                    if (isMessageOverLimit(formVal))
-                                        if (
-                                            window.confirm(
-                                                "Caution! You have exceeded the 4000 character limit and will not be able to send your message! Trim message?"
-                                            )
-                                        )
-                                            setFormVal(formVal.substring(0, 4000));
-                                }}
+                                onChange={(e) => handleMessageChange(e)}
                                 value={formVal}
                                 className="msginput"
                             />

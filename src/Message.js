@@ -12,6 +12,7 @@ import "./App.css";
 import "./Message.css";
 import ReactMarkdown from "react-markdown";
 import gfm from "remark-gfm";
+import Filter from "bad-words";
 
 const getFileFormat = (fileURL) => {
     return fileURL.slice(0, fileURL.indexOf(":"));
@@ -61,7 +62,7 @@ function Message({ message }) {
             {!message.isRetracted ? (
                 message.isMsg ? (
                     // If it is a normal message, pass it through ReactMarkdown which will auto hyperlink any links, and add markdown
-                    <ReactMarkdown className="text" remarkPlugins={[gfm]}>
+                    <ReactMarkdown className="text" remarkPlugins={[gfm]} linkTarget="_blank">
                         {message.text}
                     </ReactMarkdown>
                 ) : (
@@ -97,10 +98,10 @@ function Message({ message }) {
                             />
                         ) : (
                             // Fallback view file attachment to each file upload incase of an unknown file type
+                            // prettier-ignore
                             <a target="_blank" rel="noreferrer" href={getFileURL(message.text)}>
                                 <b>
-                                    View {getFileFormat(message.text) || "unknown"} file uploaded by{" "}
-                                    {message.displayName}
+                                    View {getFileFormat(message.text) || "unknown"} file uploaded by {message.displayName}
                                 </b>
                             </a>
                         )}
