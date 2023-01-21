@@ -9,7 +9,7 @@ import { useState, useEffect } from "react";
 import { collection, onSnapshot } from "firebase/firestore";
 import FileUploads from "./FileUploads";
 import Scroll from "./Scroll";
-import { sendMsg, db, auth, isMessageOverLimit } from "./Firebase";
+import { uploadMsg, db, auth, isMessageOverLimit } from "./Firebase";
 
 function MessageBar() {
     const [formVal, setFormVal] = useState("");
@@ -49,7 +49,7 @@ function MessageBar() {
             return;
         }
 
-        sendMsg(formVal);
+        uploadMsg(formVal);
         setFormVal("");
     }
 

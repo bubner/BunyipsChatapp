@@ -5,7 +5,7 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import { storage } from "./Firebase";
-import { uploadFileDoc } from "./Firebase";
+import { uploadFileMsg } from "./Firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import Popup from "reactjs-popup";
 import "./FileUploads.css";
@@ -99,7 +99,7 @@ function FileUploads() {
                 // Handle uploading the file URL into a message doc
                 getDownloadURL(ref(storage, `files/${fileName}`))
                     .then((url) => {
-                        uploadFileDoc(url, selectedFile.type);
+                        uploadFileMsg(url, selectedFile.type);
                     })
                     .catch((error) => {
                         console.error(error);

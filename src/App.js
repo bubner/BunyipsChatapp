@@ -9,7 +9,7 @@ import "./App.css";
 // Firebase imports and configuration
 import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "./Firebase";
+import { auth, useAuthStateChanged } from "./Firebase";
 
 // Import application login and chatroom modules
 import Chat from "./Chat";
@@ -17,6 +17,8 @@ import Login from "./Login";
 
 function App() {
     const [user] = useAuthState(auth);
+    // Make sure we have the user's uid as a datapoint in the users node
+    useAuthStateChanged();
 
     // April Fool's joke alert upon application load
     useEffect(() => {
