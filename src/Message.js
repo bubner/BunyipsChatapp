@@ -12,7 +12,6 @@ import "./App.css";
 import "./Message.css";
 import ReactMarkdown from "react-markdown";
 import gfm from "remark-gfm";
-import Filter from "bad-words";
 
 const getFileFormat = (fileURL) => {
     return fileURL.slice(0, fileURL.indexOf(":"));
@@ -27,14 +26,14 @@ function Message({ message }) {
     const handleMouseOver = () => setIsHovering(true);
     const handleMouseOut = () => setIsHovering(false);
 
-    let timestamp;
-    try {
+    // let timestamp;
+    // try {
         // Attempt to retrieve a timestamp from the server
-        timestamp = new Date(message.createdAt.seconds * 1000);
-    } catch (error) {
-        // If it fails, this must mean the message is being sent, and we can use the current Unix time
-        timestamp = new Date(Date.now());
-    }
+    const timestamp = new Date(message.createdAt);
+    // } catch (error) {
+    //     // If it fails, this must mean the message is being sent, and we can use the current Unix time
+    //     timestamp = new Date(Date.now());
+    // }
 
     return (
         // Determine whether the message was sent or recieved by checking the author and current user
@@ -112,7 +111,7 @@ function Message({ message }) {
                     <i>&lt;message deleted&gt;</i>
                 </p>
             )}
-            <Msgman id={message.id.id} isActive={isHovering} />
+            {/* <Msgman id={message.id.id} isActive={isHovering} /> */}
         </div>
     );
 }

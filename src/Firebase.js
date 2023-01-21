@@ -50,28 +50,27 @@ export function useAuthStateChanged() {
             if (user) {
                 // Check if the user already exists in the "users" node
                 onValue(ref(db, `users/${user.uid}`), (snapshot) => {
-                        // If the user already exists, do nothing
-                        if (snapshot.exists()) {
-                            return null;
-                        }
-                        
-                        // Otherwise, create new user data with all permissions restricted
-                        const userData = {
-                            email: user.email,
-                            read: false,
-                            write: false,
-                            admin: false,
-                        };
+                    // If the user already exists, do nothing
+                    if (snapshot.exists()) {
+                        return null;
+                    }
 
-                        // Create a new user node with the user's UID as the key
-                        return set(ref(db, `users/${user.uid}`), userData);
-                    });
+                    // Otherwise, create new user data with all permissions restricted
+                    const userData = {
+                        email: user.email,
+                        read: false,
+                        write: false,
+                        admin: false,
+                    };
+
+                    // Create a new user node with the user's UID as the key
+                    return set(ref(db, `users/${user.uid}`), userData);
+                });
             }
         });
 
         // Clean up function
         return () => unsubscribe();
-
     }, []);
 }
 

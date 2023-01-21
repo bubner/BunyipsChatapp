@@ -6,10 +6,9 @@
 
 import "./MessageBar.css";
 import { useState, useEffect } from "react";
-import { collection, onSnapshot } from "firebase/firestore";
 import FileUploads from "./FileUploads";
 import Scroll from "./Scroll";
-import { uploadMsg, db, auth, isMessageOverLimit } from "./Firebase";
+import { uploadMsg, isMessageOverLimit, isReadAuthorised } from "./Firebase";
 
 function MessageBar() {
     const [formVal, setFormVal] = useState("");
@@ -19,23 +18,7 @@ function MessageBar() {
 
     // Ensure the user has permission to write messages to the database.
     useEffect(() => {
-        const unsubscribe = onSnapshot(collection(db, "write"), (doc) => {
-            let allowWrite = false;
-            doc.forEach((doc) => {
-                if (auth.currentUser.email === doc.id) {
-                    allowWrite = true;
-                }
-            });
-            if (allowWrite) {
-                setWritePerms(true);
-            } else {
-                setWritePerms(false);
-            }
-        });
-
-        return () => {
-            unsubscribe();
-        };
+        setWritePerms(isReadAuthorised())
     }, []);
 
     // Enforce cooldown on users that send too many messages at once.
