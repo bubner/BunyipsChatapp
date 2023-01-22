@@ -4,8 +4,7 @@
  */
 import "./Msgman.css";
 import { useState, useEffect } from "react";
-import { auth, storage, deleteMsg, updateMsg, getData } from "./Firebase";
-import { ref, deleteObject } from "firebase/storage";
+import { auth, deleteMsg, updateMsg, getData } from "./Firebase";
 import { getFileURL } from "./Message";
 import Popup from "reactjs-popup";
 
@@ -29,11 +28,6 @@ function Msgman({ id, isActive }) {
     // Only administrator users can delete messages, as opposed to retracting them.
     async function deleteMessage() {
         if (!window.confirm("Delete message: " + id + "?")) return;
-        if (!document.data().isMsg) {
-            // Check if the document contains a file, if so, we'll have to delete from Firebase storage too
-            const fileRef = ref(storage, getFileURL(document.data().text));
-            await deleteObject(fileRef).catch((err) => alert(err));
-        }
         await deleteMsg(id);
     }
 

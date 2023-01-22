@@ -8,8 +8,9 @@
 import { useEffect } from "react";
 import { initializeApp, getApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "firebase/auth";
-import { getDatabase, ref, set, push, child, onValue, get, update } from "firebase/database";
-import { getStorage } from "firebase/storage";
+import { getDatabase, ref, set, push, child, onValue, get, update, remove } from "firebase/database";
+import { getStorage, ref as sref, deleteObject } from "firebase/storage";
+import { getFileURL } from "./Message"; 
 import Filter from "bad-words";
 
 let app;
@@ -126,14 +127,24 @@ export async function updateMsg(id, content) {
     await update(ref(db, "messages/" + id), content);
 }
 
-export async function deleteMsg(id) {}
+export async function deleteMsg(id) {
+    // Get the message reference from Firebase
+    getData("messages", id).then(async (data) => {
+        if (!data.isMsg) {
+            // Check if the document contains a file, if so, we'll have to delete from Firebase storage too
+            const fileRef = sref(storage, getFileURL(data.text));
+            await deleteObject(fileRef).catch((err) => alert(err));
+        }
+        // Now we can safely delete the message as we've deleted any other objects related to it
+        await remove(ref(db, 'messages/' + id));
+    });
+}
 
 export async function getData(endpoint, id) {
     let datavalue = null;
     await get(child(ref(db), `${endpoint}/${id}`)).then((snapshot) => {
-        if (snapshot.exists()) {
+        if (snapshot.exists())
             datavalue = snapshot.val();
-        }
     });
     return datavalue;
 }

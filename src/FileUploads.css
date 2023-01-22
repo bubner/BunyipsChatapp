@@ -50,7 +50,7 @@
 }
 
 .uploadWindow {
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.5);
     position: fixed;
     margin: auto;
     padding: 12px;
