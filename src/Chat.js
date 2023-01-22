@@ -44,10 +44,11 @@ function Chat() {
     // Grand collection function that continually checks the message database for new/changed messages
     useEffect(() => {
         const unsubscribe = onValue(ref(db, "messages/"), (snapshot) => {
-            setMessageData(Object.entries(snapshot.val()));
+            // Protect against adding null values to the message state by checking if the snapshot is null
+            setMessageData(snapshot.val() !== null ? Object.entries(snapshot.val()) : []);
         });
         return () => unsubscribe();
-    }, [messages]);
+    }, []);
 
     // Set custom properties on a dummy object allow messages to appear fluidly
     const dummy = useRef();

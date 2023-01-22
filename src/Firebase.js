@@ -9,8 +9,8 @@ import { useEffect } from "react";
 import { initializeApp, getApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "firebase/auth";
 import { getDatabase, ref, set, push, child, onValue, get, update, remove } from "firebase/database";
-import { getStorage, ref as sref, deleteObject } from "firebase/storage";
-import { getFileURL } from "./Message"; 
+import { getStorage, ref as sref, deleteObject, listAll } from "firebase/storage";
+import { getFileURL } from "./Message";
 import Filter from "bad-words";
 
 let app;
@@ -136,27 +136,69 @@ export async function deleteMsg(id) {
             await deleteObject(fileRef).catch((err) => alert(err));
         }
         // Now we can safely delete the message as we've deleted any other objects related to it
-        await remove(ref(db, 'messages/' + id));
+        await remove(ref(db, "messages/" + id));
     });
 }
 
 export async function getData(endpoint, id) {
     let datavalue = null;
     await get(child(ref(db), `${endpoint}/${id}`)).then((snapshot) => {
-        if (snapshot.exists())
-            datavalue = snapshot.val();
+        if (snapshot.exists()) datavalue = snapshot.val();
     });
     return datavalue;
 }
 
-export async function removeRead(user) {}
+export async function removeRead(uid) {
+    getData("users", uid).then(async (data) => {
+        if (uid === auth.currentUser.uid) {
+            alert("You cannot remove your own read permission as an administrator.");
+            return;
+        }
+        if (!window.confirm("Remove read permission from " + data.email + "?")) return;
+        await update(ref(db, "users/" + uid), {
+            read: false,
+        });
+    });
+}
 
-export async function removeWrite(user) {}
+export async function removeWrite(uid) {
+    getData("users", uid).then(async (data) => {
+        if (!window.confirm("Remove write permission from " + data.email + "?")) return;
+        await update(ref(db, "users/" + uid), {
+            write: false,
+        });
+    });
+}
 
-export async function addRead(user) {}
+export async function addRead(uid) {}
 
-export async function addWrite(user) {}
+export async function addWrite(uid) {}
 
-export async function clearMsgs() {}
+export async function clearDatabases() {
+    // User confirmations
+    if (!window.confirm("WARNING: You are about to delete all database messages. Are you sure you want to continue?"))
+        return;
+
+    const nums = Math.floor(Math.random() * (9999 - 1000 + 1) + 1000);
+    // prettier-ignore
+    if (window.prompt(`Please enter these four numbers in order to complete the database transaction: ${nums}`) !==nums.toString()) {
+        alert("Operation cancelled.");
+        return;
+    }
+
+    // Delete all Firebase Storage files
+    await listAll(sref(storage, "files")).then((listResults) => {
+        const promises = listResults.items.map((item) => {
+            return deleteObject(item);
+        });
+        Promise.all(promises);
+    });
+
+    // Delete all Firebase Realtime Database messages
+    await remove(ref(db, "messages")).then(() => {
+        alert("Operation completed. A reload is required.");
+        window.location.reload();
+    });
+}
 
 export { auth, db, storage };

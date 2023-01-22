@@ -15,16 +15,6 @@
     outline: inherit;
 }
 
-.cleardb {
-    position: relative;
-    left: 75%;
-    transition: background-color 0.3s;
-    text-align: center;
-    width: fit-content;
-    padding: 6px;
-    border-radius: 8px;
-}
-
 .oadmin {
     z-index: -1;
     background-color: rgba(0, 0, 0, 0.5);
@@ -52,21 +42,6 @@
     height: fit-content;
 }
 
-.authorised span:hover {
-    cursor: pointer;
-}
-
-.authorised {
-    width: fit-content;
-    display: grid;
-    grid-template-columns: max-content max-content;
-    grid-template-rows: auto;
-    gap: 0px 0px;
-    grid-template-areas:
-        "title title"
-        "read write";
-}
-
 .authorised ul {
     list-style: none;
     overflow-y: scroll;
@@ -74,77 +49,96 @@
     max-height: 300px;
 }
 
-.portalreference {
-    font-style: italic;
-    font-weight: revert !important;
+.authorised ul li::before {
+    content: '⮞ ';
+}
+
+.authorised ul li::after {
+    content: ' ⮜';
+}
+
+.authorised {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: max-content max-content max-content max-content;
+    gap: 0px 0px;
+    grid-template-areas:
+        "title close"
+        "users users"
+        "bu bu"
+        "tt tt";
+}
+
+.close {
+    grid-area: close;
 }
 
 .title {
     grid-area: title;
+    padding: 12px;
+}
+
+.users {
+    grid-area: users;
+    padding: 12px;
+    width: 100%;
+}
+
+.users ul {
+    margin: 0;
+    padding: 0;
+}
+
+.users li {
     text-align: center;
 }
 
-.authorised p {
-    margin: 0px;
-    padding: 0px;
-    text-align: center;
-    font-weight: bold;
-}
-
-.read {
-    grid-area: read;
-    font-size: 18px;
-}
-
-.write {
-    grid-area: write;
-    font-size: 18px;
-}
-
-.authorised button:not(.new),
-.cleardb,
-.new {
+.users li button {
+    padding: 8px;
     border-radius: 8px;
-    padding: 8px !important;
+    margin: 4px;
+    background-color: rgb(58, 58, 58);
+}
+
+.users li button:hover {
+    background-color: rgb(43, 43, 43);
 }
 
 .new {
-    transition: background-color 0.3s;
-    background-color: rgba(0, 87, 4, 0.384) !important;
-    position: relative;
-    left: 25%;
+    transition: background-color 0.4s;
+    background-color: rgb(15, 71, 27) !important;
+    padding: 12px !important;
+    border-radius: 12px;
+    width: 100%;
+    grid-area: bu;
 }
 
 .new:hover {
-    background-color: rgba(0, 199, 10, 0.877) !important;
+    background-color: rgb(28, 126, 49) !important;
 }
 
-.authorised button:not(.new),
 .cleardb {
-    background-color: rgba(245, 122, 122, 0.308);
+    transition: background-color 0.4s;
+    background-color: rgb(73, 0, 0);
+    border-radius: 12px;
+    margin-top: 12px;
+    padding: 12px;
+    text-align: center;
+    width: 100%;
+    grid-area: tt;
 }
 
-.authorised button:not(.new):hover,
 .cleardb:hover {
-    background-color: rgba(255, 47, 47, 0.884);
+    cursor: pointer;
+    background-color: rgb(163, 0, 0);
 }
 
-/* 
-    This solution is absolutely terrible and is a workaround to the softlocking issue.
-    A complete redesign of the admin panel is required to fix the problem in it's entirety.
-    I don't recommend reading past this comment.
-*/
-.close {
-    position: static;
-}
-
-.override {
-    position: static !important;
-}
-
-@media screen and (max-width: 1341px) {
-    .close {
-        position: relative;
-        right: 44%;
+@media only screen and (max-width: 600px) {
+    .authorised ul li::before {
+        content: '';
+    }
+    
+    .authorised ul li::after {
+        content: '';
     }
 }

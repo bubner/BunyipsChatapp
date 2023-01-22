@@ -4,7 +4,7 @@
  */
 
 import Popup from "reactjs-popup";
-// import Admin from "./Admin";
+import Admin from "./Admin";
 // I could go for a
 import "./BBQ.css"; // bacon burger
 import MDTable from "./MDTable";
@@ -21,7 +21,7 @@ function BBQ() {
                         </div>
                         <hr />
                         <div className="buttonarea">
-                            {/* <Admin /> */}
+                            <Admin />
                         </div>
                         <hr />
                         <div className="buttonarea">
