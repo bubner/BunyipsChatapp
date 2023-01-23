@@ -12,6 +12,7 @@ import "./App.css";
 import "./Message.css";
 import ReactMarkdown from "react-markdown";
 import gfm from "remark-gfm";
+import Filter from "bad-words";
 
 const getFileFormat = (fileURL) => {
     return fileURL.slice(0, fileURL.indexOf(":"));
@@ -26,6 +27,19 @@ function Message({ message }) {
     const handleMouseOver = () => setIsHovering(true);
     const handleMouseOut = () => setIsHovering(false);
     const timestamp = new Date(message.createdAt);
+    const filter = new Filter({ placeHolder: '♥' });
+
+    function clean(message) {
+        try {
+            message = filter.clean(message);
+        } catch (e) {
+            // If users enter text that cannot be cleaned, such as raw markdown, then we will change what is rendered.
+            // If we don't change it, the webapp will crash and burn in a fire greater than a thousand suns.
+            // This is the one instance where Filter throwing an error is actually good, as it fixes multiple issues
+            message = "Look at me! I'm a foolish idiot who tried using Markdown without any other characters!";
+        }
+        return message;
+    }
 
     return (
         // Determine whether the message was sent or recieved by checking the author and current user
@@ -54,7 +68,7 @@ function Message({ message }) {
                 message.isMsg ? (
                     // If it is a normal message, pass it through ReactMarkdown which will auto hyperlink any links, and add markdown
                     <ReactMarkdown className="text" remarkPlugins={[gfm]} linkTarget="_blank">
-                        {message.text}
+                        {clean(message.text)}
                     </ReactMarkdown>
                 ) : (
                     // Otherwise, it must be a file and we can display the downloadURL depending on it's type

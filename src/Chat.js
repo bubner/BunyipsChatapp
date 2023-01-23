@@ -67,9 +67,15 @@ function Chat() {
         }
     }, [messages]);
 
-    // Proc the newMessage at least once upon initial render, so the application can scroll to the bottom
+    // Proc the scroll-to-bottom at least once after we initially load in, so the user isn't
+    // stuck at the top of the page upon entering if the useEffect above this doesn't work
     useEffect(() => {
-        setNewMessage(true);
+        setTimeout(() => {
+            window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: "auto",
+            });
+        }, 1000);
     }, []);
 
     // Set the state of the hidden variable depending on whether the user is on the chatapp or not.

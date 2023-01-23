@@ -97,6 +97,8 @@ function MDTable() {
                                 </tr>
                             </tbody>
                         </table>
+                        <br />
+                        <p><b>DO NOT use Markdown without any other characters! (sending just # or **)</b></p>
                     </div>
                 </>
             )}

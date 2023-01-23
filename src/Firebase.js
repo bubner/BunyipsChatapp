@@ -11,7 +11,6 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from
 import { getDatabase, ref, set, push, child, onValue, get, update, remove } from "firebase/database";
 import { getStorage, ref as sref, deleteObject, listAll } from "firebase/storage";
 import { getFileURL } from "./Message";
-import Filter from "bad-words";
 
 let app;
 
@@ -119,7 +118,6 @@ export async function uploadMsg(formVal) {
     }
 
     // Add to Firebase with UID, content, and user info
-    const word = new Filter();
     const msgID = push(child(ref(db), "messages")).key;
     await set(ref(db, "messages/" + msgID), {
         isMsg: true,
@@ -128,7 +126,7 @@ export async function uploadMsg(formVal) {
         uid: auth.currentUser.uid,
         email: auth.currentUser.email,
         displayName: auth.currentUser.displayName,
-        text: word.clean(formVal),
+        text: formVal,
         photoURL: auth.currentUser.photoURL,
         createdAt: Date.now(),
     }).catch((error) => errorHandler(error));
