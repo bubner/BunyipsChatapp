@@ -109,7 +109,8 @@
     background-color: rgb(15, 71, 27) !important;
     padding: 12px !important;
     border-radius: 12px;
-    width: 100%;
+    width: 66%;
+    transform: translateX(25%);
     grid-area: bu;
 }
 

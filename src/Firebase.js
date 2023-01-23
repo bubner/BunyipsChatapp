@@ -38,11 +38,37 @@ const storage = getStorage(app);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
+// Internal function to handle database errors when retrieving or sending standard information
+function errorHandler(err) {
+    // Error handler incase Black Mesa decides to do another experiment
+    console.error(err);
+
+    // Reload the page and tell the user something went wrong
+    if (err.code === 'PERMISSION_DENIED') {
+        alert("An error occurred while performing this action as one of your permission nodes is currently out of sync with the application. A page reload is required.");
+    } else {
+        alert("Sorry! An error occurred attempting to perform the operation you were requesting. If this persists, please contact lbubner21@mbhs.sa.edu.au with this information:\n\n" + err);
+    }
+
+    // Reload the page in 5 seconds and try again
+    setTimeout(() => window.location.reload(), 5000);
+}
+
 // Provide Google sign in functionality and automatically registers a user into the auth instance
 export function signInWithGoogle() {
     signInWithPopup(auth, new GoogleAuthProvider()).catch((error) => {
         alert("Google Auth Error: " + error.code + " : " + error.message + " on email: " + error.customData.email);
     });
+}
+
+// Change dots to commas, db names that are supported
+export function toCommas(str) {
+    return str.replace(/\./g, ",");
+}
+
+// Change commas back to dots, for proper reading
+export function toDots(str) {
+    return str.replace(/,/g, ".");
 }
 
 // Check if a user has logged in before and give them base permissions if they haven't
@@ -51,22 +77,22 @@ export function useAuthStateChanged() {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
                 // Check if the user already exists in the "users" node
-                onValue(ref(db, `users/${user.uid}`), (snapshot) => {
-                    // If the user already exists, do nothing
-                    if (snapshot.exists()) {
-                        return null;
+                onValue(ref(db, `users/${toCommas(user.email)}`), (snapshot) => {
+                    // If there are no snapshots for the user, create a new one with no permissions.
+                    if (!snapshot.exists()) {
+                        set(ref(db, `users/${toCommas(user.email)}`), {
+                            uid: user.uid,
+                            read: false,
+                            write: false,
+                            admin: false,
+                        });
+                    } else if (snapshot.child("uid").val() === "nil") {
+                        // Otherwise, if they do exist but were manually added, simply update their uid to not be null
+                        update(ref(db, `users/${toCommas(user.email)}`), {
+                            uid: user.uid,
+                        });
                     }
-
-                    // Otherwise, create new user data with all permissions restricted
-                    const userData = {
-                        email: user.email,
-                        read: false,
-                        write: false,
-                        admin: false,
-                    };
-
-                    // Create a new user node with the user's UID as the key
-                    return set(ref(db, `users/${user.uid}`), userData);
+                    // If they do exist and do have a uid, do nothing.
                 });
             }
         });
@@ -105,7 +131,7 @@ export async function uploadMsg(formVal) {
         text: word.clean(formVal),
         photoURL: auth.currentUser.photoURL,
         createdAt: Date.now(),
-    }).catch((error) => alert(error));
+    }).catch((error) => errorHandler(error));
 }
 
 export async function uploadFileMsg(url, type) {
@@ -120,7 +146,7 @@ export async function uploadFileMsg(url, type) {
         text: type + ":" + url,
         photoURL: auth.currentUser.photoURL,
         createdAt: Date.now(),
-    }).catch((error) => alert(error));
+    }).catch((error) => errorHandler(error));
 }
 
 export async function updateMsg(id, content) {
@@ -133,7 +159,7 @@ export async function deleteMsg(id) {
         if (!data.isMsg) {
             // Check if the document contains a file, if so, we'll have to delete from Firebase storage too
             const fileRef = sref(storage, getFileURL(data.text));
-            await deleteObject(fileRef).catch((err) => alert(err));
+            await deleteObject(fileRef).catch((err) => errorHandler(err));
         }
         // Now we can safely delete the message as we've deleted any other objects related to it
         await remove(ref(db, "messages/" + id));
@@ -142,37 +168,17 @@ export async function deleteMsg(id) {
 
 export async function getData(endpoint, id) {
     let datavalue = null;
-    await get(child(ref(db), `${endpoint}/${id}`)).then((snapshot) => {
-        if (snapshot.exists()) datavalue = snapshot.val();
-    });
+    await get(child(ref(db), `${endpoint}/${id}`))
+        .then((snapshot) => {
+            if (snapshot.exists()) datavalue = snapshot.val();
+        })
+        .catch((err) => errorHandler(err));
     return datavalue;
 }
 
-export async function removeRead(uid) {
-    getData("users", uid).then(async (data) => {
-        if (uid === auth.currentUser.uid) {
-            alert("You cannot remove your own read permission as an administrator.");
-            return;
-        }
-        if (!window.confirm("Remove read permission from " + data.email + "?")) return;
-        await update(ref(db, "users/" + uid), {
-            read: false,
-        });
-    });
+export async function updateUser(email, changes) {
+    await update(ref(db, "users/" + email), changes);
 }
-
-export async function removeWrite(uid) {
-    getData("users", uid).then(async (data) => {
-        if (!window.confirm("Remove write permission from " + data.email + "?")) return;
-        await update(ref(db, "users/" + uid), {
-            write: false,
-        });
-    });
-}
-
-export async function addRead(uid) {}
-
-export async function addWrite(uid) {}
 
 export async function clearDatabases() {
     // User confirmations

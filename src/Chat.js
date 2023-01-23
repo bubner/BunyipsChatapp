@@ -5,7 +5,7 @@
  *    @author Lachlan Paul, 2023
  */
 
-import { db, auth, getData } from "./Firebase";
+import { db, auth, getData, toCommas } from "./Firebase";
 import { useEffect, useRef, useState } from "react";
 import { ref, onValue } from "firebase/database";
 import Message from "./Message";
@@ -19,7 +19,7 @@ function Chat() {
     useEffect(() => {
         if (!auth.currentUser) return;
         // Block unauthorised users from accessing the application
-        getData("users", auth.currentUser.uid).then((userData) => {
+        getData("users", toCommas(auth.currentUser.email)).then((userData) => {
             if (!userData.read) {
                 try {
                     alert(

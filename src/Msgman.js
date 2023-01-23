@@ -4,7 +4,7 @@
  */
 import "./Msgman.css";
 import { useState, useEffect } from "react";
-import { auth, deleteMsg, updateMsg, getData } from "./Firebase";
+import { auth, deleteMsg, updateMsg, getData, toCommas } from "./Firebase";
 import { getFileURL } from "./Message";
 import Popup from "reactjs-popup";
 
@@ -41,16 +41,16 @@ function Msgman({ id, isActive }) {
         setIsRetracted(true);
     }
 
-    // Using same admin authorisation from Admin.js
+    // Checking if the user is an administrator
     const [isAdmin, setIsAdmin] = useState(false);
     useEffect(() => {
-        getData("users", auth.currentUser.uid).then((userData) => setIsAdmin(userData.admin));
+        getData("users", toCommas(auth.currentUser.email)).then((userData) => setIsAdmin(userData.admin));
     }, []);
 
     // Determine whether a user should have moderation over their own message
     const [isAuthorised, setIsAuthorised] = useState(false);
     useEffect(() => {
-        if (message) setIsAuthorised(message.id === auth.currentUser.uid);
+        if (message) setIsAuthorised(message.uid === auth.currentUser.uid);
     }, [message]);
 
     // Function to show the metadata of a certain message

@@ -8,7 +8,7 @@ import "./MessageBar.css";
 import { useState, useEffect } from "react";
 import FileUploads from "./FileUploads";
 import Scroll from "./Scroll";
-import { auth, uploadMsg, isMessageOverLimit, getData } from "./Firebase";
+import { auth, uploadMsg, isMessageOverLimit, getData, toCommas } from "./Firebase";
 
 function MessageBar() {
     const [formVal, setFormVal] = useState("");
@@ -18,7 +18,7 @@ function MessageBar() {
 
     // Ensure the user has permission to write messages to the database.
     useEffect(() => {
-        getData("users", auth.currentUser.uid).then((userData) => setWritePerms(userData.write));
+        getData("users", toCommas(auth.currentUser.email)).then((userData) => setWritePerms(userData.write));
     }, []);
 
     // Enforce cooldown on users that send too many messages at once.
