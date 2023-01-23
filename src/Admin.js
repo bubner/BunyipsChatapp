@@ -3,140 +3,106 @@
  *    @author Lucas Bubner, 2023
  */
 import { useState, useEffect } from "react";
-import { auth, db, storage } from "./Firebase";
-import { ref, deleteObject, listAll } from "firebase/storage";
-import { collection, onSnapshot, deleteDoc, doc, setDoc } from "firebase/firestore";
+import { auth, db, clearDatabases, toDots, toCommas, updateUser } from "./Firebase";
+import { ref, onValue, set } from "firebase/database";
 import Popup from "reactjs-popup";
 import "./Admin.css";
 
 function Admin() {
-    const [isAdminAuthorised, setisAdminAuthorised] = useState();
+    const [userData, setUserData] = useState([]);
 
-    // Ensure that a user's email using this module is on the admin collection
-    // The admin collection can only be altered by the Firebase owner.
+    // Ensure that a user's UID using this module is on the admin collection
+    // The admin attribute can only be altered by the Firebase owner.
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    // Get data for all users that we can access
     useEffect(() => {
-        const unsubscribe = onSnapshot(collection(db, "admin"), (doc) => {
-            let isAuthorised = false;
-            doc.forEach((doc) => {
-                if (auth.currentUser.email === doc.id) {
-                    isAuthorised = true;
-                }
-            });
-            if (isAuthorised) {
-                setisAdminAuthorised(true);
-            } else {
-                setisAdminAuthorised(false);
+        const unsubscribe = onValue(ref(db, "users/"), (snapshot) => {
+            setUserData(Object.entries(snapshot.val()));
+        });
+        return () => unsubscribe();
+    }, []);
+
+    useEffect(() => {
+        userData.forEach((user) => {
+            if (user[1].uid === auth.currentUser.uid) setIsAdmin(user[1].admin);
+        });
+    }, [userData]);
+
+    // Add a user to the list of total users
+    async function addUser() {
+        const email = prompt("Enter the email address of the user you want to add.");
+
+        // Ensure we don't override any existing users
+        userData.forEach((user) => {
+            if (toDots(user[0]) === email) {
+                alert("This user already exists on the userlist!");
+                return;
             }
         });
 
-        return () => {
-            unsubscribe();
-        };
-    }, []);
+        // Add proper user permissions if required
+        // We have to actually put a value for the uid, otherwise it won't propagate in the database for us to read.
+        // This could probably be fixed with something like checking if the uid field exists,
+        // but the best solution is  often the simplest solution.
+        let data;
+        if (window.confirm("Grant " + email + " permissions to read and write?")) {
+            data = {
+                uid: "nil",
+                read: true,
+                write: true,
+                admin: false,
+            };
+        } else {
+            data = {
+                uid: "nil",
+                read: false,
+                write: false,
+                admin: false,
+            };
+        }
 
-    // Delete the read permissions from an email address
-    async function removeRead(email) {
-        if (email === auth.currentUser.email) {
-            alert("You cannot remove your own read permission as an administrator.");
+        // Commit to the database
+        await set(ref(db, `users/${toCommas(email)}`), data)
+            .then(() => {
+                alert("Operation completed.");
+            })
+            .catch((err) => alert(err));
+    }
+
+    // Manage the permissions of a selected user using prompts
+    // I would do a popup that has checkboxes and it would commit the results after, but I decided that I don't care
+    // prettier-ignore
+    function editUser(userdata) {
+        if (!window.confirm(
+                "You are viewing the permissions of: " + toDots(userdata[0]) +
+                    "\n\nTheir current permissions are:" +
+                    "\nRead: " + (auth.currentUser.email !== toDots(userdata[0]) ? userdata[1].read.toString().toUpperCase() : (userdata[1].read.toString().toUpperCase() + " (CANNOT CHANGE)")) +
+                    "\nWrite: " + userdata[1].write.toString().toUpperCase() +
+                    "\n\nIf you wish to edit these permissions, press OK, otherwise press Cancel.")) {
             return;
         }
 
-        if (!window.confirm("Remove read permission from " + email + "?")) return;
-
-        await deleteDoc(doc(db, "read", email))
-            .catch((error) => alert(error))
-            .then(() => alert("Operation completed."));
-    }
-
-    // Delete the write permissions from an email address
-    async function removeWrite(email) {
-        if (!window.confirm("Remove write permission from " + email + "?")) return;
-        await deleteDoc(doc(db, "write", email))
-            .catch((error) => alert(error))
-            .then(() => alert("Operation completed."));
-    }
-
-    // Add read permissions to an email address by making a new doc with the email's name
-    // No data is placed inside this doc, but is used for security purposes
-    async function addRead() {
-        const email = prompt("Enter an email address to grant application access to.");
-        await setDoc(doc(db, "read", email), {})
-            .catch((error) => alert(error))
-            .then(() => alert("Operation completed."));
-    }
-
-    // Add write permissions to an email address by making a new doc with the email's name
-    async function addWrite() {
-        const email = prompt("Enter an email address to grant message send access to.");
-        await setDoc(doc(db, "write", email), {})
-            .catch((error) => alert(error))
-            .then(() => alert("Operation completed."));
-    }
-
-    // Clear all database messages and media content
-    async function clearDatabase() {
-        if (
-            !window.confirm(
-                "WARNING: You are about to delete all database messages. Are you sure you want to continue?"
-            )
-        )
-            return;
-
-        const nums = Math.floor(Math.random() * (9999 - 1000 + 1) + 1000);
-        if (
-            window.prompt(`Please enter these four numbers in order to complete the database transaction: ${nums}`) !==
-            nums.toString()
-        ) {
-            alert("Operation cancelled.");
-            return;
+        let updatedata = {};
+        if (auth.currentUser.email !== toDots(userdata[0])) {
+            if (window.confirm(`Current READ permission of user '${toDots(userdata[0])}' is set to: ${userdata[1].read.toString().toUpperCase()}\n\n${userdata[1].read ? "REMOVE" : "GRANT"} read permission?`)) {
+                updatedata.read = !userdata[1].read;
+            }
         }
 
-        // Delete all Firestore messages
-        onSnapshot(collection(db, "messages"), (snapshot) => {
-            snapshot.forEach((message) => {
-                deleteDoc(doc(db, "messages", message.id)).catch((err) => console.error(err));
-            });
-        });
+        if (window.confirm(`Current WRITE permission of user '${toDots(userdata[0])}' is set to: ${userdata[1].write.toString().toUpperCase()}\n\n${userdata[1].write ? "REMOVE" : "GRANT"} write permission?`)) {
+            updatedata.write = !userdata[1].write;
+        }
 
-        // Delete all media uploaded
-        await listAll(ref(storage, "files")).then((listResults) => {
-            const promises = listResults.items.map((item) => {
-                return deleteObject(item);
+        // Update permissions now
+        if (Object.keys(updatedata).length > 0) {
+            updateUser(userdata[0], updatedata).then(() => {
+                alert("Operation completed.");
             });
-            Promise.all(promises);
-        });
-
-        alert("Operation completed. A reload is required.");
-        window.location.reload();
+        } else {
+            alert("No permissions were updated.");
+        }
     }
-
-    const [readDocs, setReadDocs] = useState([]);
-    const [writeDocs, setWriteDocs] = useState([]);
-
-    // There was a memory leak here that leaked hundreds of megabytes per second with these two listeners.
-    // Thanks ChatGPT for fixing it...
-    useEffect(() => {
-        const readListener = onSnapshot(collection(db, "read"), (querySnapshot) => {
-            const readArray = [];
-            querySnapshot.forEach((doc) => {
-                readArray.push(doc.id);
-            });
-            setReadDocs(readArray);
-        });
-
-        const writeListener = onSnapshot(collection(db, "write"), (querySnapshot) => {
-            const writeArray = [];
-            querySnapshot.forEach((doc) => {
-                writeArray.push(doc.id);
-            });
-            setWriteDocs(writeArray);
-        });
-
-        return () => {
-            readListener();
-            writeListener();
-        };
-    }, []);
 
     return (
         <Popup
@@ -146,58 +112,38 @@ function Admin() {
                 <>
                     <div className="oadmin" />
                     <div className="admin">
-                        {isAdminAuthorised ? (
-                            <>
+                        {isAdmin ? (
+                            <div className="authorised">
                                 <span className="close" onClick={close}>
                                     &times;
                                 </span>
-                                <div className="authorised">
-                                    <div className="title">
-                                        <h4>Application Permissions Control Panel</h4>
-                                        <p className="portalreference">
-                                            "Prolonged exposure to this module is not part of the test."
-                                        </p>
-                                        <br />
-                                    </div>
-                                    <div className="read">
-                                        <p>READ</p>
-                                        <ul>
-                                            {readDocs.map((doc) => {
-                                                return (
-                                                    <li>
-                                                        <button onClick={() => removeRead(doc)} key={doc.id}>
-                                                            {doc}
-                                                        </button>
-                                                    </li>
-                                                );
-                                            })}
-                                        </ul>
-                                        <button onClick={() => addRead()} className="new">
-                                            Add a new user
-                                        </button>
-                                    </div>
-                                    <div className="write">
-                                        <p>WRITE</p>
-                                        <ul>
-                                            {writeDocs.map((doc) => {
-                                                return (
-                                                    <li>
-                                                        <button onClick={() => removeWrite(doc)} key={doc.id}>
-                                                            {doc}
-                                                        </button>
-                                                    </li>
-                                                );
-                                            })}
-                                        </ul>
-                                        <button onClick={() => addWrite()} className="new">
-                                            Add a new writer
-                                        </button>
-                                    </div>
-                                    <span className="cleardb" onClick={() => clearDatabase()}>
-                                        CLEAR DATABASES
-                                    </span>
+                                <div className="title">
+                                    <h4>Application Permissions Control Panel</h4>
+                                    <p className="portalreference">
+                                        "Prolonged exposure to this module is not part of the test."
+                                    </p>
                                 </div>
-                            </>
+                                <div className="users">
+                                    <ul>
+                                        {userData.map((user) => {
+                                            return (
+                                                // If we can't get a key from their uid, we can settle for their email instead.
+                                                // This prevents React from complaining about invalid key props
+                                                <li key={user[1].uid !== "nil" ? user[1].uid : user[0]}>
+                                                    <button onClick={() => editUser(user)}>{toDots(user[0])}</button>
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+                                </div>
+                                <br />
+                                <button onClick={() => addUser()} className="new">
+                                    Add a new user
+                                </button>
+                                <span className="cleardb" onClick={() => clearDatabases()}>
+                                    CLEAR DATABASES
+                                </span>
+                            </div>
                         ) : (
                             <>
                                 <span className="close override" onClick={close}>

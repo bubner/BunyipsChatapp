@@ -33,3 +33,7 @@
 .mdinner td {
     padding: 3px;
 }
+
+.mdinner p {
+    text-align: center;
+}

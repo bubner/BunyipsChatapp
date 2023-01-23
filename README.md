@@ -5,7 +5,7 @@ This is a simple chat app made for the members of the Murray Bridge Bunyips Robo
 
 ## Technologies used:
 - React frontend with Bootstrap and standard CSS
-- Firebase backend (Authentication, Firestore, Cloud Storage, Live and Deployment Hosting) 
+- Firebase backend (Authentication, Realtime Database, Cloud Storage, Live and Deployment Hosting) 
 - Create React App architecture
 
 ###### Lucas Bubner [@holo-lb](https://github.com/holo-lb), <br> Lachlan Paul [@BanjoTheBot](https://github.com/BanjoTheBot), <br> 2023

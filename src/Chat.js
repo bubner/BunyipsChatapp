@@ -5,60 +5,82 @@
  *    @author Lachlan Paul, 2023
  */
 
-import { db, auth } from "./Firebase";
+import { db, auth, getData, toCommas } from "./Firebase";
 import { useEffect, useRef, useState } from "react";
-import { useCollectionData } from "react-firebase-hooks/firestore";
-import { collection, query, orderBy, limitToLast, onSnapshot } from "firebase/firestore";
+import { ref, onValue } from "firebase/database";
 import Message from "./Message";
 import Navbar from "./Navbar";
 import MessageBar from "./MessageBar";
 
 function Chat() {
-    // Authenticate that the email is able to read messages
+    const [messages, setMessageData] = useState([]);
+    const [authorised, setAuthorised] = useState(false);
+
     useEffect(() => {
-        const unsubscribe = onSnapshot(collection(db, "read"), (doc) => {
-            let readAccess = false;
-            doc.forEach((doc) => {
-                // Check every doc in the "read" collection and see if the users email exists
-                if (auth.currentUser.email === doc.id) {
-                    readAccess = true;
+        if (!auth.currentUser) return;
+        // Block unauthorised users from accessing the application
+        getData("users", toCommas(auth.currentUser.email)).then((userData) => {
+            if (!userData.read) {
+                try {
+                    alert(
+                        `Access denied to ${auth.currentUser.email}. You do not have sufficient permissions to view this chat. Please email lbubner21@mbhs.sa.edu.au to continue.`
+                    );
+                } catch (e) {
+                    // Any errors from the alert will be from the non-presence of auth.currentUser.email, meaning we have signed out.
+                    // We can safely ignore and swallow the error. The cake is delicious and moist.
+                    console.debug(e);
                 }
-            });
-            // Block unauthorised users from accessing the application.
-            // Note that Firebase will also reject database requests in the event this safeguard is exploited.
-            if (!readAccess) {
-                alert(
-                    `Access denied to ${auth.currentUser.email}. You do not have sufficient permissions to view this chat. Please email lbubner21@mbhs.sa.edu.au to continue.`
-                );
+                setAuthorised(false);
                 auth.signOut();
+            } else {
+                setAuthorised(true);
             }
         });
-
-        return () => {
-            unsubscribe();
-        };
     }, []);
 
-    // Query Firestore for the last 300 messages
-    const msgRef = collection(db, "messages");
-    const messageQuery = query(msgRef, orderBy("createdAt", "asc"), limitToLast(300));
-    const [messages] = useCollectionData(messageQuery, { idField: "id" });
+    const lastSeenTimestampRef = useRef(Date.now());
+    const [newMessage, setNewMessage] = useState(false);
+
+    // Grand collection function that continually checks the message database for new/changed messages
+    useEffect(() => {
+        const unsubscribe = onValue(ref(db, "messages/"), (snapshot) => {
+            // Protect against adding null values to the message state by checking if the snapshot is null
+            setMessageData(snapshot.val() !== null ? Object.entries(snapshot.val()) : []);
+        });
+        return () => unsubscribe();
+    }, []);
 
     // Set custom properties on a dummy object allow messages to appear fluidly
     const dummy = useRef();
-    useEffect(
-        () => dummy.current.scrollIntoView({ behavior: "auto" }),
-        [messages]
-    );
+    const lastMessage = useRef();
 
-    // Handle new messages and provide notifications for them. Who knew this would take so many React hooks?
-    // Using a timestamp store variable to determine whether the messages that appear are new
-    const [newMessage, setNewMessage] = useState(false);
-    const [hidden, setHidden] = useState(false);
-    const [lastSeenTimestamp, setLastSeenTimestamp] = useState(Date.now());
+    // Monitor Firebase for new changes update the new message hook. Notifications will also proc if:
+    // a) The message has just been added to Firebase
+    // b) The viewport is not currently visible and the user is in another tab
+    // c) The message that was added to Firestore has a timestamp that is greater than the last seen timestamp for the user
+    // This also ensures that the user gets scrolled down and notified only once.
+    useEffect(() => {
+        if (dummy.current && messages.length > 0 && lastMessage.current !== messages[messages.length - 1][0]) {
+            dummy.current.scrollIntoView({ behavior: "auto" });
+            if (messages[messages.length - 1][1].createdAt > lastSeenTimestampRef.current) setNewMessage(true);
+            lastMessage.current = messages[messages.length - 1][0];
+        }
+    }, [messages]);
+
+    // Proc the scroll-to-bottom at least once after we initially load in, so the user isn't
+    // stuck at the top of the page upon entering if the useEffect above this doesn't work
+    useEffect(() => {
+        setTimeout(() => {
+            window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: "auto",
+            });
+        }, 1000);
+    }, []);
 
     // Set the state of the hidden variable depending on whether the user is on the chatapp or not.
     // We don't want to notify that there's a new message if they're already on the chatapp.
+    const [hidden, setHidden] = useState(false);
     useEffect(() => {
         document.addEventListener("visibilitychange", () => {
             setHidden(document.hidden);
@@ -74,30 +96,12 @@ function Chat() {
     // is received. This is done to know if the user has looked at the latest message or not.
     useEffect(() => {
         if (!hidden && messages && messages.length > 0) {
-            setLastSeenTimestamp(messages[messages.length - 1].createdAt);
+            lastSeenTimestampRef.current = messages[messages.length - 1][1].createdAt;
             setNewMessage(false);
         }
     }, [hidden, messages]);
 
-    // Monitor Firestore with the onSnapshot hook and update the new message hook in the following conditions:
-    // a) The message has just been added to Firestore
-    // b) The viewport is not currently visible and the user is in another tab
-    // c) The message that was added to Firestore has a timestamp that is greater than the last seen timestamp for the user
-    useEffect(() => {
-        const unsubscribe = onSnapshot(collection(db, "messages"), (snapshot) => {
-            snapshot.docChanges().forEach((change) => {
-                if (change.type === "added" && hidden && change.doc.data().createdAt > lastSeenTimestamp) {
-                    setNewMessage(true);
-                }
-            });
-        });
-
-        return () => {
-            unsubscribe();
-        };
-    }, [hidden, lastSeenTimestamp]);
-
-    // Finally, change the title and favicon in the event that both:
+    // Change the title and favicon in the event that both:
     // a) A confirmed new message that conforms to the new message hook criteria exists
     // b) The user is not currently on the page and cannot see the current messages
     useEffect(() => {
@@ -112,19 +116,23 @@ function Chat() {
 
     return (
         <>
-            {/* Navbar element with profile information */}
-            <Navbar />
-            <div className="messages">
-                {/* Allow space for Navbar to fit */}
-                <br /> <br /> <br /> <br /> <br />
-                {/* Display all messages currently in Firestore */}
-                {messages && messages.map((msg) => <Message message={msg} key={msg.id.id} />)}
-                {/* Dummy element for fluid interface */}
-                <div id="dummy" ref={dummy}></div>
-                <br /> <br /> <br />
-                {/* Message bar with end-user options to add files and message */}
-                <MessageBar />
-            </div>
+            {authorised && (
+                <>
+                    {/* Navbar element with profile information */}
+                    <Navbar />
+                    <div className="messages">
+                        {/* Allow space for Navbar to fit */}
+                        <br /> <br /> <br /> <br /> <br />
+                        {/* Display all messages currently in Firestore */}
+                        {messages.length > 0 && messages.map((msg) => <Message message={msg[1]} key={msg[1].id} />)}
+                        {/* Dummy element for fluid interface */}
+                        <div id="dummy" ref={dummy}></div>
+                        <br /> <br /> <br />
+                        {/* Message bar with end-user options to add files and message */}
+                        <MessageBar />
+                    </div>
+                </>
+            )}
         </>
     );
 }

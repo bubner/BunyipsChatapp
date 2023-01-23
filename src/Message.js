@@ -12,6 +12,7 @@ import "./App.css";
 import "./Message.css";
 import ReactMarkdown from "react-markdown";
 import gfm from "remark-gfm";
+import Filter from "bad-words";
 
 const getFileFormat = (fileURL) => {
     return fileURL.slice(0, fileURL.indexOf(":"));
@@ -25,14 +26,19 @@ function Message({ message }) {
     const [isHovering, setIsHovering] = useState(false);
     const handleMouseOver = () => setIsHovering(true);
     const handleMouseOut = () => setIsHovering(false);
+    const timestamp = new Date(message.createdAt);
+    const filter = new Filter({ placeHolder: '♥' });
 
-    let timestamp;
-    try {
-        // Attempt to retrieve a timestamp from the server
-        timestamp = new Date(message.createdAt.seconds * 1000);
-    } catch (error) {
-        // If it fails, this must mean the message is being sent, and we can use the current Unix time
-        timestamp = new Date(Date.now());
+    function clean(message) {
+        try {
+            message = filter.clean(message);
+        } catch (e) {
+            // If users enter text that cannot be cleaned, such as raw markdown, then we will change what is rendered.
+            // If we don't change it, the webapp will crash and burn in a fire greater than a thousand suns.
+            // This is the one instance where Filter throwing an error is actually good, as it fixes multiple issues
+            message = "Look at me! I'm a foolish idiot who tried using Markdown without any other characters!";
+        }
+        return message;
     }
 
     return (
@@ -61,8 +67,8 @@ function Message({ message }) {
             {!message.isRetracted ? (
                 message.isMsg ? (
                     // If it is a normal message, pass it through ReactMarkdown which will auto hyperlink any links, and add markdown
-                    <ReactMarkdown className="text" remarkPlugins={[gfm]}>
-                        {message.text}
+                    <ReactMarkdown className="text" remarkPlugins={[gfm]} linkTarget="_blank">
+                        {clean(message.text)}
                     </ReactMarkdown>
                 ) : (
                     // Otherwise, it must be a file and we can display the downloadURL depending on it's type
@@ -72,6 +78,7 @@ function Message({ message }) {
                         {getFileFormat(message.text).startsWith("image") ? (
                             // If we can display the image through an img tag, define a height maximum and render it
                             <img
+                                onClick={() => window.open(getFileURL(message.text), "_blank")}
                                 src={getFileURL(message.text)}
                                 alt={`Upload by ${message.displayName}`}
                                 className="fileimage"
@@ -97,10 +104,10 @@ function Message({ message }) {
                             />
                         ) : (
                             // Fallback view file attachment to each file upload incase of an unknown file type
+                            // prettier-ignore
                             <a target="_blank" rel="noreferrer" href={getFileURL(message.text)}>
                                 <b>
-                                    View {getFileFormat(message.text) || "unknown"} file uploaded by{" "}
-                                    {message.displayName}
+                                    View {getFileFormat(message.text) || "unknown"} file uploaded by {message.displayName}
                                 </b>
                             </a>
                         )}
@@ -111,7 +118,7 @@ function Message({ message }) {
                     <i>&lt;message deleted&gt;</i>
                 </p>
             )}
-            <Msgman id={message.id.id} isActive={isHovering} />
+            <Msgman id={message.id} isActive={isHovering} />
         </div>
     );
 }
