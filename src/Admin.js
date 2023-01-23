@@ -32,6 +32,7 @@ function Admin() {
     // Add a user to the list of total users
     async function addUser() {
         const email = prompt("Enter the email address of the user you want to add.");
+        if (!email) return;
 
         // Ensure we don't override any existing users
         userData.forEach((user) => {
