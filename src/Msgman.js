@@ -14,7 +14,9 @@ function Msgman({ id, isActive }) {
     // Get message data to use throughout the module
     const [message, setMessageData] = useState(null);
     useEffect(() => {
-        getData("messages", id).then((data) => setMessageData(data)).catch((err) => console.error(err));
+        getData("messages", id)
+            .then((data) => setMessageData(data))
+            .catch((err) => console.error(err));
     }, [isActive, id]);
 
     // Don't display retraction option if already retracted

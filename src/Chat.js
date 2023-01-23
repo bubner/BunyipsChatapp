@@ -62,11 +62,15 @@ function Chat() {
     useEffect(() => {
         if (dummy.current && messages.length > 0 && lastMessage.current !== messages[messages.length - 1][0]) {
             dummy.current.scrollIntoView({ behavior: "auto" });
-            if (messages[messages.length - 1][1].createdAt > lastSeenTimestampRef.current)
-                setNewMessage(true);
+            if (messages[messages.length - 1][1].createdAt > lastSeenTimestampRef.current) setNewMessage(true);
             lastMessage.current = messages[messages.length - 1][0];
         }
     }, [messages]);
+
+    // Proc the newMessage at least once upon initial render, so the application can scroll to the bottom
+    useEffect(() => {
+        setNewMessage(true);
+    }, []);
 
     // Set the state of the hidden variable depending on whether the user is on the chatapp or not.
     // We don't want to notify that there's a new message if they're already on the chatapp.

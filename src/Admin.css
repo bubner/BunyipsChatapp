@@ -50,11 +50,11 @@
 }
 
 .authorised ul li::before {
-    content: '⮞ ';
+    content: "⮞ ";
 }
 
 .authorised ul li::after {
-    content: ' ⮜';
+    content: " ⮜";
 }
 
 .authorised {
@@ -136,10 +136,10 @@
 
 @media only screen and (max-width: 600px) {
     .authorised ul li::before {
-        content: '';
+        content: "";
     }
-    
+
     .authorised ul li::after {
-        content: '';
+        content: "";
     }
 }
