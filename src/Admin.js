@@ -43,20 +43,16 @@ function Admin() {
         });
 
         // Add proper user permissions if required
-        // We have to actually put a value for the uid, otherwise it won't propagate in the database for us to read.
-        // This could probably be fixed with something like checking if the uid field exists,
-        // but the best solution is  often the simplest solution.
+        // We do not have to explicitly set photoURL, displayName, or UID as that will be handled by Firebase.js
         let data;
         if (window.confirm("Grant " + email + " permissions to read and write?")) {
             data = {
-                uid: "nil",
                 read: true,
                 write: true,
                 admin: false,
             };
         } else {
             data = {
-                uid: "nil",
                 read: false,
                 write: false,
                 admin: false,

@@ -101,26 +101,31 @@ export function useAuthStateChanged() {
             if (user) {
                 // Check if the user already exists in the "users" node
                 onValue(ref(db, `users/${toCommas(user.email)}`), (snapshot) => {
-                    // If there are no snapshots for the user, create a new one with no permissions.
-                    if (!snapshot.exists()) {
+                    if (snapshot.exists()) {
+                        // Ensure the user metadata exists and is up to date with the latest snapshot
+                        // TODO: Check and/or update UID
+                        
+                        // TODO: Check and/or update displayName
+
+                        // TODO: Check and/or update photoURL
+                    } else {
+                        // If there are no snapshots for the user, create a new one with no permissions.
                         set(ref(db, `users/${toCommas(user.email)}`), {
                             uid: user.uid,
+                            name: user.displayName,
+                            pfp: user.photoURL,
                             read: false,
                             write: false,
                             admin: false,
                         });
+
                         // Reload the window as the data collection methods may have already fired
                         window.location.reload();
-                    } else if (snapshot.child("uid").val() === "nil") {
-                        // Otherwise, if they do exist but were manually added, simply update their uid to not be null
-                        set(ref(db, `users/${toCommas(user.email)}/uid`), user.uid);
                     }
-                    // If they do exist and do have a uid, do nothing.
                 });
             }
         });
 
-        // Clean up function
         return () => unsubscribe();
     }, []);
 }
