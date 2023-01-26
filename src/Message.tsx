@@ -14,15 +14,15 @@ import ReactMarkdown from "react-markdown";
 import gfm from "remark-gfm";
 import Filter from "bad-words";
 
-const getFileFormat = (fileURL) => {
+const getFileFormat = (fileURL: string) => {
     return fileURL.slice(0, fileURL.indexOf(":"));
 };
 
-export const getFileURL = (fileURL) => {
+export const getFileURL = (fileURL: string) => {
     return fileURL.substr(fileURL.indexOf(":") + 1);
 };
 
-function Message({ message }) {
+function Message({ message }: any) {
     const [isHovering, setIsHovering] = useState(false);
     const handleMouseOver = () => setIsHovering(true);
     const handleMouseOut = () => setIsHovering(false);
@@ -38,7 +38,7 @@ function Message({ message }) {
         timestamp = new Date(Date.now());
     }
 
-    function clean(message) {
+    function clean(message: string) {
         try {
             message = filter.clean(message);
         } catch (e) {
@@ -53,7 +53,7 @@ function Message({ message }) {
     return (
         // Determine whether the message was sent or recieved by checking the author and current user
         <div
-            className={`message ${auth.currentUser.uid === message.uid ? "sent" : "received"}`}
+            className={`message ${auth.currentUser?.uid === message.uid ? "sent" : "received"}`}
             onMouseOver={handleMouseOver}
             onMouseOut={handleMouseOut}>
             {/* Generate profile picture based on the photoURL attached with the message */}
@@ -97,8 +97,6 @@ function Message({ message }) {
                             <video
                                 controls
                                 src={getFileURL(message.text)}
-                                alt={`Video upload by ${message.displayName}`}
-                                autostart="false"
                                 className="filevideo"
                             />
                         ) : getFileFormat(message.text).startsWith("audio") ? (
@@ -106,9 +104,8 @@ function Message({ message }) {
                             <audio
                                 controls
                                 src={getFileURL(message.text)}
-                                autoplay="0"
+                                autoPlay={false}
                                 title={`Audio upload by ${message.displayName}`}
-                                type={getFileFormat(message.text)}
                                 className="fileaudio"
                             />
                         ) : (

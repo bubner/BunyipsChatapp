@@ -38,7 +38,7 @@ const auth = getAuth(app);
 const db = getDatabase(app);
 
 // Internal function to handle database errors when retrieving or sending standard information
-function errorHandler(err) {
+function errorHandler(err: any) {
     // Error handler incase Black Mesa decides to do another experiment
     console.error(err);
 
@@ -54,7 +54,7 @@ function errorHandler(err) {
 }
 
 // Monitor a user's presence in the database's online users section
-export async function startMonitoring(email) {
+export async function startMonitoring(email: string) {
     const onlineStatus = ref(db, `users/${toCommas(email)}/online`);
     // Set user presence as online when the user is here
     await set(onlineStatus, true);
@@ -65,12 +65,12 @@ export async function startMonitoring(email) {
 
 // Handle signing out while also properly updating user presence
 export async function signOut() {
-    const onlineStatus = ref(db, `users/${toCommas(auth.currentUser.email)}/online`);
+    const onlineStatus = ref(db, `users/${toCommas(auth.currentUser?.email)}/online`);
     // Manually update user presence to be offline
     await set(onlineStatus, false);
 
     // Update last seen timestamp
-    await set(ref(db, `users/${toCommas(auth.currentUser.email)}/online/lastseen`), serverTimestamp());
+    await set(ref(db, `users/${toCommas(auth.currentUser?.email)}/online/lastseen`), serverTimestamp());
     await auth.signOut();
 
     // Refresh the page to clear the event listeners
@@ -85,12 +85,12 @@ export function signInWithGoogle() {
 }
 
 // Change dots to commas, db names that are supported
-export function toCommas(str) {
+export function toCommas(str: any) {
     return str.replace(/\./g, ",");
 }
 
 // Change commas back to dots, for proper reading
-export function toDots(str) {
+export function toDots(str: any) {
     return str.replace(/,/g, ".");
 }
 
@@ -131,12 +131,12 @@ export function useAuthStateChanged() {
 }
 
 // Function to check if a message is over the character limit
-export function isMessageOverLimit(message) {
+export function isMessageOverLimit(message: string) {
     return message.length > 4000;
 }
 
 // Function to add a message to Firebase
-export async function uploadMsg(formVal) {
+export async function uploadMsg(formVal: any) {
     // Prevent adding blank messages into Firebase
     if (!formVal) return;
 
@@ -152,37 +152,37 @@ export async function uploadMsg(formVal) {
         isMsg: true,
         isRetracted: false,
         id: msgID,
-        uid: auth.currentUser.uid,
-        email: auth.currentUser.email,
-        displayName: auth.currentUser.displayName,
+        uid: auth.currentUser?.uid,
+        email: auth.currentUser?.email,
+        displayName: auth.currentUser?.displayName,
         text: formVal,
-        photoURL: auth.currentUser.photoURL,
+        photoURL: auth.currentUser?.photoURL,
         createdAt: serverTimestamp(),
     }).catch((error) => errorHandler(error));
 }
 
-export async function uploadFileMsg(url, type) {
+export async function uploadFileMsg(url: string, type: string) {
     const msgID = push(child(ref(db), "messages")).key;
     await set(ref(db, "messages/" + msgID), {
         isMsg: false,
         isRetracted: false,
         id: msgID,
-        uid: auth.currentUser.uid,
-        email: auth.currentUser.email,
-        displayName: auth.currentUser.displayName,
+        uid: auth.currentUser?.uid,
+        email: auth.currentUser?.email,
+        displayName: auth.currentUser?.displayName,
         text: type + ":" + url,
-        photoURL: auth.currentUser.photoURL,
+        photoURL: auth.currentUser?.photoURL,
         createdAt: serverTimestamp(),
     }).catch((error) => errorHandler(error));
 }
 
-export async function updateMsg(id, content) {
+export async function updateMsg(id: string, content: any) {
     await update(ref(db, "messages/" + id), content);
 }
 
-export async function deleteMsg(id) {
+export async function deleteMsg(id: any) {
     // Get the message reference from Firebase
-    getData("messages", id).then(async (data) => {
+    getData("messages", id).then(async (data: any) => {
         if (!data.isMsg) {
             // Check if the document contains a file, if so, we'll have to delete from Firebase storage too
             const fileRef = sref(storage, getFileURL(data.text));
@@ -193,7 +193,7 @@ export async function deleteMsg(id) {
     });
 }
 
-export async function getData(endpoint, id) {
+export async function getData(endpoint: string, id: any) {
     let datavalue = null;
     await get(child(ref(db), `${endpoint}/${id}`))
         .then((snapshot) => {
@@ -203,7 +203,7 @@ export async function getData(endpoint, id) {
     return datavalue;
 }
 
-export async function updateUser(email, changes) {
+export async function updateUser(email: string, changes: any) {
     await update(ref(db, "users/" + email), changes);
 }
 

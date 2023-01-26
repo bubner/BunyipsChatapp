@@ -3,15 +3,13 @@
  *    @author Lachlan Paul, 2023
  */
 import "./Navbar.css";
-import "./Firebase.js";
-import "./Message.js";
 import { auth, signOut } from "./Firebase";
 import { useState, useEffect } from "react";
 import BBQ from "./BBQ";
 import Users from "./Users";
 
 function Navbar() {
-    const [currentTime, setCurrentTime] = useState();
+    const [currentTime, setCurrentTime] = useState<any>();
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -28,11 +26,11 @@ function Navbar() {
             <div className="navbar">
                 <img
                     className="navbar-brand"
-                    src={auth.currentUser.photoURL}
+                    src={auth.currentUser?.photoURL?.toString()}
                     referrerPolicy="no-referrer"
-                    alt={`Profile of ${auth.currentUser.displayName}`}
+                    alt={`Profile of ${auth.currentUser?.displayName}`}
                 />
-                <p className="navbar-name">{auth.currentUser.displayName}</p>
+                <p className="navbar-name">{auth.currentUser?.displayName}</p>
                 <svg className="sobtn" onClick={async () => await signOut()} />
                 <BBQ />
             </div>

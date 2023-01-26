@@ -11,20 +11,20 @@ import Popup from "reactjs-popup";
 import "./FileUploads.css";
 
 function FileUploads() {
-    const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedFile, setSelectedFile] = useState<any>(null);
     const [isFilePicked, setIsFilePicked] = useState(false);
     const [progressPercent, setProgressPercent] = useState(0);
     const [isFileUploading, setIsFileUploading] = useState(false);
     const [isFileUploaded, setIsFileUploaded] = useState(false);
     const [isClipboard, setIsClipboard] = useState(false);
 
-    const uploadTaskRef = useRef();
+    const uploadTaskRef = useRef<any>();
 
     // Return 8 characters that are legal for making file names unique
     const generateChars = () => [...Array(8)].map(() => Math.random().toString(36).substring(2, 3)).join("");
 
     // Convert byte numbers to their corresponding format
-    const formatBytes = (a, b = 2) => {
+    const formatBytes = (a: number, b = 2) => {
         const c = Math.max(0, b);
         const d = Math.floor(Math.log(a) / Math.log(1024));
         return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
@@ -32,7 +32,7 @@ function FileUploads() {
         }`;
     };
 
-    function generateUniqueFileName(filename) {
+    function generateUniqueFileName(filename: string) {
         // <original filename> + _ + <random 8 chars> + <file extension>
         return (
             filename.substr(0, filename.lastIndexOf(".")) +
@@ -42,7 +42,7 @@ function FileUploads() {
         );
     }
 
-    const changeHandler = (event) => {
+    const changeHandler = (event: any) => {
         setSelectedFile(event.target.files[0]);
 
         // If the file is greater than 10 megabytes, restrict upload
@@ -56,14 +56,8 @@ function FileUploads() {
     };
 
     const resetElement = () => {
-        try {
+        if (uploadTaskRef.current)
             uploadTaskRef.current.cancel();
-        } catch (e) {
-            // An exception is thrown when the upload menu is closed before a file is present.
-            // However, the error causes the reset element functionality to not work properly, so
-            // you will not stop me and I will eat all the cake.
-            console.debug(e);
-        }
         setIsFileUploading(false);
         setSelectedFile(null);
         setIsFilePicked(false);
@@ -71,7 +65,7 @@ function FileUploads() {
         setIsClipboard(false);
     };
 
-    const uploadFile = (name) => {
+    const uploadFile = (name: string) => {
         const storageRef = ref(storage, `files/${name}`);
         uploadTaskRef.current = uploadBytesResumable(storageRef, selectedFile);
     };
@@ -88,11 +82,11 @@ function FileUploads() {
 
         uploadTaskRef.current.on(
             "state_changed",
-            (snapshot) => {
+            (snapshot: any) => {
                 const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
                 setProgressPercent(progress);
             },
-            (error) => {
+            (error: any) => {
                 alert(error);
             },
             () => {
@@ -112,7 +106,7 @@ function FileUploads() {
         );
     };
 
-    const clipboardHandler = useCallback((e) => {
+    const clipboardHandler = useCallback((e: any) => {
         console.debug("Pasted clipboard content at target:", e.target.className);
         // Only activate if the target was towards the chat box to avoid goofy interface issues
         const validInputZones = [
@@ -160,61 +154,63 @@ function FileUploads() {
         };
     }, [clipboardHandler]);
 
-    const popupRef = useRef();
+    const popupRef = useRef<any>();
 
     return (
         <Popup ref={popupRef} trigger={<span className="popupbutton" />} onClose={resetElement}>
-            {(close) => (
-                <div className="uploadWindow">
-                    <div className="innerUploadWindow">
-                        <span className="close" onClick={close}>
-                            &times;
-                        </span>
-                        <h3 className="ftitle">File Upload Menu</h3>
-                        {isFileUploaded ? (
-                            <div className="ftext">File uploaded.</div>
-                        ) : !isClipboard ? (
-                            <input type="file" name="file" onChange={changeHandler} className="fileInput" />
-                        ) : (
-                            <div className="ftext">
-                                <i>File supplied by clipboard paste.</i>
-                            </div>
-                        )}
-                        {isFilePicked && selectedFile != null && !isFileUploaded && (
-                            <div className="fileinfo">
-                                <br />
-                                <p>
-                                    <i>File name:</i> {selectedFile.name} <br />
-                                    <i>Filetype:</i> {selectedFile.type || "unknown"} <br />
-                                    <i>Size in bytes:</i> {formatBytes(selectedFile.size)}
-                                </p>
-                                <p>
-                                    <b>Upload file?</b>
-                                </p>
-                                <div>
-                                    <button className="uploadButton" onClick={handleSubmission}>
-                                        Upload
-                                    </button>
+            <>
+                {(close: any) => (
+                    <div className="uploadWindow">
+                        <div className="innerUploadWindow">
+                            <span className="close" onClick={close}>
+                                &times;
+                            </span>
+                            <h3 className="ftitle">File Upload Menu</h3>
+                            {isFileUploaded ? (
+                                <div className="ftext">File uploaded.</div>
+                            ) : !isClipboard ? (
+                                <input type="file" name="file" onChange={changeHandler} className="fileInput" />
+                            ) : (
+                                <div className="ftext">
+                                    <i>File supplied by clipboard paste.</i>
                                 </div>
-                            </div>
-                        )}
-                        <br />
-                        {isFileUploading && !isFileUploaded && (
-                            <div className="barload">
-                                <div className="outerload">
-                                    <div
-                                        className="innerload"
-                                        style={{
-                                            width: `${progressPercent}%`,
-                                        }}>
-                                        <p>Uploading... {progressPercent}%</p>
+                            )}
+                            {isFilePicked && selectedFile != null && !isFileUploaded && (
+                                <div className="fileinfo">
+                                    <br />
+                                    <p>
+                                        <i>File name:</i> {selectedFile.name} <br />
+                                        <i>Filetype:</i> {selectedFile.type || "unknown"} <br />
+                                        <i>Size in bytes:</i> {formatBytes(selectedFile.size)}
+                                    </p>
+                                    <p>
+                                        <b>Upload file?</b>
+                                    </p>
+                                    <div>
+                                        <button className="uploadButton" onClick={handleSubmission}>
+                                            Upload
+                                        </button>
                                     </div>
                                 </div>
-                            </div>
-                        )}
+                            )}
+                            <br />
+                            {isFileUploading && !isFileUploaded && (
+                                <div className="barload">
+                                    <div className="outerload">
+                                        <div
+                                            className="innerload"
+                                            style={{
+                                                width: `${progressPercent}%`,
+                                            }}>
+                                            <p>Uploading... {progressPercent}%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
+            </>
         </Popup>
     );
 }

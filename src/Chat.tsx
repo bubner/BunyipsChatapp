@@ -13,17 +13,17 @@ import Navbar from "./Navbar";
 import MessageBar from "./MessageBar";
 
 function Chat() {
-    const [messages, setMessageData] = useState([]);
+    const [messages, setMessageData] = useState<any>([]);
     const [authorised, setAuthorised] = useState(false);
 
     useEffect(() => {
         if (!auth.currentUser) return;
         // Block unauthorised users from accessing the application
-        getData("users", toCommas(auth.currentUser.email)).then((userData) => {
+        getData("users", toCommas(auth.currentUser.email)).then((userData: any) => {
             if (!userData.read) {
                 try {
                     alert(
-                        `Access denied to ${auth.currentUser.email}. You do not have sufficient permissions to view this chat. Please email lbubner21@mbhs.sa.edu.au to continue.`
+                        `Access denied to ${auth.currentUser?.email}. You do not have sufficient permissions to view this chat. Please email lbubner21@mbhs.sa.edu.au to continue.`
                     );
                 } catch (e) {
                     // Any errors from the alert will be from the non-presence of auth.currentUser.email, meaning we have signed out.
@@ -51,8 +51,8 @@ function Chat() {
     }, []);
 
     // Set custom properties on a dummy object allow messages to appear fluidly
-    const dummy = useRef();
-    const lastMessage = useRef();
+    const dummy = useRef<any>();
+    const lastMessage = useRef<any>();
 
     // Monitor Firebase for new changes update the new message hook. Notifications will also proc if:
     // a) The message has just been added to Firebase
@@ -105,12 +105,15 @@ function Chat() {
     // a) A confirmed new message that conforms to the new message hook criteria exists
     // b) The user is not currently on the page and cannot see the current messages
     useEffect(() => {
+        const favicon = document.querySelector("link[rel='icon']") as HTMLLinkElement;
         if (newMessage && hidden) {
             document.title = "NEW MESSAGE!";
-            document.querySelector("link[rel='icon']").href = "alert.ico";
+            if (favicon)
+                favicon.href = "alert.ico";
         } else {
             document.title = "Bunyips Chatapp";
-            document.querySelector("link[rel='icon']").href = "favicon.ico";
+            if (favicon)
+                favicon.href = "favicon.ico";
         }
     }, [newMessage, hidden]);
 
@@ -126,7 +129,7 @@ function Chat() {
                         {/* Allow space for Navbar to fit */}
                         <br /> <br /> <br /> <br /> <br />
                         {/* Display all messages currently in Firestore */}
-                        {messages.length > 0 && messages.map((msg) => <Message message={msg[1]} key={msg[1].id} />)}
+                        {messages.length > 0 && messages.map((msg: any) => <Message message={msg[1]} key={msg[1].id} />)}
                         {/* Dummy element for fluid interface */}
                         <div id="dummy" ref={dummy}></div>
                         <br /> <br /> <br />

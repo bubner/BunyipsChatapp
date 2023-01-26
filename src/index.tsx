@@ -6,14 +6,12 @@
 
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { Offline, Online } from "react-detect-offline";
 import "./index.css";
 import App from "./App";
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
+const root = ReactDOM.createRoot(document.getElementById("root")!);
 root.render(
     <React.StrictMode>
-        <Offline><p className="offline"><h1>Bunyips Chatapp</h1>You appear to have lost connection to the app! Don't try again.</p></Offline>
-        <Online><App /></Online>
+        <App />
     </React.StrictMode>
 );

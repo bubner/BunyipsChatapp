@@ -11,10 +11,12 @@ function Users() {
     useEffect(() => {
         // Disconnects are handled automatically by Firebase, and all we need to do
         // is start the initial monitoring sequence.
-        startMonitoring(auth.currentUser.email);
+        startMonitoring(auth.currentUser?.email!);
     }, []);
 
-    return;
+    return (
+        <p>users element</p>
+    );
 }
 
 export default Users;

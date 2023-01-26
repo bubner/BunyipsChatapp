@@ -8,11 +8,11 @@ import { auth, deleteMsg, updateMsg, getData, toCommas } from "./Firebase";
 import { getFileURL } from "./Message";
 import Popup from "reactjs-popup";
 
-function Msgman({ id, isActive }) {
+function Msgman({ id, isActive }: any) {
     const [shouldDisplay, setShouldDisplay] = useState(false);
 
     // Get message data to use throughout the module
-    const [message, setMessageData] = useState(null);
+    const [message, setMessageData] = useState<any>(null);
     useEffect(() => {
         getData("messages", id)
             .then((data) => setMessageData(data))
@@ -46,13 +46,13 @@ function Msgman({ id, isActive }) {
     // Checking if the user is an administrator
     const [isAdmin, setIsAdmin] = useState(false);
     useEffect(() => {
-        getData("users", toCommas(auth.currentUser.email)).then((userData) => setIsAdmin(userData.admin));
+        getData("users", toCommas(auth.currentUser?.email)).then((userData: any) => setIsAdmin(userData.admin));
     }, []);
 
     // Determine whether a user should have moderation over their own message
     const [isAuthorised, setIsAuthorised] = useState(false);
     useEffect(() => {
-        if (message) setIsAuthorised(message.uid === auth.currentUser.uid);
+        if (message) setIsAuthorised(message.uid === auth.currentUser?.uid);
     }, [message]);
 
     // Function to show the metadata of a certain message
@@ -91,39 +91,41 @@ function Msgman({ id, isActive }) {
     return (
         <Popup
             trigger={<button className="msgman" style={{ display: shouldDisplay && isActive ? "block" : "none" }} />}>
-            {(close) => (
-                <>
-                    <div
-                        className="manouter"
-                        onClick={() => {
-                            close();
-                            setShouldDisplay(false);
-                        }}
-                    />
-                    <div className="maninner">
-                        <p>
-                            <i>Managing message: {id}</i>
-                        </p>
-                        <hr />
-                        {isAdmin && (
-                            <>
-                                <button onClick={() => viewData()}>View message metadata</button>
-                                <hr />
-                                <button onClick={() => deleteMessage()}>Delete message</button>
-                                <hr />
-                            </>
-                        )}
-                        {(isAdmin || isAuthorised) && !isRetracted && (
-                            <>
-                                <button onClick={() => retractMsg()}>Retract message</button>
-                                <hr />
-                            </>
-                        )}
-                        <button onClick={() => copyMsg()}>Copy message content</button>
-                        <hr />
-                    </div>
-                </>
-            )}
+            <>
+                {(close: any) => (
+                    <>
+                        <div
+                            className="manouter"
+                            onClick={() => {
+                                close();
+                                setShouldDisplay(false);
+                            }}
+                        />
+                        <div className="maninner">
+                            <p>
+                                <i>Managing message: {id}</i>
+                            </p>
+                            <hr />
+                            {isAdmin && (
+                                <>
+                                    <button onClick={() => viewData()}>View message metadata</button>
+                                    <hr />
+                                    <button onClick={() => deleteMessage()}>Delete message</button>
+                                    <hr />
+                                </>
+                            )}
+                            {(isAdmin || isAuthorised) && !isRetracted && (
+                                <>
+                                    <button onClick={() => retractMsg()}>Retract message</button>
+                                    <hr />
+                                </>
+                            )}
+                            <button onClick={() => copyMsg()}>Copy message content</button>
+                            <hr />
+                        </div>
+                    </>
+                )}
+            </>
         </Popup>
     );
 }

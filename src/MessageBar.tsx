@@ -12,17 +12,17 @@ import { auth, uploadMsg, isMessageOverLimit, getData, toCommas } from "./Fireba
 
 function MessageBar() {
     const [formVal, setFormVal] = useState("");
-    const [timestamp, setLastTimestamp] = useState(null);
+    const [timestamp, setLastTimestamp] = useState<number>(Date.now());
     const [messagesSent, setMessagesSent] = useState(0);
     const [writePerms, setWritePerms] = useState(false);
 
     // Ensure the user has permission to write messages to the database.
     useEffect(() => {
-        getData("users", toCommas(auth.currentUser.email)).then((userData) => setWritePerms(userData.write));
+        getData("users", toCommas(auth.currentUser?.email)).then((userData: any) => setWritePerms(userData.write));
     }, []);
 
     // Enforce cooldown on users that send too many messages at once.
-    function manageMsgSend(e) {
+    function manageMsgSend(e: any) {
         e.preventDefault();
         setMessagesSent(messagesSent + 1);
         setLastTimestamp(Date.now());
@@ -44,7 +44,7 @@ function MessageBar() {
     }, []);
 
     // Alert the user if their message has exceeded the 4000 character limit and update the formVal state.
-    function handleMessageChange(e) {
+    function handleMessageChange(e: any) {
         setFormVal(e.target.value);
         // prettier-ignore
         if (isMessageOverLimit(formVal))
