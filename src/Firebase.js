@@ -8,7 +8,7 @@
 import { useEffect } from "react";
 import { initializeApp, getApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "firebase/auth";
-import { getDatabase, ref, set, push, child, onValue, get, update, remove } from "firebase/database";
+import { getDatabase, ref, set, push, child, onValue, get, update, remove, serverTimestamp, onDisconnect } from "firebase/database";
 import { getStorage, ref as sref, deleteObject, listAll } from "firebase/storage";
 import { getFileURL } from "./Message";
 
@@ -53,10 +53,34 @@ function errorHandler(err) {
     setTimeout(() => window.location.reload(), 5000);
 }
 
+// Monitor a user's presence in the database's online users section
+export async function startMonitoring(email) {
+    const onlineStatus = ref(db, `users/${toCommas(email)}/online`);
+    // Set user presence as online when the user is here
+    await set(onlineStatus, true);
+    // Leave callback functions for Firebase to handle when the user disconnects
+    onDisconnect(onlineStatus).set(false);
+    onDisconnect(ref(db, `users/${toCommas(email)}/online/lastseen`)).set(serverTimestamp());
+}
+
+// Handle signing out while also properly updating user presence
+export async function signOut() {
+    const onlineStatus = ref(db, `users/${toCommas(auth.currentUser.email)}/online`);
+    // Manually update user presence to be offline
+    await set(onlineStatus, false);
+
+    // Update last seen timestamp
+    await set(ref(db, `users/${toCommas(auth.currentUser.email)}/online/lastseen`), serverTimestamp());
+    await auth.signOut();
+
+    // Refresh the page to clear the event listeners
+    window.location.reload();
+}
+
 // Provide Google sign in functionality and automatically registers a user into the auth instance
 export function signInWithGoogle() {
     signInWithPopup(auth, new GoogleAuthProvider()).catch((error) => {
-        alert("Google Auth Error: " + error.code + " : " + error.message + " on email: " + error.customData.email);
+        alert("Google Auth Error: " + error.code + " : " + error.message);
     });
 }
 
@@ -85,11 +109,11 @@ export function useAuthStateChanged() {
                             write: false,
                             admin: false,
                         });
+                        // Reload the window as the data collection methods may have already fired
+                        window.location.reload();
                     } else if (snapshot.child("uid").val() === "nil") {
                         // Otherwise, if they do exist but were manually added, simply update their uid to not be null
-                        update(ref(db, `users/${toCommas(user.email)}`), {
-                            uid: user.uid,
-                        });
+                        set(ref(db, `users/${toCommas(user.email)}/uid`), user.uid);
                     }
                     // If they do exist and do have a uid, do nothing.
                 });
@@ -128,7 +152,7 @@ export async function uploadMsg(formVal) {
         displayName: auth.currentUser.displayName,
         text: formVal,
         photoURL: auth.currentUser.photoURL,
-        createdAt: Date.now(),
+        createdAt: serverTimestamp(),
     }).catch((error) => errorHandler(error));
 }
 
@@ -143,7 +167,7 @@ export async function uploadFileMsg(url, type) {
         displayName: auth.currentUser.displayName,
         text: type + ":" + url,
         photoURL: auth.currentUser.photoURL,
-        createdAt: Date.now(),
+        createdAt: serverTimestamp(),
     }).catch((error) => errorHandler(error));
 }
 

@@ -5,9 +5,10 @@
 import "./Navbar.css";
 import "./Firebase.js";
 import "./Message.js";
-import { auth } from "./Firebase";
+import { auth, signOut } from "./Firebase";
 import { useState, useEffect } from "react";
 import BBQ from "./BBQ";
+import Users from "./Users";
 
 function Navbar() {
     const [currentTime, setCurrentTime] = useState();
@@ -32,7 +33,7 @@ function Navbar() {
                     alt={`Profile of ${auth.currentUser.displayName}`}
                 />
                 <p className="navbar-name">{auth.currentUser.displayName}</p>
-                <svg className="sobtn" onClick={async () => await auth.signOut()} />
+                <svg className="sobtn" onClick={async () => await signOut()} />
                 <BBQ />
             </div>
             <h4 className="productname">Bunyips Chatapp</h4>
@@ -41,6 +42,7 @@ function Navbar() {
                 <br />
                 {currentTime}
             </p>
+            <Users />
         </>
     );
 }

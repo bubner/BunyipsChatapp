@@ -114,6 +114,8 @@ function Chat() {
         }
     }, [newMessage, hidden]);
 
+    // Update user presence status when we log into the application
+
     return (
         <>
             {authorised && (
