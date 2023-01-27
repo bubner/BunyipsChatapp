@@ -8,6 +8,7 @@ import { storage } from "./Firebase";
 import { uploadFileMsg } from "./Firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import Popup from "reactjs-popup";
+import { PopupActions } from "../node_modules/reactjs-popup/dist/types";
 import "./FileUploads.css";
 
 function FileUploads() {
@@ -56,8 +57,7 @@ function FileUploads() {
     };
 
     const resetElement = () => {
-        if (uploadTaskRef.current)
-            uploadTaskRef.current.cancel();
+        if (uploadTaskRef.current) uploadTaskRef.current.cancel();
         setIsFileUploading(false);
         setSelectedFile(null);
         setIsFilePicked(false);
@@ -140,7 +140,7 @@ function FileUploads() {
     useEffect(() => {
         if (isClipboard && selectedFile) {
             // Open popup window and supply file information after a paste operation
-            popupRef.current.open();
+            tref.current?.open();
         }
     }, [isClipboard, selectedFile, isFilePicked]);
 
@@ -154,63 +154,60 @@ function FileUploads() {
         };
     }, [clipboardHandler]);
 
-    const popupRef = useRef<any>();
+    const tref = useRef<PopupActions>(null);
+    const tclose = () => tref.current?.close();
 
     return (
-        <Popup ref={popupRef} trigger={<span className="popupbutton" />} onClose={resetElement}>
-            <>
-                {(close: any) => (
-                    <div className="uploadWindow">
-                        <div className="innerUploadWindow">
-                            <span className="close" onClick={close}>
-                                &times;
-                            </span>
-                            <h3 className="ftitle">File Upload Menu</h3>
-                            {isFileUploaded ? (
-                                <div className="ftext">File uploaded.</div>
-                            ) : !isClipboard ? (
-                                <input type="file" name="file" onChange={changeHandler} className="fileInput" />
-                            ) : (
-                                <div className="ftext">
-                                    <i>File supplied by clipboard paste.</i>
-                                </div>
-                            )}
-                            {isFilePicked && selectedFile != null && !isFileUploaded && (
-                                <div className="fileinfo">
-                                    <br />
-                                    <p>
-                                        <i>File name:</i> {selectedFile.name} <br />
-                                        <i>Filetype:</i> {selectedFile.type || "unknown"} <br />
-                                        <i>Size in bytes:</i> {formatBytes(selectedFile.size)}
-                                    </p>
-                                    <p>
-                                        <b>Upload file?</b>
-                                    </p>
-                                    <div>
-                                        <button className="uploadButton" onClick={handleSubmission}>
-                                            Upload
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
-                            <br />
-                            {isFileUploading && !isFileUploaded && (
-                                <div className="barload">
-                                    <div className="outerload">
-                                        <div
-                                            className="innerload"
-                                            style={{
-                                                width: `${progressPercent}%`,
-                                            }}>
-                                            <p>Uploading... {progressPercent}%</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
+        <Popup ref={tref} trigger={<span className="popupbutton" />} onClose={resetElement}>
+            <div className="uploadWindow">
+                <div className="innerUploadWindow">
+                    <span className="close" onClick={tclose}>
+                        &times;
+                    </span>
+                    <h3 className="ftitle">File Upload Menu</h3>
+                    {isFileUploaded ? (
+                        <div className="ftext">File uploaded.</div>
+                    ) : !isClipboard ? (
+                        <input type="file" name="file" onChange={changeHandler} className="fileInput" />
+                    ) : (
+                        <div className="ftext">
+                            <i>File supplied by clipboard paste.</i>
                         </div>
-                    </div>
-                )}
-            </>
+                    )}
+                    {isFilePicked && selectedFile != null && !isFileUploaded && (
+                        <div className="fileinfo">
+                            <br />
+                            <p>
+                                <i>File name:</i> {selectedFile.name} <br />
+                                <i>Filetype:</i> {selectedFile.type || "unknown"} <br />
+                                <i>Size in bytes:</i> {formatBytes(selectedFile.size)}
+                            </p>
+                            <p>
+                                <b>Upload file?</b>
+                            </p>
+                            <div>
+                                <button className="uploadButton" onClick={handleSubmission}>
+                                    Upload
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                    <br />
+                    {isFileUploading && !isFileUploaded && (
+                        <div className="barload">
+                            <div className="outerload">
+                                <div
+                                    className="innerload"
+                                    style={{
+                                        width: `${progressPercent}%`,
+                                    }}>
+                                    <p>Uploading... {progressPercent}%</p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
         </Popup>
     );
 }

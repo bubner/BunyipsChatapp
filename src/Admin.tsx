@@ -2,10 +2,11 @@
  *    Module for modification and control of the Read/Write gatekeeper
  *    @author Lucas Bubner, 2023
  */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { auth, db, clearDatabases, toDots, toCommas, updateUser } from "./Firebase";
 import { ref, onValue, set } from "firebase/database";
 import Popup from "reactjs-popup";
+import { PopupActions } from "../node_modules/reactjs-popup/dist/types";
 import "./Admin.css";
 
 function Admin() {
@@ -101,63 +102,61 @@ function Admin() {
         }
     }
 
+    const tref = useRef<PopupActions>(null);
+    const tclose = () => tref.current?.close();
+
     return (
         <Popup
+            ref={tref}
             trigger={<button className="bbqitem">1500 Megabyte App-Managing Heavy Duty Super-Admin Super Panel</button>}
             nested>
             <>
-                {(close: any) => (
-                    <>
-                        <div className="oadmin" />
-                        <div className="admin">
-                            {isAdmin ? (
-                                <div className="authorised">
-                                    <span className="close" onClick={close}>
-                                        &times;
-                                    </span>
-                                    <div className="title">
-                                        <h4>Application Permissions Control Panel</h4>
-                                        <p className="portalreference">
-                                            "Prolonged exposure to this module is not part of the test."
-                                        </p>
-                                    </div>
-                                    <div className="users">
-                                        <ul>
-                                            {userData.map((user: any) => {
-                                                return (
-                                                    // If we can't get a key from their uid, we can settle for their email instead.
-                                                    // This prevents React from complaining about invalid key props
-                                                    <li key={user[1].uid !== "nil" ? user[1].uid : user[0]}>
-                                                        <button onClick={() => editUser(user)}>
-                                                            {toDots(user[0])}
-                                                        </button>
-                                                    </li>
-                                                );
-                                            })}
-                                        </ul>
-                                    </div>
-                                    <br />
-                                    <button onClick={() => addUser()} className="new">
-                                        Add a new user
-                                    </button>
-                                    <span className="cleardb" onClick={() => clearDatabases()}>
-                                        CLEAR DATABASES
-                                    </span>
-                                </div>
-                            ) : (
-                                <>
-                                    <span className="close override" onClick={close}>
-                                        &times;
-                                    </span>
-                                    <p>
-                                        Insufficient permissions to access the admin module. <br /> Please contact
-                                        lbubner21@mbhs.sa.edu.au for further assistance.
-                                    </p>
-                                </>
-                            )}
+                <div className="oadmin" />
+                <div className="admin">
+                    {isAdmin ? (
+                        <div className="authorised">
+                            <span className="close" onClick={tclose}>
+                                &times;
+                            </span>
+                            <div className="title">
+                                <h4>Application Permissions Control Panel</h4>
+                                <p className="portalreference">
+                                    "Prolonged exposure to this module is not part of the test."
+                                </p>
+                            </div>
+                            <div className="users">
+                                <ul>
+                                    {userData.map((user: any) => {
+                                        return (
+                                            // If we can't get a key from their uid, we can settle for their email instead.
+                                            // This prevents React from complaining about invalid key props
+                                            <li key={user[1].uid !== "nil" ? user[1].uid : user[0]}>
+                                                <button onClick={() => editUser(user)}>{toDots(user[0])}</button>
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                            </div>
+                            <br />
+                            <button onClick={() => addUser()} className="new">
+                                Add a new user
+                            </button>
+                            <span className="cleardb" onClick={() => clearDatabases()}>
+                                CLEAR DATABASES
+                            </span>
                         </div>
-                    </>
-                )}
+                    ) : (
+                        <>
+                            <span className="close override" onClick={tclose}>
+                                &times;
+                            </span>
+                            <p>
+                                Insufficient permissions to access the admin module. <br /> Please contact
+                                lbubner21@mbhs.sa.edu.au for further assistance.
+                            </p>
+                        </>
+                    )}
+                </div>
             </>
         </Popup>
     );

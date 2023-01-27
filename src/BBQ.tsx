@@ -2,36 +2,36 @@
  *    Hamburger menu part of the Navbar containing various options.
  *    @author Lachlan Paul, 2023
  */
-
+import { useRef } from "react";
 import Popup from "reactjs-popup";
+import { PopupActions } from "../node_modules/reactjs-popup/dist/types";
 import Admin from "./Admin";
 // I could go for a
 import "./BBQ.css"; // bacon burger
 import MDTable from "./MDTable";
 
 function BBQ() {
+    const tref = useRef<PopupActions>(null);
+    const tclose = () => tref.current?.close();
+
     return (
-        <Popup trigger={<svg className="bbqbtn" />} nested>
+        <Popup ref={tref} trigger={<svg className="bbqbtn" />} nested>
             <>
-                {(close: any) => (
-                    <>
-                        <div className="outwin" onClick={close} />
-                        <div className="inwin">
-                            <div className="buttonarea">
-                                <button onClick={() => alert("lol no")}>Enable Light Mode</button>
-                            </div>
-                            <hr />
-                            <div className="buttonarea">
-                                <Admin />
-                            </div>
-                            <hr />
-                            <div className="buttonarea">
-                                <MDTable />
-                            </div>
-                            <hr />
-                        </div>
-                    </>
-                )}
+                <div className="outwin" onClick={tclose} />
+                <div className="inwin">
+                    <div className="buttonarea">
+                        <button onClick={() => alert("lol no")}>Enable Light Mode</button>
+                    </div>
+                    <hr />
+                    <div className="buttonarea">
+                        <Admin />
+                    </div>
+                    <hr />
+                    <div className="buttonarea">
+                        <MDTable />
+                    </div>
+                    <hr />
+                </div>
             </>
         </Popup>
     );

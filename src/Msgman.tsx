@@ -3,13 +3,16 @@
  *    @author Lucas Bubner, 2023
  */
 import "./Msgman.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { auth, deleteMsg, updateMsg, getData, toCommas } from "./Firebase";
 import { getFileURL } from "./Message";
 import Popup from "reactjs-popup";
+import { PopupActions } from "../node_modules/reactjs-popup/dist/types";
 
 function Msgman({ id, isActive }: any) {
     const [shouldDisplay, setShouldDisplay] = useState(false);
+    const tref = useRef<PopupActions>(null);
+    const tclose = () => tref.current?.close();
 
     // Get message data to use throughout the module
     const [message, setMessageData] = useState<any>(null);
@@ -90,41 +93,38 @@ function Msgman({ id, isActive }: any) {
 
     return (
         <Popup
+            ref={tref}
             trigger={<button className="msgman" style={{ display: shouldDisplay && isActive ? "block" : "none" }} />}>
             <>
-                {(close: any) => (
-                    <>
-                        <div
-                            className="manouter"
-                            onClick={() => {
-                                close();
-                                setShouldDisplay(false);
-                            }}
-                        />
-                        <div className="maninner">
-                            <p>
-                                <i>Managing message: {id}</i>
-                            </p>
+                <div
+                    className="manouter"
+                    onClick={() => {
+                        tclose();
+                        setShouldDisplay(false);
+                    }}
+                />
+                <div className="maninner">
+                    <p>
+                        <i>Managing message: {id}</i>
+                    </p>
+                    <hr />
+                    {isAdmin && (
+                        <>
+                            <button onClick={() => viewData()}>View message metadata</button>
                             <hr />
-                            {isAdmin && (
-                                <>
-                                    <button onClick={() => viewData()}>View message metadata</button>
-                                    <hr />
-                                    <button onClick={() => deleteMessage()}>Delete message</button>
-                                    <hr />
-                                </>
-                            )}
-                            {(isAdmin || isAuthorised) && !isRetracted && (
-                                <>
-                                    <button onClick={() => retractMsg()}>Retract message</button>
-                                    <hr />
-                                </>
-                            )}
-                            <button onClick={() => copyMsg()}>Copy message content</button>
+                            <button onClick={() => deleteMessage()}>Delete message</button>
                             <hr />
-                        </div>
-                    </>
-                )}
+                        </>
+                    )}
+                    {(isAdmin || isAuthorised) && !isRetracted && (
+                        <>
+                            <button onClick={() => retractMsg()}>Retract message</button>
+                            <hr />
+                        </>
+                    )}
+                    <button onClick={() => copyMsg()}>Copy message content</button>
+                    <hr />
+                </div>
             </>
         </Popup>
     );
