@@ -49,7 +49,7 @@ function Msgman({ id, isActive }: any) {
     // Checking if the user is an administrator
     const [isAdmin, setIsAdmin] = useState(false);
     useEffect(() => {
-        getData("users", toCommas(auth.currentUser?.email)).then((userData: any) => setIsAdmin(userData.admin));
+        getData("users", toCommas(auth.currentUser?.email!)).then((userData: any) => setIsAdmin(userData.admin));
     }, []);
 
     // Determine whether a user should have moderation over their own message

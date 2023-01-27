@@ -18,7 +18,7 @@ function MessageBar() {
 
     // Ensure the user has permission to write messages to the database.
     useEffect(() => {
-        getData("users", toCommas(auth.currentUser?.email)).then((userData: any) => setWritePerms(userData.write));
+        getData("users", toCommas(auth.currentUser?.email!)).then((userData: any) => setWritePerms(userData.write));
     }, []);
 
     // Enforce cooldown on users that send too many messages at once.

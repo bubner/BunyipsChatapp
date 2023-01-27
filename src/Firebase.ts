@@ -8,7 +8,19 @@
 import { useEffect } from "react";
 import { initializeApp, getApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "firebase/auth";
-import { getDatabase, ref, set, push, child, onValue, get, update, remove, serverTimestamp, onDisconnect } from "firebase/database";
+import {
+    getDatabase,
+    ref,
+    set,
+    push,
+    child,
+    onValue,
+    get,
+    update,
+    remove,
+    serverTimestamp,
+    onDisconnect,
+} from "firebase/database";
 import { getStorage, ref as sref, deleteObject, listAll } from "firebase/storage";
 import { getFileURL } from "./Message";
 
@@ -37,16 +49,51 @@ const storage = getStorage(app);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
+// Define structure of user data from Firebase
+export interface UserData {
+    email: string; // Primary key
+    admin: boolean;
+    read: boolean;
+    write: boolean;
+    online:
+        | boolean
+        | {
+              lastseen: number;
+          };
+    uid: string | undefined;
+    name: string | undefined;
+    pfp: string | undefined;
+}
+
+// Define the structure of a message object
+export interface MessageData {
+    muid: string; // Primary key
+    createdAt: number;
+    displayName: string;
+    email: string;
+    id: string;
+    isMsg: boolean;
+    isRetracted: boolean;
+    photoURL: string;
+    text: string;
+    uid: string;
+}
+
 // Internal function to handle database errors when retrieving or sending standard information
-function errorHandler(err: any) {
+function errorHandler(err: any): void {
     // Error handler incase Black Mesa decides to do another experiment
     console.error(err);
 
     // Reload the page and tell the user something went wrong
-    if (err.code === 'PERMISSION_DENIED') {
-        alert("An error occurred while performing this action as one of your permission nodes is currently out of sync with the application. A page reload is required.");
+    if (err.code === "PERMISSION_DENIED") {
+        alert(
+            "An error occurred while performing this action as one of your permission nodes is currently out of sync with the application. A page reload is required."
+        );
     } else {
-        alert("Sorry! An error occurred attempting to perform the operation you were requesting. If this persists, please contact lbubner21@mbhs.sa.edu.au with this information:\n\n" + err);
+        alert(
+            "Sorry! An error occurred attempting to perform the operation you were requesting. If this persists, please contact lbubner21@mbhs.sa.edu.au with this information:\n\n" +
+                err
+        );
     }
 
     // Reload the page in 5 seconds and try again
@@ -54,7 +101,7 @@ function errorHandler(err: any) {
 }
 
 // Monitor a user's presence in the database's online users section
-export async function startMonitoring(email: string) {
+export async function startMonitoring(email: string): Promise<void> {
     const onlineStatus = ref(db, `users/${toCommas(email)}/online`);
     // Set user presence as online when the user is here
     await set(onlineStatus, true);
@@ -64,13 +111,13 @@ export async function startMonitoring(email: string) {
 }
 
 // Handle signing out while also properly updating user presence
-export async function signOut() {
-    const onlineStatus = ref(db, `users/${toCommas(auth.currentUser?.email)}/online`);
+export async function signOut(): Promise<void> {
+    const onlineStatus = ref(db, `users/${toCommas(auth.currentUser?.email!)}/online`);
     // Manually update user presence to be offline
     await set(onlineStatus, false);
 
     // Update last seen timestamp
-    await set(ref(db, `users/${toCommas(auth.currentUser?.email)}/online/lastseen`), serverTimestamp());
+    await set(ref(db, `users/${toCommas(auth.currentUser?.email!)}/online/lastseen`), serverTimestamp());
     await auth.signOut();
 
     // Refresh the page to clear the event listeners
@@ -78,39 +125,39 @@ export async function signOut() {
 }
 
 // Provide Google sign in functionality and automatically registers a user into the auth instance
-export function signInWithGoogle() {
+export function signInWithGoogle(): void {
     signInWithPopup(auth, new GoogleAuthProvider()).catch((error) => {
         alert("Google Auth Error: " + error.code + " : " + error.message);
     });
 }
 
 // Change dots to commas, db names that are supported
-export function toCommas(str: any) {
+export function toCommas(str: string): string {
     return str.replace(/\./g, ",");
 }
 
 // Change commas back to dots, for proper reading
-export function toDots(str: any) {
+export function toDots(str: string): string {
     return str.replace(/,/g, ".");
 }
 
 // Check if a user has logged in before and give them base permissions if they haven't
-export function useAuthStateChanged() {
+export function useAuthStateChanged(): void {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
                 // Check if the user already exists in the "users" node
-                onValue(ref(db, `users/${toCommas(user.email)}`), (snapshot) => {
+                onValue(ref(db, `users/${toCommas(user.email!)}`), (snapshot) => {
                     if (snapshot.exists()) {
                         // Ensure the user metadata exists and is up to date with the latest snapshot
                         // TODO: Check and/or update UID
-                        
+
                         // TODO: Check and/or update displayName
 
                         // TODO: Check and/or update photoURL
                     } else {
                         // If there are no snapshots for the user, create a new one with no permissions.
-                        set(ref(db, `users/${toCommas(user.email)}`), {
+                        set(ref(db, `users/${toCommas(user.email!)}`), {
                             uid: user.uid,
                             name: user.displayName,
                             pfp: user.photoURL,
@@ -131,12 +178,12 @@ export function useAuthStateChanged() {
 }
 
 // Function to check if a message is over the character limit
-export function isMessageOverLimit(message: string) {
+export function isMessageOverLimit(message: string): boolean {
     return message.length > 4000;
 }
 
 // Function to add a message to Firebase
-export async function uploadMsg(formVal: any) {
+export async function uploadMsg(formVal: any): Promise<void> {
     // Prevent adding blank messages into Firebase
     if (!formVal) return;
 
@@ -161,7 +208,7 @@ export async function uploadMsg(formVal: any) {
     }).catch((error) => errorHandler(error));
 }
 
-export async function uploadFileMsg(url: string, type: string) {
+export async function uploadFileMsg(url: string, type: string): Promise<void> {
     const msgID = push(child(ref(db), "messages")).key;
     await set(ref(db, "messages/" + msgID), {
         isMsg: false,
@@ -176,11 +223,11 @@ export async function uploadFileMsg(url: string, type: string) {
     }).catch((error) => errorHandler(error));
 }
 
-export async function updateMsg(id: string, content: any) {
+export async function updateMsg(id: string, content: any): Promise<void> {
     await update(ref(db, "messages/" + id), content);
 }
 
-export async function deleteMsg(id: any) {
+export async function deleteMsg(id: any): Promise<void> {
     // Get the message reference from Firebase
     getData("messages", id).then(async (data: any) => {
         if (!data.isMsg) {
@@ -193,7 +240,9 @@ export async function deleteMsg(id: any) {
     });
 }
 
-export async function getData(endpoint: string, id: any) {
+export async function getData(endpoint: string, id: string): Promise<any> {
+    // This function will return whatever it receives from the endpoint and id, therefore it can return any sort of data
+    // whether it be an entire object node or just a value inside of a singular node.
     let datavalue = null;
     await get(child(ref(db), `${endpoint}/${id}`))
         .then((snapshot) => {
@@ -203,11 +252,11 @@ export async function getData(endpoint: string, id: any) {
     return datavalue;
 }
 
-export async function updateUser(email: string, changes: any) {
+export async function updateUser(email: string, changes: Object): Promise<void> {
     await update(ref(db, "users/" + email), changes);
 }
 
-export async function clearDatabases() {
+export async function clearDatabases(): Promise<void> {
     // User confirmations
     if (!window.confirm("WARNING: You are about to delete all database messages. Are you sure you want to continue?"))
         return;

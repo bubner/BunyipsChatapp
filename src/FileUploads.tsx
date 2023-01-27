@@ -36,7 +36,7 @@ function FileUploads() {
     function generateUniqueFileName(filename: string) {
         // <original filename> + _ + <random 8 chars> + <file extension>
         return (
-            filename.substr(0, filename.lastIndexOf(".")) +
+            filename.substring(0, filename.lastIndexOf(".")) +
             "_" +
             generateChars() +
             filename.slice(filename.lastIndexOf(".") - 1)

@@ -5,7 +5,7 @@
  *    @author Lachlan Paul, 2023
  */
 
-import { db, auth, getData, toCommas } from "./Firebase";
+import { db, auth, getData, toCommas, MessageData } from "./Firebase";
 import { useEffect, useRef, useState } from "react";
 import { ref, onValue } from "firebase/database";
 import Message from "./Message";
@@ -13,17 +13,19 @@ import Navbar from "./Navbar";
 import MessageBar from "./MessageBar";
 
 function Chat() {
-    const [messages, setMessageData] = useState<any>([]);
+    const [messages, setMessageData] = useState<{ [muid: string]: MessageData }>({});
     const [authorised, setAuthorised] = useState(false);
 
     useEffect(() => {
         if (!auth.currentUser) return;
         // Block unauthorised users from accessing the application
-        getData("users", toCommas(auth.currentUser.email)).then((userData: any) => {
+        getData("users", toCommas(auth.currentUser.email!)).then((userData) => {
             if (!userData.read) {
                 try {
                     alert(
-                        `Access denied to ${auth.currentUser?.email}. You do not have sufficient permissions to view this chat. Please email lbubner21@mbhs.sa.edu.au to continue.`
+                        `Access denied to ${
+                            auth.currentUser!.email
+                        }. You do not have sufficient permissions to view this chat. Please email lbubner21@mbhs.sa.edu.au to continue.`
                     );
                 } catch (e) {
                     // Any errors from the alert will be from the non-presence of auth.currentUser.email, meaning we have signed out.
@@ -44,8 +46,7 @@ function Chat() {
     // Grand collection function that continually checks the message database for new/changed messages
     useEffect(() => {
         const unsubscribe = onValue(ref(db, "messages/"), (snapshot) => {
-            // Protect against adding null values to the message state by checking if the snapshot is null
-            setMessageData(snapshot.val() !== null ? Object.entries(snapshot.val()) : []);
+            setMessageData(snapshot.val());
         });
         return () => unsubscribe();
     }, []);
@@ -60,10 +61,20 @@ function Chat() {
     // c) The message that was added to Firestore has a timestamp that is greater than the last seen timestamp for the user
     // This also ensures that the user gets scrolled down and notified only once.
     useEffect(() => {
-        if (dummy.current && messages.length > 0 && lastMessage.current !== messages[messages.length - 1][0]) {
-            dummy.current.scrollIntoView({ behavior: "auto" });
-            if (messages[messages.length - 1][1].createdAt > lastSeenTimestampRef.current) setNewMessage(true);
-            lastMessage.current = messages[messages.length - 1][0];
+        // Check if the messages array is here and we're ready to control elements
+        if (dummy.current && Object.keys(messages).length > 0) {
+            // Get information about the last messages
+            const lastMessageObject = Object.values(messages)[Object.values(messages).length - 1];
+            const lastMessageTimestamp = lastMessageObject.createdAt;
+            // Check if the last message has not been seen yet
+            if (lastMessage.current !== lastMessageTimestamp) {
+                dummy.current.scrollIntoView({ behavior: "auto" });
+                if (lastMessageTimestamp > lastSeenTimestampRef.current) {
+                    // Enable notifications if they are not on the page
+                    setNewMessage(true);
+                }
+                lastMessage.current = lastMessageTimestamp;
+            }
         }
     }, [messages]);
 
@@ -95,8 +106,8 @@ function Chat() {
     // Clear the hidden state and reset the timestamp to the latest message every time a new message
     // is received. This is done to know if the user has looked at the latest message or not.
     useEffect(() => {
-        if (!hidden && messages && messages.length > 0) {
-            lastSeenTimestampRef.current = messages[messages.length - 1][1].createdAt;
+        if (!hidden && messages && Object.keys(messages).length > 0) {
+            lastSeenTimestampRef.current = Object.values(messages)[Object.values(messages).length - 1].createdAt;
             setNewMessage(false);
         }
     }, [hidden, messages]);
@@ -108,16 +119,12 @@ function Chat() {
         const favicon = document.querySelector("link[rel='icon']") as HTMLLinkElement;
         if (newMessage && hidden) {
             document.title = "NEW MESSAGE!";
-            if (favicon)
-                favicon.href = "alert.ico";
+            if (favicon) favicon.href = "alert.ico";
         } else {
             document.title = "Bunyips Chatapp";
-            if (favicon)
-                favicon.href = "favicon.ico";
+            if (favicon) favicon.href = "favicon.ico";
         }
     }, [newMessage, hidden]);
-
-    // Update user presence status when we log into the application
 
     return (
         <>
@@ -128,8 +135,9 @@ function Chat() {
                     <div className="messages">
                         {/* Allow space for Navbar to fit */}
                         <br /> <br /> <br /> <br /> <br />
-                        {/* Display all messages currently in Firestore */}
-                        {messages.length > 0 && messages.map((msg: any) => <Message message={msg[1]} key={msg[1].id} />)}
+                        {/* Display all messages currently in Firebase */}
+                        {Object.keys(messages).length > 0 &&
+                            Object.entries(messages).map(([muid, msg]) => <Message message={msg} key={muid} />)}
                         {/* Dummy element for fluid interface */}
                         <div id="dummy" ref={dummy}></div>
                         <br /> <br /> <br />
