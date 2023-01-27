@@ -3,23 +3,23 @@
  *    @author Lucas Bubner, 2023
  */
 
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback, useEffect, ChangeEventHandler, ClipboardEvent } from "react";
 import { storage } from "./Firebase";
 import { uploadFileMsg } from "./Firebase";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytesResumable, getDownloadURL, UploadTask, UploadTaskSnapshot } from "firebase/storage";
 import Popup from "reactjs-popup";
 import { PopupActions } from "../node_modules/reactjs-popup/dist/types";
 import "./FileUploads.css";
 
 function FileUploads() {
-    const [selectedFile, setSelectedFile] = useState<any>(null);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [isFilePicked, setIsFilePicked] = useState(false);
     const [progressPercent, setProgressPercent] = useState(0);
     const [isFileUploading, setIsFileUploading] = useState(false);
     const [isFileUploaded, setIsFileUploaded] = useState(false);
     const [isClipboard, setIsClipboard] = useState(false);
 
-    const uploadTaskRef = useRef<any>();
+    const uploadTaskRef = useRef<UploadTask>();
 
     // Return 8 characters that are legal for making file names unique
     const generateChars = () => [...Array(8)].map(() => Math.random().toString(36).substring(2, 3)).join("");
@@ -43,13 +43,14 @@ function FileUploads() {
         );
     }
 
-    const changeHandler = (event: any) => {
+    const changeHandler: ChangeEventHandler<HTMLInputElement> = (event) => {
+        if (!event.target.files) return;
         setSelectedFile(event.target.files[0]);
 
         // If the file is greater than 10 megabytes, restrict upload
         if (event.target.files[0].size > 10000000) {
             alert(`File size exceeds the limit of 10 MB. Your file is ${formatBytes(event.target.files[0].size)}.`);
-            setSelectedFile(null);
+            setIsFilePicked(false);
             return;
         }
 
@@ -59,7 +60,6 @@ function FileUploads() {
     const resetElement = () => {
         if (uploadTaskRef.current) uploadTaskRef.current.cancel();
         setIsFileUploading(false);
-        setSelectedFile(null);
         setIsFilePicked(false);
         setIsFileUploaded(false);
         setIsClipboard(false);
@@ -67,7 +67,8 @@ function FileUploads() {
 
     const uploadFile = (name: string) => {
         const storageRef = ref(storage, `files/${name}`);
-        uploadTaskRef.current = uploadBytesResumable(storageRef, selectedFile);
+        if (selectedFile)
+            uploadTaskRef.current = uploadBytesResumable(storageRef, selectedFile);
     };
 
     const handleSubmission = () => {
@@ -80,13 +81,13 @@ function FileUploads() {
         // Upload the file to Firebase Storage
         uploadFile(fileName);
 
-        uploadTaskRef.current.on(
+        uploadTaskRef.current?.on(
             "state_changed",
-            (snapshot: any) => {
+            (snapshot: UploadTaskSnapshot) => {
                 const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
                 setProgressPercent(progress);
             },
-            (error: any) => {
+            (error) => {
                 alert(error);
             },
             () => {
@@ -106,22 +107,12 @@ function FileUploads() {
         );
     };
 
-    const clipboardHandler = useCallback((e: any) => {
-        console.debug("Pasted clipboard content at target:", e.target.className);
-        // Only activate if the target was towards the chat box to avoid goofy interface issues
-        const validInputZones = [
-            "msginput",
-            "pfp",
-            "",
-            "fileimage",
-            "sendbutton",
-            "text",
-            "date",
-            "navbar-name",
-            "navbar-brand",
-        ];
+    const clipboardHandler = useCallback((ev: ClipboardEvent<Element> | Event) => {
+        const e = ev as ClipboardEvent;
+        console.debug("Pasted clipboard content at target:", e.target);
 
-        if (!validInputZones.includes(e.target.className)) return;
+        // Only activate if the target was towards the chat box to avoid goofy interface issues
+        if (e.target instanceof HTMLElement && e.target.className !== "msginput") return;
 
         // Intercept the paste event contents
         const clip = e.clipboardData.items;
@@ -171,7 +162,7 @@ function FileUploads() {
                         <input type="file" name="file" onChange={changeHandler} className="fileInput" />
                     ) : (
                         <div className="ftext">
-                            <i>File supplied by clipboard paste.</i>
+                            <i>File supplied by message box clipboard paste.</i>
                         </div>
                     )}
                     {isFilePicked && selectedFile != null && !isFileUploaded && (

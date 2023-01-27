@@ -6,7 +6,7 @@
  */
 
 import { db, auth, getData, toCommas, MessageData } from "./Firebase";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, createRef } from "react";
 import { ref, onValue } from "firebase/database";
 import Message from "./Message";
 import Navbar from "./Navbar";
@@ -52,8 +52,8 @@ function Chat() {
     }, []);
 
     // Set custom properties on a dummy object allow messages to appear fluidly
-    const dummy = useRef<any>();
-    const lastMessage = useRef<any>();
+    const dummy = createRef<HTMLDivElement>();
+    const lastMessage = useRef<number>();
 
     // Monitor Firebase for new changes update the new message hook. Notifications will also proc if:
     // a) The message has just been added to Firebase
@@ -76,7 +76,7 @@ function Chat() {
                 lastMessage.current = lastMessageTimestamp;
             }
         }
-    }, [messages]);
+    }, [messages, dummy]);
 
     // Proc the scroll-to-bottom at least once after we initially load in, so the user isn't
     // stuck at the top of the page upon entering if the useEffect above this doesn't work
