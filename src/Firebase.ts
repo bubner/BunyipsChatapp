@@ -238,6 +238,10 @@ export async function deleteMsg(id: string): Promise<void> {
     });
 }
 
+// :: TODO ::
+// Sends a small system message that appears in the chat. This may be for announcements, or for join/leave messages.
+export async function uploadSysMsg(message: string): Promise<void> {}
+
 export async function getData(endpoint: string, id: string): Promise<any> {
     // This function will return whatever it receives from the endpoint and id, therefore it can return any sort of data
     // whether it be an entire object node or just a value inside of a singular node.

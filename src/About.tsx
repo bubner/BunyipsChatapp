@@ -67,12 +67,37 @@ function About() {
                     </table>
                     <br />
                     <div className="infogrid">
-                        <img title="Source code" alt="GitHub source" src="https://github.githubassets.com/favicons/favicon-dark.png" onClick={() => window.open("https://github.com/holo-lb/BunyipsChatapp", "_blank")}/>
+                        <img
+                            title="Source code"
+                            alt="GitHub source"
+                            src="https://github.githubassets.com/favicons/favicon-dark.png"
+                            onClick={() => window.open("https://github.com/holo-lb/BunyipsChatapp", "_blank")}
+                        />
                         &nbsp; || &nbsp;
-                        <img title="React" alt="React" src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" onClick={() => window.open("https://reactjs.org/", "_blank")}/>
-                        <img title="TypeScript" alt="TypeScript" src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Typescript_logo_2020.svg" onClick={() => window.open("https://www.typescriptlang.org/", "_blank")}/>
-                        <img title="Firebase" alt="Firebase" src="https://firebase.google.com/static/downloads/brand-guidelines/SVG/logo-logomark.svg" onClick={() => window.open("https://firebase.google.com/", "_blank")}/>
-                        <img title="Bootstrap" alt="Bootstrap" src="https://upload.wikimedia.org/wikipedia/commons/b/b2/Bootstrap_logo.svg" onClick={() => window.open("https://getbootstrap.com/", "_blank")}/>
+                        <img
+                            title="React"
+                            alt="React"
+                            src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg"
+                            onClick={() => window.open("https://reactjs.org/", "_blank")}
+                        />
+                        <img
+                            title="TypeScript"
+                            alt="TypeScript"
+                            src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Typescript_logo_2020.svg"
+                            onClick={() => window.open("https://www.typescriptlang.org/", "_blank")}
+                        />
+                        <img
+                            title="Firebase"
+                            alt="Firebase"
+                            src="https://firebase.google.com/static/downloads/brand-guidelines/SVG/logo-logomark.svg"
+                            onClick={() => window.open("https://firebase.google.com/", "_blank")}
+                        />
+                        <img
+                            title="Bootstrap"
+                            alt="Bootstrap"
+                            src="https://upload.wikimedia.org/wikipedia/commons/b/b2/Bootstrap_logo.svg"
+                            onClick={() => window.open("https://getbootstrap.com/", "_blank")}
+                        />
                     </div>
                     <br />
                     <h6 className="text-center">
