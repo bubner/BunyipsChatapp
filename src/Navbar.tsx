@@ -9,13 +9,13 @@ import BBQ from "./BBQ";
 import Users from "./Users";
 
 function Navbar() {
-    const [currentTime, setCurrentTime] = useState<any>();
-
+    const [currentTime, setCurrentTime] = useState<string>();
     useEffect(() => {
+        const date = new Date();
         const timer = setInterval(() => {
-            setCurrentTime(new Date().toLocaleTimeString("en-AU", { hour12: true }));
+            date.setTime(Date.now());
+            setCurrentTime(date.toLocaleTimeString("en-AU", { hour12: true }));
         }, 1000);
-
         return () => {
             clearInterval(timer);
         };

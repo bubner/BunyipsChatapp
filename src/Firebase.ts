@@ -183,7 +183,7 @@ export function isMessageOverLimit(message: string): boolean {
 }
 
 // Function to add a message to Firebase
-export async function uploadMsg(formVal: any): Promise<void> {
+export async function uploadMsg(formVal: string): Promise<void> {
     // Prevent adding blank messages into Firebase
     if (!formVal) return;
 
@@ -223,13 +223,13 @@ export async function uploadFileMsg(url: string, type: string): Promise<void> {
     }).catch((error) => errorHandler(error));
 }
 
-export async function updateMsg(id: string, content: any): Promise<void> {
+export async function updateMsg(id: string, content: object): Promise<void> {
     await update(ref(db, "messages/" + id), content);
 }
 
-export async function deleteMsg(id: any): Promise<void> {
+export async function deleteMsg(id: string): Promise<void> {
     // Get the message reference from Firebase
-    getData("messages", id).then(async (data: any) => {
+    getData("messages", id).then(async (data: MessageData) => {
         if (!data.isMsg) {
             // Check if the document contains a file, if so, we'll have to delete from Firebase storage too
             const fileRef = sref(storage, getFileURL(data.text));

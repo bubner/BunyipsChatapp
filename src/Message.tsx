@@ -6,7 +6,7 @@
  */
 
 import { useState } from "react";
-import { auth } from "./Firebase";
+import { auth, MessageData } from "./Firebase";
 import Msgman from "./Msgman";
 import "./App.css";
 import "./Message.css";
@@ -19,10 +19,11 @@ const getFileFormat = (fileURL: string) => {
 };
 
 export const getFileURL = (fileURL: string) => {
-    return fileURL.substr(fileURL.indexOf(":") + 1);
+    return fileURL.slice(fileURL.indexOf(":") + 1);
 };
 
-function Message({ message }: any) {
+function Message(props: {message: MessageData, key: string}) {
+    const { message } = props;
     const [isHovering, setIsHovering] = useState(false);
     const handleMouseOver = () => setIsHovering(true);
     const handleMouseOut = () => setIsHovering(false);

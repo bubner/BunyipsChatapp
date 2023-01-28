@@ -5,10 +5,10 @@
  */
 
 import "./MessageBar.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, FormEvent, ChangeEvent } from "react";
 import FileUploads from "./FileUploads";
 import Scroll from "./Scroll";
-import { auth, uploadMsg, isMessageOverLimit, getData, toCommas } from "./Firebase";
+import { auth, uploadMsg, isMessageOverLimit, getData, toCommas, UserData } from "./Firebase";
 
 function MessageBar() {
     const [formVal, setFormVal] = useState("");
@@ -18,13 +18,15 @@ function MessageBar() {
 
     // Ensure the user has permission to write messages to the database.
     useEffect(() => {
-        getData("users", toCommas(auth.currentUser?.email!)).then((userData: any) => setWritePerms(userData.write));
+        getData("users", toCommas(auth.currentUser?.email!)).then((userData: UserData) =>
+            setWritePerms(userData.write)
+        );
     }, []);
 
     // Enforce cooldown on users that send too many messages at once.
-    function manageMsgSend(e: any) {
+    function manageMsgSend(e: FormEvent) {
         e.preventDefault();
-        setMessagesSent(messagesSent + 1);
+        setMessagesSent((prev) => prev + 1);
         setLastTimestamp(Date.now());
 
         if (Date.now() - timestamp < 3000 && messagesSent > 3) {
@@ -44,7 +46,7 @@ function MessageBar() {
     }, []);
 
     // Alert the user if their message has exceeded the 4000 character limit and update the formVal state.
-    function handleMessageChange(e: any) {
+    function handleMessageChange(e: ChangeEvent<HTMLInputElement>) {
         setFormVal(e.target.value);
         // prettier-ignore
         if (isMessageOverLimit(formVal))
