@@ -23,7 +23,7 @@ function BBQ() {
                 <div className="outer" onClick={tclose} />
                 <div className="inner inwin">
                     <div className="buttonarea">
-                        <button onClick={() => alert("lol no")}>Enable Light Mode</button>
+                        <About />
                     </div>
                     <hr />
                     <div className="buttonarea">
@@ -31,11 +31,11 @@ function BBQ() {
                     </div>
                     <hr />
                     <div className="buttonarea">
-                        <MDTable />
+                        <button onClick={() => alert("lol no")}>Enable Light Mode</button>
                     </div>
                     <hr />
                     <div className="buttonarea">
-                        <About />
+                        <MDTable />
                     </div>
                     <hr />
                 </div>
