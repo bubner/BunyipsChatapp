@@ -73,7 +73,7 @@ function Chat() {
     // This also ensures that the user gets scrolled down and notified only once.
     useEffect(() => {
         // Check if the messages array is here and we're ready to control elements
-        if (dummy.current && Object.keys(messages).length > 0) {
+        if (dummy.current && messages && Object.keys(messages).length > 0) {
             // Get information about the last messages
             const lastMessageObject = Object.values(messages)[Object.values(messages).length - 1];
             const lastMessageTimestamp = lastMessageObject.createdAt;
@@ -147,17 +147,22 @@ function Chat() {
                         {/* Allow space for Navbar to fit */}
                         <br /> <br /> <br /> <br /> <br />
                         {/* Load more button to support pagination */}
-                        {Object.keys(messages).length > paginationIndex * PAGINATION_LIMIT ? (
+                        {messages && Object.keys(messages).length > paginationIndex * PAGINATION_LIMIT ? (
                             <button className="moreitems" onClick={() => updatePagination()} />
                         ) : (
-                            <p className="top">
-                                Welcome to the Bunyips Chatapp! <br /> This is the start of the application's history. <hr />
-                            </p>
+                            <>
+                                <p className="top">
+                                    Welcome to the Bunyips Chatapp! <br /> This is the start of the application's
+                                    history.
+                                </p>
+                                <hr />
+                            </>
                         )}
                         {/* Leading dummy for pagination support */}
                         <div id="paginationdummy" ref={pdummy}></div>
                         {/* Display all messages currently in Firebase */}
-                        {Object.keys(messages).length > 0 &&
+                        {messages &&
+                            Object.keys(messages).length > 0 &&
                             Object.entries(messages)
                                 .slice(paginationIndex * -PAGINATION_LIMIT)
                                 .map(([muid, msg]) => <Message message={msg} key={muid} />)}

@@ -37,7 +37,7 @@ function Navbar() {
             </div>
             <h4 className="productname">Bunyips Chatapp</h4>
             <p className="currenttime">
-                <i style={{ fontSize: "12px" }}>Lucas Bubner, Lachlan Paul, 2023</i>
+                <i style={{ fontSize: "12px", color: "#e0e0e0" }}>Lucas Bubner, Lachlan Paul, 2023</i>
                 <br />
                 {currentTime}
             </p>
