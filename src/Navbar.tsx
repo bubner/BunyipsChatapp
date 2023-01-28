@@ -2,6 +2,7 @@
  *    Navbar element to be shown at the top of the page, containing account and other information
  *    @author Lachlan Paul, 2023
  */
+
 import "./Navbar.css";
 import { auth, signOut } from "./Firebase";
 import { useState, useEffect } from "react";

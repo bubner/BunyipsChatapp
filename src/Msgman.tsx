@@ -1,7 +1,8 @@
 /**
- *    Moderative module to allow users to modify current messages in Firestore, depending on their permission nodes.
+ *    Moderative module to allow users to modify current messages in Firebase, depending on their permission nodes.
  *    @author Lucas Bubner, 2023
  */
+
 import "./Msgman.css";
 import { useState, useEffect, useRef } from "react";
 import { auth, deleteMsg, updateMsg, getData, toCommas, MessageData, UserData } from "./Firebase";

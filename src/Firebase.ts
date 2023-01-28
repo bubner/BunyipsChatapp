@@ -151,9 +151,7 @@ export function useAuthStateChanged(): void {
                     if (snapshot.exists()) {
                         // Ensure the user metadata exists and is up to date with the latest snapshot
                         // TODO: Check and/or update UID
-
                         // TODO: Check and/or update displayName
-
                         // TODO: Check and/or update photoURL
                     } else {
                         // If there are no snapshots for the user, create a new one with no permissions.
@@ -263,7 +261,7 @@ export async function clearDatabases(): Promise<void> {
 
     const nums = Math.floor(Math.random() * (9999 - 1000 + 1) + 1000);
     // prettier-ignore
-    if (window.prompt(`Please enter these four numbers in order to complete the database transaction: ${nums}`) !==nums.toString()) {
+    if (window.prompt(`Please enter these four numbers in order to complete the database transaction: ${nums}`) !== nums.toString()) {
         alert("Operation cancelled.");
         return;
     }

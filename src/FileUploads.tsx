@@ -67,6 +67,7 @@ function FileUploads() {
 
     const uploadFile = (name: string) => {
         const storageRef = ref(storage, `files/${name}`);
+        // prettier-ignore
         if (selectedFile)
             uploadTaskRef.current = uploadBytesResumable(storageRef, selectedFile);
     };

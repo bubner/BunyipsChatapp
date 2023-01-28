@@ -14,7 +14,11 @@ import MessageBar from "./MessageBar";
 
 function Chat() {
     const [messages, setMessageData] = useState<{ [muid: string]: MessageData }>({});
+    const [paginationIndex, setPaginationIndex] = useState<number>(1);
     const [authorised, setAuthorised] = useState(false);
+
+    /** Global setting, manage how many messages should be rendered at once for all users. */
+    const PAGINATION_LIMIT: number = 50;
 
     useEffect(() => {
         if (!auth.currentUser) return;
@@ -58,7 +62,7 @@ function Chat() {
     // Monitor Firebase for new changes update the new message hook. Notifications will also proc if:
     // a) The message has just been added to Firebase
     // b) The viewport is not currently visible and the user is in another tab
-    // c) The message that was added to Firestore has a timestamp that is greater than the last seen timestamp for the user
+    // c) The message that was added to Firebase has a timestamp that is greater than the last seen timestamp for the user
     // This also ensures that the user gets scrolled down and notified only once.
     useEffect(() => {
         // Check if the messages array is here and we're ready to control elements
@@ -135,9 +139,13 @@ function Chat() {
                     <div className="messages">
                         {/* Allow space for Navbar to fit */}
                         <br /> <br /> <br /> <br /> <br />
+                        {/* Load more button to support pagination */}
+                        <button onClick={() => setPaginationIndex((prev) => prev + 1)}>Load more</button>
                         {/* Display all messages currently in Firebase */}
                         {Object.keys(messages).length > 0 &&
-                            Object.entries(messages).map(([muid, msg]) => <Message message={msg} key={muid} />)}
+                            Object.entries(messages)
+                                .slice(paginationIndex * -PAGINATION_LIMIT)
+                                .map(([muid, msg]) => <Message message={msg} key={muid} />)}
                         {/* Dummy element for fluid interface */}
                         <div id="dummy" ref={dummy}></div>
                         <br /> <br /> <br />

@@ -2,6 +2,7 @@
  *    Module for modification and control of the Read/Write gatekeeper
  *    @author Lucas Bubner, 2023
  */
+
 import { useState, useEffect, useRef } from "react";
 import { auth, db, clearDatabases, toDots, toCommas, updateUser, UserData } from "./Firebase";
 import { ref, onValue, set } from "firebase/database";

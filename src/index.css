@@ -17,6 +17,10 @@ body {
 
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+    color: #7f848e;
+    background-color: #2b2b2b;
+    padding: 5px;
+    border-radius: 3px;
 }
 
 /* .offline {

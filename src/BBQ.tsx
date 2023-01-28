@@ -2,6 +2,7 @@
  *    Hamburger menu part of the Navbar containing various options.
  *    @author Lachlan Paul, 2023
  */
+
 import { useRef } from "react";
 import Popup from "reactjs-popup";
 import { PopupActions } from "../node_modules/reactjs-popup/dist/types";
@@ -36,7 +37,10 @@ function BBQ() {
         </Popup>
     );
 }
+
 // i dont like this formatting either ask lucas why he did it like this
+// "barbeque bacon burger" - lucas
+
 export default BBQ;
 
 /* 

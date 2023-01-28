@@ -2,7 +2,7 @@
  *    User presence manager for client information, and user count dialogues.
  *    @author Lucas Bubner, 2023
  */
-import { useEffect } from "react"; 
+import { useEffect } from "react";
 import { auth, startMonitoring } from "./Firebase";
 import "./Users.css";
 
@@ -14,9 +14,7 @@ function Users() {
         startMonitoring(auth.currentUser?.email!);
     }, []);
 
-    return (
-        <p>users element</p>
-    );
+    return <></>;
 }
 
 export default Users;

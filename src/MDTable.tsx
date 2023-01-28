@@ -3,6 +3,7 @@
  *    Notes: Why do 2 empty tags fix all my problems
  *    @author Lachlan Paul, 2023
  */
+
 import { useRef } from "react";
 import Popup from "reactjs-popup";
 import { PopupActions } from "../node_modules/reactjs-popup/dist/types";

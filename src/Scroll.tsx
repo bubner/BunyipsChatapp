@@ -2,6 +2,7 @@
  *    Button to scroll to the bottom of the page with a single click.
  *    @author Lucas Bubner, 2023
  */
+
 import { useState, useEffect } from "react";
 import "./Scroll.css";
 

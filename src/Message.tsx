@@ -1,6 +1,6 @@
 /**
  *    Template module for message and file rendering.
- *    Generates a div with message or file content for each message in Firestore.
+ *    Generates a div with message or file content for each message in Firebase.
  *    @author Lucas Bubner, 2023
  *    @author Lachlan Paul, 2023
  */
@@ -22,9 +22,9 @@ export const getFileURL = (fileURL: string) => {
     return fileURL.slice(fileURL.indexOf(":") + 1);
 };
 
-const filter = new Filter({ placeHolder: '♥' });
+const filter = new Filter({ placeHolder: "♥" });
 
-function Message(props: {message: MessageData, key: string}) {
+function Message(props: { message: MessageData; key: string }) {
     const { message } = props;
     const [isHovering, setIsHovering] = useState(false);
     const handleMouseOver = () => setIsHovering(true);
@@ -95,6 +95,7 @@ function Message(props: {message: MessageData, key: string}) {
                             />
                         ) : getFileFormat(message.text).startsWith("video") ? (
                             // Swapped to using a video tag instead of an iframe, it seems to work now...
+                            // prettier-ignore
                             <video
                                 controls
                                 src={getFileURL(message.text)}
