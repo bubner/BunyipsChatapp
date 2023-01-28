@@ -5,7 +5,7 @@
  *    @author Lachlan Paul, 2023
  */
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { auth, MessageData } from "./Firebase";
 import Msgman from "./Msgman";
 import "./App.css";
@@ -22,13 +22,25 @@ export const getFileURL = (fileURL: string) => {
     return fileURL.slice(fileURL.indexOf(":") + 1);
 };
 
+const filter = new Filter({ placeHolder: '♥' });
+
 function Message(props: {message: MessageData, key: string}) {
     const { message } = props;
     const [isHovering, setIsHovering] = useState(false);
     const handleMouseOver = () => setIsHovering(true);
     const handleMouseOut = () => setIsHovering(false);
-    
-    const filter = new Filter({ placeHolder: '♥' });
+
+    const messageText = useMemo(() => {
+        try {
+            return filter.clean(message.text);
+        } catch (e) {
+            // If users enter text that cannot be cleaned, such as raw markdown, then we will change what is rendered.
+            // If we don't change it, the webapp will crash and burn in a fire greater than a thousand suns.
+            // This is the one instance where Filter throwing an error is actually good, as it fixes multiple issues
+            return "Look at me! I'm a foolish idiot who tried using Markdown without any other characters!";
+        }
+    }, [message.text]);
+
     let timestamp;
     try {
         // Try to recieve a timestamp from the server
@@ -37,18 +49,6 @@ function Message(props: {message: MessageData, key: string}) {
         // In cases where the user is the message sender, we might not be able to get the server timestamp
         // and it will throw an error. In this case, we can just use the local user time as it won't matter too much.
         timestamp = new Date(Date.now());
-    }
-
-    function clean(message: string) {
-        try {
-            message = filter.clean(message);
-        } catch (e) {
-            // If users enter text that cannot be cleaned, such as raw markdown, then we will change what is rendered.
-            // If we don't change it, the webapp will crash and burn in a fire greater than a thousand suns.
-            // This is the one instance where Filter throwing an error is actually good, as it fixes multiple issues
-            message = "Look at me! I'm a foolish idiot who tried using Markdown without any other characters!";
-        }
-        return message;
     }
 
     return (
@@ -78,7 +78,7 @@ function Message(props: {message: MessageData, key: string}) {
                 message.isMsg ? (
                     // If it is a normal message, pass it through ReactMarkdown which will auto hyperlink any links, and add markdown
                     <ReactMarkdown className="text" remarkPlugins={[gfm]} linkTarget="_blank">
-                        {clean(message.text)}
+                        {messageText}
                     </ReactMarkdown>
                 ) : (
                     // Otherwise, it must be a file and we can display the downloadURL depending on it's type
