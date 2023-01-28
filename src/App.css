@@ -45,3 +45,43 @@ textarea::-webkit-scrollbar-thumb {
     border-radius: 12px;
     width: 8px;
 }
+
+/* Specific styles for disconnect info */
+.conn::after {
+    animation: dots 1s infinite;
+    content: "";
+}
+
+.offline, .disc {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+}
+
+.disc {
+    font-size: 15px;
+    font-weight: 600;
+    font-style: italic;
+    text-align: center;
+    transform: translate(-50%, 75px) !important;
+}
+
+@keyframes dots {
+    0% {
+        content: "";
+    }
+    25% {
+        content: ".";
+    }
+    50% {
+        content: "..";
+    }
+    75% {
+        content: "...";
+    }
+    100% {
+        content: "";
+    }
+}

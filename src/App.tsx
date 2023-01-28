@@ -7,9 +7,10 @@
 import "./App.css";
 
 // Firebase imports and configuration
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, useAuthStateChanged } from "./Firebase";
+import { auth, useAuthStateChanged, db } from "./Firebase";
+import { onValue, ref } from "firebase/database";
 
 // Import application login and chatroom modules
 import Chat from "./Chat";
@@ -29,7 +30,45 @@ function App() {
         }
     }, [user]);
 
-    return <div className="App">{user ? <Chat /> : <Login />}</div>;
+    // Check user connectivity to the application
+    const [online, setOnline] = useState<boolean>(false);
+    const [longConnect, setlongConnect] = useState<boolean>(false);
+    useEffect(() => {
+        const unsubscribe = onValue(ref(db, ".info/connected"), (snapshot) => {
+            setOnline(snapshot.val());
+            setlongConnect(false);
+        });
+
+        return () => unsubscribe();
+    }, []);
+
+    useEffect(() => {
+        if (!online) {
+            document.title = ("Establishing connection...");
+            setTimeout(() => {
+                setlongConnect(true);
+            }, 5000);
+        } else {
+            document.title = "Bunyips Chatapp";
+        }
+    }, [online]);
+
+    return online ? (
+        <div className="App">{user ? <Chat /> : <Login />}</div>
+    ) : (
+        <>
+            <div className="offline">
+                <h1>Bunyips Chatapp</h1>
+                <p className="conn">Connecting</p>
+            </div>
+            {longConnect && (
+                <p className="disc">
+                    This seems to be taking a while. <br /> Check your internet connection, and if this persists, please
+                    contact lbubner21@mbhs.sa.edu.au.
+                </p>
+            )}
+        </>
+    );
 }
 
 export default App;
