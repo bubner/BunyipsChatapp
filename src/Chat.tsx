@@ -11,6 +11,7 @@ import { ref, onValue } from "firebase/database";
 import Message from "./Message";
 import Navbar from "./Navbar";
 import MessageBar from "./MessageBar";
+import "./Chat.css";
 
 function Chat() {
     const [messages, setMessageData] = useState<{ [muid: string]: MessageData }>({});
@@ -19,6 +20,12 @@ function Chat() {
 
     /** Global setting, manage how many messages should be rendered at once for all users. */
     const PAGINATION_LIMIT: number = 50;
+
+    const pdummy = createRef<HTMLDivElement>();
+    function updatePagination() {
+        setPaginationIndex((prev) => prev + 1);
+        pdummy.current?.scrollIntoView({ behavior: "auto" });
+    }
 
     useEffect(() => {
         if (!auth.currentUser) return;
@@ -140,7 +147,15 @@ function Chat() {
                         {/* Allow space for Navbar to fit */}
                         <br /> <br /> <br /> <br /> <br />
                         {/* Load more button to support pagination */}
-                        <button onClick={() => setPaginationIndex((prev) => prev + 1)}>Load more</button>
+                        {Object.keys(messages).length > paginationIndex * PAGINATION_LIMIT ? (
+                            <button className="moreitems" onClick={() => updatePagination()} />
+                        ) : (
+                            <p className="top">
+                                Welcome to the Bunyips Chatapp! <br /> This is the start of the application's history. <hr />
+                            </p>
+                        )}
+                        {/* Leading dummy for pagination support */}
+                        <div id="paginationdummy" ref={pdummy}></div>
                         {/* Display all messages currently in Firebase */}
                         {Object.keys(messages).length > 0 &&
                             Object.entries(messages)

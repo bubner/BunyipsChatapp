@@ -4,6 +4,7 @@
  */
 
 import "./Msgman.css";
+import "./CommonPopup.css";
 import { useState, useEffect, useRef } from "react";
 import { auth, deleteMsg, updateMsg, getData, toCommas, MessageData, UserData } from "./Firebase";
 import { getFileURL } from "./Message";
@@ -100,13 +101,13 @@ function Msgman ({ id, isActive }: { id: string, isActive: boolean }) {
             trigger={<button className="msgman" style={{ display: shouldDisplay && isActive ? "block" : "none" }} />}>
             <>
                 <div
-                    className="manouter"
+                    className="outer"
                     onClick={() => {
                         tclose();
                         setShouldDisplay(false);
                     }}
                 />
-                <div className="maninner">
+                <div className="maninner inner">
                     <p>
                         <i>Managing message: {id}</i>
                     </p>

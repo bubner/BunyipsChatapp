@@ -9,7 +9,9 @@ import { PopupActions } from "../node_modules/reactjs-popup/dist/types";
 import Admin from "./Admin";
 // I could go for a
 import "./BBQ.css"; // bacon burger
+import "./CommonPopup.css";
 import MDTable from "./MDTable";
+import About from "./About";
 
 function BBQ() {
     const tref = useRef<PopupActions>(null);
@@ -18,8 +20,8 @@ function BBQ() {
     return (
         <Popup ref={tref} trigger={<svg className="bbqbtn" />} nested>
             <>
-                <div className="outwin" onClick={tclose} />
-                <div className="inwin">
+                <div className="outer" onClick={tclose} />
+                <div className="inner inwin">
                     <div className="buttonarea">
                         <button onClick={() => alert("lol no")}>Enable Light Mode</button>
                     </div>
@@ -30,6 +32,10 @@ function BBQ() {
                     <hr />
                     <div className="buttonarea">
                         <MDTable />
+                    </div>
+                    <hr />
+                    <div className="buttonarea">
+                        <About />
                     </div>
                     <hr />
                 </div>

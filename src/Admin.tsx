@@ -9,6 +9,7 @@ import { ref, onValue, set } from "firebase/database";
 import Popup from "reactjs-popup";
 import { PopupActions } from "../node_modules/reactjs-popup/dist/types";
 import "./Admin.css";
+import "./CommonPopup.css";
 
 function Admin() {
     const [userData, setUserData] = useState<{ [email: string]: UserData }>({});
@@ -109,8 +110,8 @@ function Admin() {
             trigger={<button className="bbqitem">1500 Megabyte App-Managing Heavy Duty Super-Admin Super Panel</button>}
             nested>
             <>
-                <div className="oadmin" />
-                <div className="admin">
+                <div className="outer" />
+                <div className="inner">
                     {isAdmin ? (
                         <div className="authorised">
                             <span className="close" onClick={tclose}>

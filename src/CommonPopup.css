@@ -1,9 +1,10 @@
 /*
- *    Styles for table and popup elements that show on MDTable cells
- *    Author: Lachlan Paul, 2023
+ *    Global styles for displaying a popup with an outer and inner window.
+ *    These styles are reused often between components.
+ *    Author: Lucas Bubner, 2023
  */
 
-.mdouter {
+.outer {
     z-index: -1;
     background-color: rgba(0, 0, 0, 0.5);
     position: fixed;
@@ -17,7 +18,7 @@
     bottom: 0;
 }
 
-.mdinner {
+.inner {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -30,10 +31,6 @@
     height: fit-content;
 }
 
-.mdinner td {
-    padding: 3px;
-}
-
-.mdinner p {
-    text-align: center;
+.inner td {
+    padding: 4px;
 }

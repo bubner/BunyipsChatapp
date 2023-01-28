@@ -23,37 +23,6 @@
     cursor: pointer;
 }
 
-.manouter {
-    z-index: -1;
-    background-color: rgba(0, 0, 0, 0.3);
-    position: fixed;
-    margin: auto;
-    padding: 12px;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-}
-
-.maninner {
-    color: white;
-    background-color: #181a1b;
-    border-radius: 10px;
-    padding: 12px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: auto;
-    padding-left: 15px;
-    padding-right: 15px;
-    width: fit-content;
-    height: fit-content;
-}
-
 .maninner button {
     background: none;
     color: inherit;

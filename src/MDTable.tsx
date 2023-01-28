@@ -7,7 +7,7 @@
 import { useRef } from "react";
 import Popup from "reactjs-popup";
 import { PopupActions } from "../node_modules/reactjs-popup/dist/types";
-import "./MDTable.css";
+import "./CommonPopup.css";
 import ReactMarkdown from "react-markdown";
 import gfm from "remark-gfm";
 
@@ -17,8 +17,8 @@ function MDTable() {
     return (
         <Popup ref={tref} trigger={<button className="bbqitem">Markdown Commands</button>} nested>
             <>
-                <div className="mdouter" onClick={tclose} />
-                <div className="mdinner">
+                <div className="outer" onClick={tclose} />
+                <div className="inner">
                     <table>
                         <thead>
                             <tr>
@@ -101,7 +101,7 @@ function MDTable() {
                         </tbody>
                     </table>
                     <br />
-                    <p>
+                    <p className="text-center">
                         <b>DO NOT use Markdown without any other characters! (sending just # or **)</b>
                     </p>
                 </div>

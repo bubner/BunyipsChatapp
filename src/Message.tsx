@@ -37,7 +37,7 @@ function Message(props: { message: MessageData; key: string }) {
             // If users enter text that cannot be cleaned, such as raw markdown, then we will change what is rendered.
             // If we don't change it, the webapp will crash and burn in a fire greater than a thousand suns.
             // This is the one instance where Filter throwing an error is actually good, as it fixes multiple issues
-            return "Look at me! I'm a foolish idiot who tried using Markdown without any other characters!";
+            return "Look at me! I'm a fool who tried to use Markdown incorrectly!";
         }
     }, [message.text]);
 

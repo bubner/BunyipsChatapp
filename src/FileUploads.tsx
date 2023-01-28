@@ -10,6 +10,7 @@ import { ref, uploadBytesResumable, getDownloadURL, UploadTask, UploadTaskSnapsh
 import Popup from "reactjs-popup";
 import { PopupActions } from "../node_modules/reactjs-popup/dist/types";
 import "./FileUploads.css";
+import "./CommonPopup.css";
 
 function FileUploads() {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -151,8 +152,8 @@ function FileUploads() {
 
     return (
         <Popup ref={tref} trigger={<span className="popupbutton" />} onClose={resetElement}>
-            <div className="uploadWindow">
-                <div className="innerUploadWindow">
+            <div className="uploadWindow outer">
+                <div className="innerUploadWindow inner">
                     <span className="close" onClick={tclose}>
                         &times;
                     </span>
