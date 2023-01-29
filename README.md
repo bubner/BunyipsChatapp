@@ -7,6 +7,6 @@ This is a simple chat app made for the members of the Murray Bridge Bunyips Robo
 - TypeScript functional components and modules
 - React frontend with Bootstrap and standard CSS
 - Firebase backend (Authentication, Realtime Database, Cloud Storage, Live and Deployment Hosting) 
-- Create React App architecture
+- Vite react-ts architecture
 
 ###### Lucas Bubner [@holo-lb](https://github.com/holo-lb), <br> Lachlan Paul [@BanjoTheBot](https://github.com/BanjoTheBot), <br> 2023

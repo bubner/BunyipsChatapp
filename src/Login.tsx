@@ -25,7 +25,7 @@ function Login() {
                     <li></li>
                 </ul>
             </div>
-            <img className="clubimg" src="clubimgblur.png" alt="Murray Bridge Bunyips club" />
+            <img className="clubimg" src="/clubimgblur.png" alt="Murray Bridge Bunyips club" />
             <div className="login center">
                 <div className="login-inner">
                     <h4>Welcome to the</h4>

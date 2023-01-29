@@ -16,7 +16,7 @@
     position: fixed;
     margin: 8px;
     width: calc(100vw - 20px);
-    background: url("../public/navbarbg.png");
+    background: url("/navbarbg.png");
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;

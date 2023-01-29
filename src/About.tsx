@@ -87,6 +87,12 @@ function About() {
                             onClick={() => window.open("https://www.typescriptlang.org/", "_blank")}
                         />
                         <img
+                            title="Vite"
+                            alt="Vite"
+                            src="https://upload.wikimedia.org/wikipedia/commons/f/f1/Vitejs-logo.svg"
+                            onClick={() => window.open("https://vitejs.dev/", "_blank")}
+                        />
+                        <img
                             title="Firebase"
                             alt="Firebase"
                             src="https://firebase.google.com/static/downloads/brand-guidelines/SVG/logo-logomark.svg"
