@@ -44,7 +44,7 @@ function App() {
 
     useEffect(() => {
         if (!online) {
-            document.title = ("Establishing connection...");
+            document.title = "Establishing connection...";
             setTimeout(() => {
                 setlongConnect(true);
             }, 5000);

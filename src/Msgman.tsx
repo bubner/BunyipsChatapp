@@ -11,7 +11,7 @@ import { getFileURL } from "./Message";
 import Popup from "reactjs-popup";
 import { PopupActions } from "../node_modules/reactjs-popup/dist/types";
 
-function Msgman ({ id, isActive }: { id: string, isActive: boolean }) {
+function Msgman({ id, isActive }: { id: string; isActive: boolean }) {
     const [shouldDisplay, setShouldDisplay] = useState(false);
     const tref = useRef<PopupActions>(null);
     const tclose = () => tref.current?.close();

@@ -52,7 +52,8 @@ textarea::-webkit-scrollbar-thumb {
     content: "";
 }
 
-.offline, .disc {
+.offline,
+.disc {
     position: absolute;
     top: 50%;
     left: 50%;
