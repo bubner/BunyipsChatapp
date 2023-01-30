@@ -109,6 +109,7 @@ export async function startMonitoring(email: string): Promise<void> {
     // Leave callback functions for Firebase to handle when the user disconnects
     onDisconnect(onlineStatus).set(false);
     onDisconnect(ref(db, `users/${toCommas(email)}/online/lastseen`)).set(serverTimestamp());
+    // Bug to fix, onDisconnect will be called if there are multiple sessions of the application running
 }
 
 // Handle signing out while also properly updating user presence

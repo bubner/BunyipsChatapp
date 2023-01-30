@@ -14,7 +14,7 @@ function Users({ online, offline }: { online: Array<UserData>; offline: Array<Us
             Do not show the current user on the pfp display div.
             Add a user button regardless of the state of other users next to the primary pfp to access user list.
     */
-   
+
     return (
         <>
             <div className="userPfps">
@@ -29,7 +29,7 @@ function Users({ online, offline }: { online: Array<UserData>; offline: Array<Us
                 </div>
             </div>
             {online.length > 8 && <div className="extrausers">+{online.length - 8}</div>}
-            {online.length === 1 && <button className="onlyuser" />}
+            {online.length <= 1 && <button className="onlyuser" />}
         </>
     );
 }
