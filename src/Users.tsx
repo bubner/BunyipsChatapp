@@ -2,7 +2,7 @@
  *    User presence manager for client information, and user count dialogues.
  *    @author Lucas Bubner, 2023
  */
-import { UserData } from "./Firebase";
+import { UserData, auth } from "./Firebase";
 import "./Users.css";
 
 function Users({ online, offline }: { online: Array<UserData>; offline: Array<UserData> }) {
@@ -16,7 +16,20 @@ function Users({ online, offline }: { online: Array<UserData>; offline: Array<Us
     */
 
     return (
-        <div className="userPfps"></div>
+        <>
+            <div className="userPfps">
+                {online.map((user) => {
+                    if (user.uid === auth.currentUser?.uid) return;
+                    return <img src={user.pfp} key={user.uid} alt={user.name} title={user.name} />;
+                })}
+                <div className="backupname">
+                    <b>Bunyips Chatapp</b>
+                    <br />
+                    {online.length} user(s) online
+                </div>
+            </div>
+            {online.length > 7 && <div className="extrausers">+{online.length - 7}</div>}
+        </>
     );
 }
 

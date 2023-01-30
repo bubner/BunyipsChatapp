@@ -69,7 +69,8 @@
 }
 
 .currenttime,
-.productname {
+.productname,
+.backupname {
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
@@ -83,9 +84,21 @@
     top: 50px;
 }
 
-@media screen and (max-width: 850px) {
+.backupname {
+    display: none;
+    transform: translateX(-65%);
+    top: 33px;
+}
+
+@media screen and (max-width: 950px) {
     .currenttime,
     .productname {
         display: none;
+    }
+}
+
+@media screen and (max-width: 540px) {
+    .backupname {
+        display: block;
     }
 }
