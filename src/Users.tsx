@@ -29,6 +29,7 @@ function Users({ online, offline }: { online: Array<UserData>; offline: Array<Us
                 </div>
             </div>
             {online.length > 7 && <div className="extrausers">+{online.length - 7}</div>}
+            {online.length === 1 && <button className="onlyuser" />}
         </>
     );
 }
