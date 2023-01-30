@@ -16,7 +16,7 @@
 .extrausers {
     position: absolute;
     text-align: center;
-    top: 40px;
+    top: 33px;
     left: 340px;
     border: 0;
     outline: none;
@@ -29,46 +29,53 @@
 .userPfps img:nth-child(1) {
     display: inline;
     z-index: 0;
-    transform: translate(-0px, 25%);
+    transform: translate(-20px, 8%);
 }
 
 .userPfps img:nth-child(2) {
     display: inline;
     z-index: 1;
-    transform: translate(-25px, 25%);
+    transform: translate(-50px, 8%);
 }
 
 .userPfps img:nth-child(3) {
     display: inline;
     z-index: 2;
-    transform: translate(-50px, 25%);
+    transform: translate(-75px, 8%);
 }
 
 .userPfps img:nth-child(4) {
     display: inline;
     z-index: 3;
-    transform: translate(-75px, 25%);
+    transform: translate(-100px, 8%);
 }
 
 .userPfps img:nth-child(5) {
     display: inline;
     z-index: 4;
-    transform: translate(-100px, 25%);
+    transform: translate(-125px, 8%);
 }
 
 .userPfps img:nth-child(6) {
     display: inline;
     z-index: 5;
-    transform: translate(-125px, 25%);
+    transform: translate(-150px, 8%);
 }
 
 .userPfps img:nth-child(7) {
     display: inline;
     z-index: 6;
-    transform: translate(-150px, 25%);
+    transform: translate(-175px, 8%);
 }
 
-@media only screen and (max-width: 540px) {
+.userPfps img:nth-child(8) {
+    display: inline;
+    z-index: 7;
+    transform: translate(-200px, 8%);
+}
+
+
+@media only screen and (max-width: 560px) {
     .userPfps img, .extrausers, .onlyuser {
         display: none !important;
     }
@@ -85,7 +92,8 @@
 
 .onlyuser {
     position: absolute;
-    left: 120px;
+    left: 85px;
+    top: 17%;
     color: rgb(190, 185, 185);
     background-color: rgba(139, 139, 146, 0.4);
     border: 0;

@@ -29,7 +29,7 @@
 
 .navbar-brand {
     grid-area: img;
-    justify-self: center;
+    justify-self: left;
     align-self: center;
     border-radius: 50%;
     margin: 0;
@@ -97,7 +97,7 @@
     }
 }
 
-@media screen and (max-width: 540px) {
+@media screen and (max-width: 560px) {
     .backupname {
         display: block;
     }

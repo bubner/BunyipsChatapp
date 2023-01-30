@@ -15,6 +15,9 @@ function Users({ online, offline }: { online: Array<UserData>; offline: Array<Us
             Add a user button regardless of the state of other users next to the primary pfp to access user list.
     */
 
+    online = online.concat(online);
+    online = online.concat(online);
+
     return (
         <>
             <div className="userPfps">
@@ -28,7 +31,7 @@ function Users({ online, offline }: { online: Array<UserData>; offline: Array<Us
                     {online.length} user(s) online
                 </div>
             </div>
-            {online.length > 7 && <div className="extrausers">+{online.length - 7}</div>}
+            {online.length > 8 && <div className="extrausers">+{online.length - 8}</div>}
             {online.length === 1 && <button className="onlyuser" />}
         </>
     );
