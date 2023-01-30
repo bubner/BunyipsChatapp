@@ -2,24 +2,10 @@
  *    User presence manager for client information, and user count dialogues.
  *    @author Lucas Bubner, 2023
  */
-import { useEffect } from "react";
-import { auth, startMonitoring } from "./Firebase";
+import { UserData } from "./Firebase";
 import "./Users.css";
 
-function Users() {
-    // When the module is first loaded, we need to start listening for their presence
-    useEffect(() => {
-        // Disconnects are handled automatically by Firebase, and all we need to do
-        // is start the initial monitoring sequence.
-        startMonitoring(auth.currentUser?.email!);
-    }, []);
-
-    // Get all users from the database
-
-    // Determine who is online, and append them to the list of people to show on the front screen
-
-    // For those who are offline, determine their last login date for the users popup
-
+function Users({ online, offline }: { online: Array<UserData>; offline: Array<UserData> }) {
     /*
         Elements TODO:
             > PFP display div, that will display the users that are online. If there are more than a set amount, display a few but have a +x of the extra people online
@@ -29,7 +15,9 @@ function Users() {
             Add a user button regardless of the state of other users next to the primary pfp to access user list.
     */
 
-    return <></>;
+    return (
+        <div className="userPfps"></div>
+    );
 }
 
 export default Users;

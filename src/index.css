@@ -14,6 +14,61 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+*:not(html) {
+    /* Incredibly experimental (lazy) all-fade-in animation to all elements,
+       if everything crashes and burns, it's probably wise to comment this out. */
+    animation: fadeIn 0.25s;
+    -webkit-animation: fadeIn 0.25s;
+    -moz-animation: fadeIn 0.25s;
+    -o-animation: fadeIn 0.25s;
+    -ms-animation: fadeIn 0.25s;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@-moz-keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@-o-keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@-ms-keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
     color: #ffc66d;
