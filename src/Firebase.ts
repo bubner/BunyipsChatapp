@@ -109,7 +109,16 @@ export async function startMonitoring(email: string): Promise<void> {
     // Leave callback functions for Firebase to handle when the user disconnects
     onDisconnect(onlineStatus).set(false);
     onDisconnect(ref(db, `users/${toCommas(email)}/online/lastseen`)).set(serverTimestamp());
-    // Bug to fix, onDisconnect will be called if there are multiple sessions of the application running
+    // Add a listener to the online status for this user changes during the lifetime of the app
+    // If it changes, then this is clearly incorrect and we should change it back at once.
+    // This is to prevent onDisconnect firing while there are still active sessions for that one user
+    onValue(onlineStatus, async (snapshot) => {
+        if (snapshot.val() !== true) {
+            console.log("User presence was set incorrectly. Correcting...");
+            // Reset the status to online again
+            await set(onlineStatus, true);
+        }
+    });
 }
 
 // Handle signing out while also properly updating user presence
