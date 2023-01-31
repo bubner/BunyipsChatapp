@@ -140,7 +140,7 @@ export async function signOut(): Promise<void> {
 // Provide Google sign in functionality and automatically registers a user into the auth instance
 export function signInWithGoogle(): void {
     signInWithPopup(auth, new GoogleAuthProvider()).catch((error) => {
-        alert("Google Auth Error: " + error.code + " : " + error.message);
+        console.error("Google Auth Error: " + error.code + " : " + error.message);
     });
 }
 
