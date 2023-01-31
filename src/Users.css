@@ -78,9 +78,10 @@
     transform: translate(-200px, 8%);
 }
 
-
 @media only screen and (max-width: 560px) {
-    .userPfps img, .extrausers, .onlyuser {
+    .userPfps img,
+    .extrausers,
+    .onlyuser {
         display: none !important;
     }
 }
@@ -99,7 +100,8 @@
     border: 2px solid rgb(255, 255, 255);
 }
 
-.userinner table td, .userinner table th {
+.userinner table td,
+.userinner table th {
     padding: 12px;
 }
 
@@ -141,13 +143,15 @@
     margin-bottom: 5px;
 }
 
-.useronline, .useroffline {
+.useronline,
+.useroffline {
     min-width: 375px;
     border-radius: 10px;
     padding: 12px;
 }
 
-.useroffline p, .useronline p {
+.useroffline p,
+.useronline p {
     position: relative;
     margin: 0;
 }
@@ -166,7 +170,8 @@
     right: -235px;
 }
 
-.useronline img, .useroffline img {
+.useronline img,
+.useroffline img {
     border-radius: 50%;
 }
 

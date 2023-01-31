@@ -9,6 +9,7 @@ import { PopupActions } from "../node_modules/reactjs-popup/dist/types";
 import "./Users.css";
 import "./CommonPopup.css";
 
+// prettier-ignore
 function Users({ online, offline, unknown }: { online: Array<UserData>; offline: Array<UserData>; unknown: Array<string> }) {
     const tref = useRef<PopupActions>(null);
     const tclose = () => tref.current?.close();

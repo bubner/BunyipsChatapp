@@ -123,7 +123,7 @@ export async function startMonitoring(email: string): Promise<void> {
 
 // Handle signing out while also properly updating user presence
 export async function signOut(): Promise<void> {
-    if (!window.confirm('Sign out account: ' + auth.currentUser?.email + '?')) return;
+    if (!window.confirm("Sign out account: " + auth.currentUser?.email + "?")) return;
 
     const onlineStatus = ref(db, `users/${toCommas(auth.currentUser?.email!)}/online`);
     // Manually update user presence to be offline
