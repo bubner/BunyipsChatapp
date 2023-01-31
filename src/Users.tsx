@@ -18,7 +18,7 @@ function Users({ online, offline, unknown }: { online: Array<UserData>; offline:
         <>
             <div className="userPfps">
                 {online.map((user) => {
-                    if (user.uid === auth.currentUser?.uid) return;
+                    if (user.uid === auth.currentUser?.uid || !user.pfp) return;
                     return <img onClick={topen} src={user.pfp} key={user.uid} alt={user.name} title={user.name} />;
                 })}
                 <div className="backupname">

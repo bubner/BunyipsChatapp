@@ -53,7 +53,10 @@ function Navbar() {
         const allOffline: Array<UserData> = [];
         const allUnknown: Array<string> = [];
         Object.entries(userData).forEach((user) => {
-            if (!user[1].uid || !user[1].online || !user[1].name || !user[1].pfp) allUnknown.push(user[0]);
+            if (!user[1].uid || !user[1].online || !user[1].name || !user[1].pfp) {
+                allUnknown.push(user[0]);
+                return;
+            }
             if (user[1].online === true) {
                 allOnline.push(user[1]);
             } else {
