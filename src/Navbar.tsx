@@ -47,10 +47,13 @@ function Navbar() {
     // Get all online users for use throughout the navbar and children
     const [onlineUsers, setOnlineUsers] = useState<Array<UserData>>([]);
     const [offlineUsers, setOfflineUsers] = useState<Array<UserData>>([]);
+    const [unknownUsers, setUnknownUsers] = useState<Array<string>>([]);
     useEffect(() => {
         const allOnline: Array<UserData> = [];
         const allOffline: Array<UserData> = [];
+        const allUnknown: Array<string> = [];
         Object.entries(userData).forEach((user) => {
+            if (!user[1].uid || !user[1].online || !user[1].name || !user[1].pfp) allUnknown.push(user[0]);
             if (user[1].online === true) {
                 allOnline.push(user[1]);
             } else {
@@ -59,6 +62,7 @@ function Navbar() {
         });
         setOnlineUsers(allOnline);
         setOfflineUsers(allOffline);
+        setUnknownUsers(allUnknown);
     }, [userData]);
 
     return (
@@ -73,7 +77,7 @@ function Navbar() {
                 <p className="navbar-name">{auth.currentUser?.displayName}</p>
                 <svg className="sobtn" onClick={async () => await signOut()} />
                 <BBQ />
-                <Users online={onlineUsers} offline={offlineUsers} />
+                <Users online={onlineUsers} offline={offlineUsers} unknown={unknownUsers} />
             </div>
             <h4 className="productname">Bunyips Chatapp</h4>
             <p className="currenttime">

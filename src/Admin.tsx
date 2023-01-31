@@ -5,7 +5,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { auth, db, clearDatabases, toDots, toCommas, updateUser, UserData } from "./Firebase";
-import { ref, onValue, set } from "firebase/database";
+import { ref, onValue, set, remove } from "firebase/database";
 import Popup from "reactjs-popup";
 import { PopupActions } from "../node_modules/reactjs-popup/dist/types";
 import "./Admin.css";
@@ -69,35 +69,57 @@ function Admin() {
     // Manage the permissions of a selected user using prompts
     // I would do a popup that has checkboxes and it would commit the results after, but I decided that I don't care
     // prettier-ignore
-    function editUser(email: string) {
+    async function editUser(email: string) {
+        if (userData[email].admin === true) {
+            if (userData[email].read !== true || userData[email].write !== true) {
+                // We know this user is an administrator, and therefore we will grant permissions without confirmation
+                await updateUser(email, {
+                    read: true,
+                    write: true,
+                });
+                alert("We noticed a discrepancy in this administrator's read and write permissions. This has been corrected.");
+            } else {
+                alert("You cannot edit an administator's permissions as they will always be allowed full access.");
+            }
+            return;
+        }
+
         // email variable is comma seperated, when displaying to user ensure to pass through toDots()
         if (!window.confirm(
                 "You are viewing the permissions of: " + toDots(email) +
                     "\n\nTheir current permissions are:" +
-                    "\nRead: " + (auth.currentUser?.email !== toDots(email) ? userData[email].read.toString().toUpperCase() : (userData[email].read.toString().toUpperCase() + " (CANNOT CHANGE)")) +
+                    "\nRead: " + userData[email].read.toString().toUpperCase() +
                     "\nWrite: " + userData[email].write.toString().toUpperCase() +
-                    "\n\nIf you wish to edit these permissions, press OK, otherwise press Cancel.")) {
+                    "\n\nIf you wish to edit these permissions or delete this user, press OK, otherwise press Cancel.")) {
             return;
         }
 
         let updatedata: {read?: boolean, write?: boolean} = {};
         if (auth.currentUser?.email !== toDots(email)) {
-            if (window.confirm(`Current READ permission of user '${toDots(email)}' is set to: ${userData[email].read.toString().toUpperCase()}\n\n${userData[email].read ? "REMOVE" : "GRANT"} read permission?`)) {
+            if (window.confirm(`Current READ permission of user '${toDots(email)}' is set to: ${userData[email].read.toString().toUpperCase()}\n\n${userData[email].read ? "REMOVE" : "GRANT"} read permission?\n\nIf you wish to delete this user or cancel this operation, press Cancel on both permissions.`)) {
                 updatedata.read = !userData[email].read;
             }
         }
 
-        if (window.confirm(`Current WRITE permission of user '${toDots(email)}' is set to: ${userData[email].write.toString().toUpperCase()}\n\n${userData[email].write ? "REMOVE" : "GRANT"} write permission?`)) {
+        if (window.confirm(`Current WRITE permission of user '${toDots(email)}' is set to: ${userData[email].write.toString().toUpperCase()}\n\n${userData[email].write ? "REMOVE" : "GRANT"} write permission?\n\nIf you wish to delete this user or cancel this operation, press Cancel on both permissions.`)) {
             updatedata.write = !userData[email].write;
         }
 
         // Update permissions now
         if (Object.keys(updatedata).length > 0) {
-            updateUser(email, updatedata).then(() => {
+            await updateUser(email, updatedata).then(() => {
                 alert("Operation completed.");
             });
         } else {
-            alert("No permissions were updated.");
+            if (!window.confirm(`You have not updated any permissions.\n\nIf you wish to delete the user '${toDots(email)}' PRESS OK NOW.\n\nOtherwise, press Cancel to exit.`)) return;
+            if (!window.confirm(`WARNING!\n\nYOU ARE ABOUT TO DELETE THIS USER: ${toDots(email)}\nTO COMPLETE THIS TRANSACTION, PRESS OK NOW.`)) {
+                alert("Operation cancelled. No data was changed.");
+                return;
+            }
+            // We've made sure that we want to be deleting this person, so goodbye user...
+            await remove(ref(db, `users/${toCommas(email)}`)).then(() => {
+                alert("Operation completed.");
+            })
         }
     }
 

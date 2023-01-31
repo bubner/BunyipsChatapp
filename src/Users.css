@@ -26,6 +26,10 @@
     display: none;
 }
 
+.userPfps img:hover {
+    cursor: pointer;
+}
+
 .userPfps img:nth-child(1) {
     display: inline;
     z-index: 0;
@@ -83,6 +87,7 @@
 
 .userPfps img {
     overflow: hidden;
+    transition: border 0.5s;
     border: 2px solid rgb(1, 255, 1);
     width: 50px;
     margin-right: 5px;
@@ -90,16 +95,24 @@
     border-radius: 50%;
 }
 
+.userPfps img:hover {
+    border: 2px solid rgb(255, 255, 255);
+}
+
+.userinner table td, .userinner table th {
+    padding: 12px;
+}
+
 .onlyuser {
     position: absolute;
     left: 85px;
-    top: 17%;
+    top: 12.5px;
     color: rgb(190, 185, 185);
     background-color: rgba(139, 139, 146, 0.4);
     border: 0;
-    outline: none;
-    width: 50px;
-    height: 50px;
+    outline: none !important;
+    width: 55px;
+    height: 55px;
 
     /* SVG for user info when there is only one person */
     border-radius: 15px;
@@ -113,4 +126,54 @@
 .onlyuser:hover {
     background-color: rgba(122, 122, 128, 0.8);
     cursor: pointer;
+}
+
+.userinner ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    max-height: 450px;
+}
+
+.userinner ul li {
+    margin-bottom: 5px;
+}
+
+.useronline, .useroffline {
+    min-width: 375px;
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.useroffline p, .useronline p {
+    position: relative;
+    margin: 0;
+}
+
+.useroffline p {
+    right: -90px;
+    font-style: italic;
+}
+
+.useronline p {
+    right: -225px;
+    font-weight: bold;
+}
+
+.userunknown p {
+    right: -235px;
+}
+
+.useronline img, .useroffline img {
+    border-radius: 50%;
+}
+
+.useronline {
+    background-color: rgba(15, 129, 0, 0.2);
+}
+
+.useroffline {
+    background-color: rgba(82, 82, 82, 0.233);
 }

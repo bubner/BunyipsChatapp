@@ -123,6 +123,8 @@ export async function startMonitoring(email: string): Promise<void> {
 
 // Handle signing out while also properly updating user presence
 export async function signOut(): Promise<void> {
+    if (!window.confirm('Sign out account: ' + auth.currentUser?.email + '?')) return;
+
     const onlineStatus = ref(db, `users/${toCommas(auth.currentUser?.email!)}/online`);
     // Manually update user presence to be offline
     await set(onlineStatus, false);
@@ -277,7 +279,7 @@ export async function clearDatabases(): Promise<void> {
     const nums = Math.floor(Math.random() * (9999 - 1000 + 1) + 1000);
     // prettier-ignore
     if (window.prompt(`Please enter these four numbers in order to complete the database transaction: ${nums}`) !== nums.toString()) {
-        alert("Operation cancelled.");
+        alert("Operation cancelled. No data was changed.");
         return;
     }
 
