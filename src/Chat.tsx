@@ -56,7 +56,7 @@ function Chat() {
 
     // Grand collection function that continually checks the message database for new/changed messages
     useEffect(() => {
-        const unsubscribe = onValue(ref(db, "messages/"), (snapshot) => {
+        const unsubscribe = onValue(ref(db, "messages/main/"), (snapshot) => {
             setMessageData(snapshot.val());
         });
         return () => unsubscribe();
