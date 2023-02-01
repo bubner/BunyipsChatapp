@@ -16,7 +16,7 @@
     position: fixed;
     margin: 8px;
     width: calc(100vw - 20px);
-    background: url("../public/navbarbg.png");
+    background: url("/navbarbg.png");
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -29,7 +29,7 @@
 
 .navbar-brand {
     grid-area: img;
-    justify-self: center;
+    justify-self: left;
     align-self: center;
     border-radius: 50%;
     margin: 0;
@@ -69,7 +69,8 @@
 }
 
 .currenttime,
-.productname {
+.productname,
+.backupname {
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
@@ -83,9 +84,21 @@
     top: 50px;
 }
 
-@media screen and (max-width: 480px) {
+.backupname {
+    display: none;
+    transform: translateX(-65%);
+    top: 33px;
+}
+
+@media screen and (max-width: 950px) {
     .currenttime,
     .productname {
         display: none;
+    }
+}
+
+@media screen and (max-width: 560px) {
+    .backupname {
+        display: block;
     }
 }

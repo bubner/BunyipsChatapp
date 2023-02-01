@@ -10,6 +10,7 @@
 }
 
 .message {
+    animation: gen 0.5s;
     border-radius: 15px;
     transition: background-color 0.3s;
     padding: 8px;
@@ -21,6 +22,17 @@
     grid-template-areas:
         "pfp namedate msgman"
         "pfp text text";
+}
+
+/* I've used this same keyframe in at least three projects */
+@keyframes gen {
+    0% {
+        transform: translate(0px, 40px);
+    }
+
+    100% {
+        transform: translate(0px, 0px);
+    }
 }
 
 .message:has(+ div) {

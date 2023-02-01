@@ -1,20 +1,25 @@
 /**
- *    Moderative module to allow users to modify current messages in Firestore, depending on their permission nodes.
+ *    Moderative module to allow users to modify current messages in Firebase, depending on their permission nodes.
  *    @author Lucas Bubner, 2023
  */
+
 import "./Msgman.css";
-import { useState, useEffect } from "react";
-import { auth, deleteMsg, updateMsg, getData, toCommas } from "./Firebase";
+import "./CommonPopup.css";
+import { useState, useEffect, useRef } from "react";
+import { auth, deleteMsg, updateMsg, getData, toCommas, MessageData, UserData } from "./Firebase";
 import { getFileURL } from "./Message";
 import Popup from "reactjs-popup";
+import { PopupActions } from "../node_modules/reactjs-popup/dist/types";
 
-function Msgman({ id, isActive }) {
+function Msgman({ id, isActive }: { id: string; isActive: boolean }) {
     const [shouldDisplay, setShouldDisplay] = useState(false);
+    const tref = useRef<PopupActions>(null);
+    const tclose = () => tref.current?.close();
 
     // Get message data to use throughout the module
-    const [message, setMessageData] = useState(null);
+    const [message, setMessageData] = useState<MessageData>();
     useEffect(() => {
-        getData("messages", id)
+        getData("messages/main", id)
             .then((data) => setMessageData(data))
             .catch((err) => console.error(err));
     }, [isActive, id]);
@@ -46,23 +51,25 @@ function Msgman({ id, isActive }) {
     // Checking if the user is an administrator
     const [isAdmin, setIsAdmin] = useState(false);
     useEffect(() => {
-        getData("users", toCommas(auth.currentUser.email)).then((userData) => setIsAdmin(userData.admin));
+        getData("users", toCommas(auth.currentUser?.email!)).then((userData: UserData) => setIsAdmin(userData.admin));
     }, []);
 
     // Determine whether a user should have moderation over their own message
     const [isAuthorised, setIsAuthorised] = useState(false);
     useEffect(() => {
-        if (message) setIsAuthorised(message.uid === auth.currentUser.uid);
+        if (message) setIsAuthorised(message.uid === auth.currentUser?.uid);
     }, [message]);
 
     // Function to show the metadata of a certain message
     function viewData() {
+        if (!message) return;
         // prettier-ignore
         alert(`Message author: ${message.displayName}\nAuthor email: ${message.email}\nAuthor UID: ${message.uid}\nMessage ID: ${message.id}\nMessage creation time: ${message.createdAt}\nMessage type: ${message.isMsg ? "text" : "file"}\nMessage retracted? ${message.isRetracted ? "yes" : "no"}\n\nMessage content:\n${message.text}`);
     }
 
     // Function to copy the text field of the message into the clipboard. If it is a file, copy the URL.
     async function copyMsg() {
+        if (!message) return;
         if (message.isRetracted && !isAdmin) {
             alert("Can't copy a deleted message!");
             return;
@@ -90,40 +97,39 @@ function Msgman({ id, isActive }) {
 
     return (
         <Popup
+            ref={tref}
             trigger={<button className="msgman" style={{ display: shouldDisplay && isActive ? "block" : "none" }} />}>
-            {(close) => (
-                <>
-                    <div
-                        className="manouter"
-                        onClick={() => {
-                            close();
-                            setShouldDisplay(false);
-                        }}
-                    />
-                    <div className="maninner">
-                        <p>
-                            <i>Managing message: {id}</i>
-                        </p>
-                        <hr />
-                        {isAdmin && (
-                            <>
-                                <button onClick={() => viewData()}>View message metadata</button>
-                                <hr />
-                                <button onClick={() => deleteMessage()}>Delete message</button>
-                                <hr />
-                            </>
-                        )}
-                        {(isAdmin || isAuthorised) && !isRetracted && (
-                            <>
-                                <button onClick={() => retractMsg()}>Retract message</button>
-                                <hr />
-                            </>
-                        )}
-                        <button onClick={() => copyMsg()}>Copy message content</button>
-                        <hr />
-                    </div>
-                </>
-            )}
+            <>
+                <div
+                    className="outer"
+                    onClick={() => {
+                        tclose();
+                        setShouldDisplay(false);
+                    }}
+                />
+                <div className="maninner inner">
+                    <p>
+                        <i>Managing message: {id}</i>
+                    </p>
+                    <hr />
+                    {isAdmin && (
+                        <>
+                            <button onClick={() => viewData()}>View message metadata</button>
+                            <hr />
+                            <button onClick={() => deleteMessage()}>Delete message</button>
+                            <hr />
+                        </>
+                    )}
+                    {(isAdmin || isAuthorised) && !isRetracted && (
+                        <>
+                            <button onClick={() => retractMsg()}>Retract message</button>
+                            <hr />
+                        </>
+                    )}
+                    <button onClick={() => copyMsg()}>Copy message content</button>
+                    <hr />
+                </div>
+            </>
         </Popup>
     );
 }
