@@ -164,16 +164,19 @@ export function useAuthStateChanged(): void {
                     if (snapshot.exists()) {
                         // Ensure the user metadata exists and is up to date with the latest snapshot
                         // Checks and updates UID
-                        if (snapshot.child("uid").val() !== user.uid){
+                        if (snapshot.child("uid").val() !== user.uid) {
                             set(ref(db, `users/${toCommas(user.email!)}/uid`), user.uid);
                         }
+
                         // Checks and updates displayName
-                        if (snapshot.child("displayName").val() !== user.displayName){
-                            set(ref(db, `users/${toCommas(user.email!)}/uid`), user.displayName);
+                        if (snapshot.child("name").val() !== user.displayName) {
+                            set(ref(db, `users/${toCommas(user.email!)}/name`), user.displayName);
                         }
+
                         // Checks and updates photoURL
-                        if (snapshot.child("photoURL").val() !== user.photoURL){
-                            set(ref(db, `users/${toCommas(user.email!)}/uid`), user.photoURL);
+                        if (snapshot.child("pfp").val() !== user.photoURL) {
+                            set(ref(db, `users/${toCommas(user.email!)}/pfp`), user.photoURL);
+                        }
                     } else {
                         // If there are no snapshots for the user, create a new one with no permissions.
                         set(ref(db, `users/${toCommas(user.email!)}`), {
