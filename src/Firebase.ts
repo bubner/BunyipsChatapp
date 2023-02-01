@@ -140,7 +140,7 @@ export async function signOut(): Promise<void> {
 // Provide Google sign in functionality and automatically registers a user into the auth instance
 export function signInWithGoogle(): void {
     signInWithPopup(auth, new GoogleAuthProvider()).catch((error) => {
-        console.error("Google Auth Error: " + error.code + " : " + error.message);
+        console.error(`Google OAuth Failure: ${error.message}`);
     });
 }
 
@@ -214,7 +214,7 @@ export async function uploadMsg(formVal: string): Promise<void> {
 
     // Add to Firebase with UID, content, and user info
     const msgID = push(child(ref(db), "messages")).key;
-    await set(ref(db, "messages/" + msgID), {
+    await set(ref(db, "messages/main/" + msgID), {
         isMsg: true,
         isRetracted: false,
         id: msgID,
@@ -229,7 +229,7 @@ export async function uploadMsg(formVal: string): Promise<void> {
 
 export async function uploadFileMsg(url: string, type: string): Promise<void> {
     const msgID = push(child(ref(db), "messages")).key;
-    await set(ref(db, "messages/" + msgID), {
+    await set(ref(db, "messages/main/" + msgID), {
         isMsg: false,
         isRetracted: false,
         id: msgID,
@@ -243,19 +243,19 @@ export async function uploadFileMsg(url: string, type: string): Promise<void> {
 }
 
 export async function updateMsg(id: string, content: object): Promise<void> {
-    await update(ref(db, "messages/" + id), content);
+    await update(ref(db, "messages/main/" + id), content);
 }
 
 export async function deleteMsg(id: string): Promise<void> {
     // Get the message reference from Firebase
-    getData("messages", id).then(async (data: MessageData) => {
+    getData("messages/main", id).then(async (data: MessageData) => {
         if (!data.isMsg) {
             // Check if the document contains a file, if so, we'll have to delete from Firebase storage too
             const fileRef = sref(storage, getFileURL(data.text));
             await deleteObject(fileRef).catch((err) => errorHandler(err));
         }
         // Now we can safely delete the message as we've deleted any other objects related to it
-        await remove(ref(db, "messages/" + id));
+        await remove(ref(db, "messages/main/" + id));
     });
 }
 
