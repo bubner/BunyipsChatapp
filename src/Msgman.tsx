@@ -19,7 +19,7 @@ function Msgman({ id, isActive }: { id: string; isActive: boolean }) {
     // Get message data to use throughout the module
     const [message, setMessageData] = useState<MessageData>();
     useEffect(() => {
-        getData("messages", id)
+        getData("messages/main", id)
             .then((data) => setMessageData(data))
             .catch((err) => console.error(err));
     }, [isActive, id]);
