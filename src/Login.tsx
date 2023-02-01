@@ -12,7 +12,7 @@ function Login() {
     return (
         <>
             <div className="bg-wrapper">
-                <ul className="bg-bubbles">
+                <ul className="circles">
                     <li></li>
                     <li></li>
                     <li></li>
@@ -24,13 +24,16 @@ function Login() {
                     <li></li>
                     <li></li>
                 </ul>
+                <img style={{ borderRadius: "15px" }} src="/anim.svg" alt="Background animation" />
             </div>
             <img className="clubimg" src="/clubimgblur.png" alt="Murray Bridge Bunyips club" />
             <div className="login center">
                 <div className="login-inner">
                     <h4>Welcome to the</h4>
                     <h2>Bunyips Chatapp</h2>
-                    <br />
+                    {/* Use Semantic Versioning here to indicate the current application version */}
+                    <i>Version v1.0.0</i>
+                    <br /> <br />
                     <button onClick={signInWithGoogle} className="googlebtn">
                         Sign in with Google
                     </button>
