@@ -119,17 +119,17 @@ export async function startMonitoring(email: string): Promise<void> {
         }
     });
     // Attach an event listener to the blur event to tell if the user is idle
-    const visChange = (e) => {
+    const visChange = async (e: any) => {
         if (document.hasFocus()) {
-            await update(onlineStatus, true);
+            await set(onlineStatus, true);
             clearTimeout(offlineTimeout);
         } else {
             offlineTimeout = setTimeout(() => {
-                await set(ref(db, `users/${toCommas(email)}/online/lastseen`), serverTimestamp());
+                set(ref(db, `users/${toCommas(email)}/online/lastseen`), serverTimestamp());
             }, 30 * 6000);
         }
     };
-    let offlineTimeout: number | null = null;
+    let offlineTimeout: any = null;
     window.addEventListener("blur", visChange);
     window.addEventListener("focus", visChange);
 }
