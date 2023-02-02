@@ -107,7 +107,6 @@ export async function startMonitoring(email: string): Promise<void> {
     // Set user presence as online when the user is here
     await set(onlineStatus, true);
     // Leave callback functions for Firebase to handle when the user disconnects
-    onDisconnect(onlineStatus).set(false);
     onDisconnect(ref(db, `users/${toCommas(email)}/online/lastseen`)).set(serverTimestamp());
     // Add a listener to the online status for this user changes during the lifetime of the app
     // If it changes, then this is clearly incorrect and we should change it back at once.
@@ -119,6 +118,20 @@ export async function startMonitoring(email: string): Promise<void> {
             await set(onlineStatus, true);
         }
     });
+    // Attach an event listener to the blur event to tell if the user is idle
+    const visChange = (e) => {
+        if (document.hasFocus()) {
+            await update(onlineStatus, true);
+            clearTimeout(offlineTimeout);
+        } else {
+            offlineTimeout = setTimeout(() => {
+                await set(ref(db, `users/${toCommas(email)}/online/lastseen`), serverTimestamp());
+            }, 30 * 6000);
+        }
+    };
+    let offlineTimeout: number | null = null;
+    window.addEventListener("blur", visChange);
+    window.addEventListener("focus", visChange);
 }
 
 // Handle signing out while also properly updating user presence
