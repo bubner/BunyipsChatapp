@@ -104,10 +104,13 @@ function errorHandler(err: any): void {
 // Monitor a user's presence in the database's online users section
 export async function startMonitoring(email: string): Promise<void> {
     const onlineStatus = ref(db, `users/${toCommas(email)}/online`);
+
     // Set user presence as online when the user is here
     await set(onlineStatus, true);
+
     // Leave callback functions for Firebase to handle when the user disconnects
     onDisconnect(ref(db, `users/${toCommas(email)}/online/lastseen`)).set(serverTimestamp());
+
     // Add a listener to the online status for this user changes during the lifetime of the app
     // If it changes, then this is clearly incorrect and we should change it back at once.
     // This is to prevent onDisconnect firing while there are still active sessions for that one user
@@ -118,15 +121,20 @@ export async function startMonitoring(email: string): Promise<void> {
             await set(onlineStatus, true);
         }
     });
+
     // Attach an event listener to the blur event to tell if the user is idle
+    // This is an attempt to fix the problem presented when a user is still technically connected
+    // but shown as online while they are clearly not.
     const visChange = async () => {
         if (document.hasFocus()) {
             await set(onlineStatus, true);
             clearTimeout(offlineTimeout);
         } else {
             offlineTimeout = setTimeout(() => {
+                // If the user is off the tab for more than 15 minutes,
+                // then we can assume that they are no longer here.
                 set(ref(db, `users/${toCommas(email)}/online/lastseen`), serverTimestamp());
-            }, 30 * 6000);
+            }, 15 * 60000);
         }
     };
     let offlineTimeout: ReturnType<typeof setTimeout>;
