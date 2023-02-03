@@ -131,10 +131,10 @@ export async function startMonitoring(email: string): Promise<void> {
             clearTimeout(offlineTimeout);
         } else {
             offlineTimeout = setTimeout(() => {
-                // If the user is off the tab for more than 15 minutes,
+                // If the user is off the tab for more than 5 minutes,
                 // then we can assume that they are no longer here.
                 set(ref(db, `users/${toCommas(email)}/online/lastseen`), serverTimestamp());
-            }, 15 * 60000);
+            }, 5 * 60000);
         }
     };
     let offlineTimeout: ReturnType<typeof setTimeout>;
