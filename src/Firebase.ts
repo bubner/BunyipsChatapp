@@ -158,6 +158,19 @@ export async function signOut(): Promise<void> {
     window.location.reload();
 }
 
+// Ensure all user's presences are actually valid by changing all currently online users presences to offline
+// The startMonitoring callback will ensure that online users are left online, and falsely online users are not.
+export async function validateUsers(): Promise<void> {
+    onValue(ref(db, "/users"), (snapshot) => {
+        snapshot.forEach((child) => {
+            if (child.val().online === true) {
+                // Set online value of child to offline if they are currently set to online
+                set(ref(db, `users/${child.key}/online`), serverTimestamp());
+            }
+        });
+    });
+}
+
 // Provide Google sign in functionality and automatically registers a user into the auth instance
 export function signInWithGoogle(): void {
     signInWithPopup(auth, new GoogleAuthProvider()).catch((error) => {
