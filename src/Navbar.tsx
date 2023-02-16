@@ -5,7 +5,7 @@
  */
 
 import "./Navbar.css";
-import { auth, db, signOut, UserData, startMonitoring } from "./Firebase";
+import { auth, db, signOut, UserData, startMonitoring, validateUsers } from "./Firebase";
 import { ref, onValue } from "firebase/database";
 import { useState, useEffect } from "react";
 import BBQ from "./BBQ";
@@ -17,6 +17,9 @@ function Navbar() {
         // Disconnects are handled automatically by Firebase, and all we need to do
         // is start the initial monitoring sequence.
         startMonitoring(auth.currentUser?.email!);
+        // Additionally call the validateUsers function to ensure that all users that
+        // are currently online are actually online and not in a state of database limbo
+        validateUsers();
     }, []);
 
     // Show current time in the Navbar

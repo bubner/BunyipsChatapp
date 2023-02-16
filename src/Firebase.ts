@@ -116,7 +116,7 @@ export async function startMonitoring(email: string): Promise<void> {
     // This is to prevent onDisconnect firing while there are still active sessions for that one user
     onValue(onlineStatus, async (snapshot) => {
         if (snapshot.val() !== true) {
-            console.log("User presence was set incorrectly. Correcting...");
+            console.debug("User presence was set incorrectly. Correcting...");
             // Reset the status to online again
             await set(onlineStatus, true);
         }
@@ -156,6 +156,18 @@ export async function signOut(): Promise<void> {
 
     // Refresh the page to clear the event listeners
     window.location.reload();
+}
+
+// Ensure all user's presences are actually valid by changing all currently online users presences to offline
+// The startMonitoring callback will ensure that online users are left online, and falsely online users are not.
+export async function validateUsers(): Promise<void> {
+    const userData = await get(ref(db, "users"));
+    userData.forEach((child) => {
+        if (child.val().online === true) {
+            // Set online value of child to offline if they are currently set to online
+            set(ref(db, `users/${child.key}/online`), serverTimestamp());
+        }
+    });
 }
 
 // Provide Google sign in functionality and automatically registers a user into the auth instance
