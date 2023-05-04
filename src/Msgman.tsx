@@ -98,7 +98,8 @@ function Msgman({ id, isActive }: { id: string; isActive: boolean }) {
     return (
         <Popup
             ref={tref}
-            trigger={<button className="msgman" style={{ display: shouldDisplay && isActive ? "block" : "none" }} />}>
+            trigger={<button className="msgman" style={{ display: shouldDisplay && isActive ? "block" : "none" }} />}
+        >
             <>
                 <div
                     className="outer"

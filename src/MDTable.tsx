@@ -102,7 +102,7 @@ function MDTable() {
                     </table>
                     <br />
                     <p className="text-center">
-                        <b>DO NOT use Markdown without any other characters! (sending just # or **)</b>
+                        <b>Any invalid text/markdown will be converted to "Gracious Professionalism!"</b>
                     </p>
                 </div>
             </>

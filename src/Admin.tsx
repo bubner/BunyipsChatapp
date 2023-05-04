@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect, useRef } from "react";
-import { auth, db, clearDatabases, toDots, toCommas, updateUser, UserData } from "./Firebase";
+import { auth, db, clearDatabases, toDots, toCommas, updateUser, UserData, uploadSysMsg } from "./Firebase";
 import { ref, onValue, set, remove } from "firebase/database";
 import Popup from "reactjs-popup";
 import { PopupActions } from "../node_modules/reactjs-popup/dist/types";
@@ -64,6 +64,21 @@ function Admin() {
                 alert("Operation completed.");
             })
             .catch((err) => alert(err));
+    }
+
+    // Send a system message from the current administrator account
+    async function sysMessage() {
+        const message = prompt("Enter message text that will displayed to all users as a system message.");
+        if (!message) return;
+
+        const confirm = window.confirm(
+            `Are you sure you want to send this message? This message can not be retracted!\n\n${message}`
+        );
+        if (!confirm) return;
+
+        await uploadSysMsg(message).then(() => {
+            alert("Operation completed.");
+        });
     }
 
     // Manage the permissions of a selected user using prompts
@@ -130,7 +145,8 @@ function Admin() {
         <Popup
             ref={tref}
             trigger={<button className="bbqitem">1500 Megabyte App-Managing Heavy Duty Super-Admin Super Panel</button>}
-            nested>
+            nested
+        >
             <>
                 <div className="outer" />
                 <div className="inner">
@@ -140,7 +156,7 @@ function Admin() {
                                 &times;
                             </span>
                             <div className="title">
-                                <h4>Application Permissions Control Panel</h4>
+                                <h4>Application Administration Control Panel</h4>
                                 <p className="portalreference">
                                     "Prolonged exposure to this module is not part of the test."
                                 </p>
@@ -162,8 +178,11 @@ function Admin() {
                             <button onClick={() => addUser()} className="new">
                                 Add a new user
                             </button>
+                            <button className="sysmsg" onClick={() => sysMessage()}>
+                                Send a system message
+                            </button>
                             <span className="cleardb" onClick={() => clearDatabases()}>
-                                CLEAR DATABASES
+                                <b>CLEAR DATABASES</b>
                             </span>
                         </div>
                     ) : (

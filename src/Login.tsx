@@ -32,7 +32,7 @@ function Login() {
                     <h4>Welcome to the</h4>
                     <h2>Bunyips Chatapp</h2>
                     {/* Use Semantic Versioning (semver) here to indicate the current application version */}
-                    <i>Version v1.0.2</i>
+                    <i>Version v1.1.0</i>
                     <br /> <br />
                     <button onClick={signInWithGoogle} className="googlebtn">
                         Sign in with Google
@@ -40,13 +40,13 @@ function Login() {
                     <br /> <br />
                     <h6>
                         <b>Application developed by</b> <br />
-                        Lucas Bubner <a href="https://github.com/holo-lb/"> @holo-lb</a> <br />
+                        Lucas Bubner <a href="https://github.com/hololb/"> @hololb</a> <br />
                         Lachlan Paul <a href="https://github.com/BanjoTheBot/"> @BanjoTheBot</a> <br />
                     </h6>
                     <br />
                     <footer>
                         Copyright (c) 2023 Lucas Bubner <br />
-                        <a href="https://github.com/holo-lb/BunyipsChatapp/">Source code</a>
+                        <a href="https://github.com/hololb/BunyipsChatapp/">Source code</a>
                     </footer>
                 </div>
             </div>

@@ -295,9 +295,24 @@ export async function deleteMsg(id: string): Promise<void> {
     });
 }
 
-// :: TODO ::
-// Sends a small system message that appears in the chat. This may be for announcements, or for join/leave messages.
-export async function uploadSysMsg(message: string): Promise<void> {}
+// Sends a small system message that appears in the chat with no visible metadata. These messages are not retractable or single deletable.
+export async function uploadSysMsg(message: string): Promise<void> {
+    if (!message) return;
+    // Message limits can be ignored, as these messages are administrator controlled.
+    // Keep uid and email attached to display name to ensure validity and traceback for each system message.
+    const msgID = push(child(ref(db), "messages")).key;
+    await set(ref(db, "messages/main/" + msgID), {
+        isMsg: true,
+        isRetracted: false,
+        id: msgID,
+        uid: auth.currentUser?.uid,
+        email: auth.currentUser?.email,
+        displayName: `SYSTEM MESSAGE FROM ${auth.currentUser?.email?.toUpperCase()}`,
+        text: message,
+        photoURL: "sys",
+        createdAt: serverTimestamp(),
+    }).catch((error) => errorHandler(error));
+}
 
 export async function getData(endpoint: string, id: string): Promise<any> {
     // This function will return whatever it receives from the endpoint and id, therefore it can return any sort of data

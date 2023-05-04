@@ -193,7 +193,8 @@ function FileUploads() {
                                     className="innerload"
                                     style={{
                                         width: `${progressPercent}%`,
-                                    }}>
+                                    }}
+                                >
                                     <p>Uploading... {progressPercent}%</p>
                                 </div>
                             </div>
