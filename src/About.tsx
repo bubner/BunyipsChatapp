@@ -37,7 +37,8 @@ function About() {
                                         rel="noreferrer"
                                         target="_blank"
                                         className="ghlink"
-                                        href="https://github.com/hololb/">
+                                        href="https://github.com/hololb/"
+                                    >
                                         @hololb
                                     </a>
                                 </td>
@@ -57,7 +58,8 @@ function About() {
                                         rel="noreferrer"
                                         target="_blank"
                                         className="ghlink"
-                                        href="https://github.com/BanjoTheBot/">
+                                        href="https://github.com/BanjoTheBot/"
+                                    >
                                         @BanjoTheBot
                                     </a>
                                 </td>
@@ -111,7 +113,8 @@ function About() {
                         <a
                             rel="noreferrer"
                             target="_blank"
-                            href="https://raw.githubusercontent.com/hololb/BunyipsChatapp/prod/LICENSE">
+                            href="https://raw.githubusercontent.com/hololb/BunyipsChatapp/prod/LICENSE"
+                        >
                             MIT License
                         </a>
                         .

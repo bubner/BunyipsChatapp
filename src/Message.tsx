@@ -37,7 +37,7 @@ function Message(props: { message: MessageData; key: string }) {
             // If users enter text that cannot be cleaned, such as raw markdown, then we will change what is rendered.
             // If we don't change it, the webapp will crash and burn in a fire greater than a thousand suns.
             // This is the one instance where Filter throwing an error is actually good, as it fixes multiple issues
-            return "Look at me! I'm a fool who tried to use Markdown incorrectly!";
+            return "Gracious Professionalism!";
         }
     }, [message.text]);
 
@@ -56,30 +56,40 @@ function Message(props: { message: MessageData; key: string }) {
         <div
             className={`message ${auth.currentUser?.uid === message.uid ? "sent" : "received"}`}
             onMouseOver={handleMouseOver}
-            onMouseOut={handleMouseOut}>
+            onMouseOut={handleMouseOut}
+        >
             {/* Generate profile picture based on the photoURL attached with the message */}
-            <img
-                className="pfp"
-                src={message.photoURL}
-                alt={`Profile of ${message.displayName}`}
-                referrerPolicy="no-referrer"
-            />
+            {message.photoURL !== "sys" && (
+                <img
+                    className="pfp"
+                    src={message.photoURL}
+                    alt={`Profile of ${message.displayName}`}
+                    referrerPolicy="no-referrer"
+                />
+            )}
             <div className="namedate">
                 <p className="name">
                     <b>{message.displayName}</b>
                 </p>
 
                 {/* Display the proper formatted date and time metadata with each message */}
-                <p className="date">{timestamp.toLocaleString("en-AU", { hour12: true })}</p>
+                {message.photoURL !== "sys" && (
+                    <p className="date">{timestamp.toLocaleString("en-AU", { hour12: true })}</p>
+                )}
             </div>
 
             {/* If the message is declared as retracted, do not display the message content whatsoever. */}
             {!message.isRetracted ? (
                 message.isMsg ? (
                     // If it is a normal message, pass it through ReactMarkdown which will auto hyperlink any links, and add markdown
-                    <ReactMarkdown className="text" remarkPlugins={[gfm]} linkTarget="_blank">
-                        {messageText}
-                    </ReactMarkdown>
+                    // Ensure to not pass through markdown if the message is a system message
+                    message.photoURL !== "sys" ? (
+                        <ReactMarkdown className="text" remarkPlugins={[gfm]} linkTarget="_blank">
+                            {messageText}
+                        </ReactMarkdown>
+                    ) : (
+                        <p className="text">{messageText}</p>
+                    )
                 ) : (
                     // Otherwise, it must be a file and we can display the downloadURL depending on it's type
                     // The type for the URL is prepended to the downloadURL with a colon
@@ -126,7 +136,7 @@ function Message(props: { message: MessageData; key: string }) {
                     <i>&lt;message deleted&gt;</i>
                 </p>
             )}
-            <Msgman id={message.id} isActive={isHovering} />
+            {message.photoURL !== "sys" && <Msgman id={message.id} isActive={isHovering} />}
         </div>
     );
 }
