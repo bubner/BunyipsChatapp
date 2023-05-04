@@ -37,8 +37,8 @@ function About() {
                                         rel="noreferrer"
                                         target="_blank"
                                         className="ghlink"
-                                        href="https://github.com/holo-lb/">
-                                        @holo-lb
+                                        href="https://github.com/hololb/">
+                                        @hololb
                                     </a>
                                 </td>
                                 <td>Lead programmer and application backend manager</td>
@@ -71,7 +71,7 @@ function About() {
                             title="Source code"
                             alt="GitHub source"
                             src="https://github.githubassets.com/favicons/favicon-dark.png"
-                            onClick={() => window.open("https://github.com/holo-lb/BunyipsChatapp", "_blank")}
+                            onClick={() => window.open("https://github.com/hololb/BunyipsChatapp", "_blank")}
                         />
                         &nbsp; || &nbsp;
                         <img
@@ -111,7 +111,7 @@ function About() {
                         <a
                             rel="noreferrer"
                             target="_blank"
-                            href="https://raw.githubusercontent.com/holo-lb/BunyipsChatapp/prod/LICENSE">
+                            href="https://raw.githubusercontent.com/hololb/BunyipsChatapp/prod/LICENSE">
                             MIT License
                         </a>
                         .
