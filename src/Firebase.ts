@@ -278,6 +278,10 @@ export async function uploadFileMsg(url: string, type: string): Promise<void> {
     }).catch((error) => errorHandler(error));
 }
 
+export async function pinMsg(message: MessageData | undefined){
+    // Placeholder
+}
+
 export async function updateMsg(id: string, content: object): Promise<void> {
     await update(ref(db, "messages/main/" + id), content);
 }

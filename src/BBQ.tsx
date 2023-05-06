@@ -12,6 +12,7 @@ import "./BBQ.css"; // bacon burger
 import "./CommonPopup.css";
 import MDTable from "./MDTable";
 import About from "./About";
+import PinnedMsgs from "./PinnedMsgs";
 
 function BBQ() {
     const tref = useRef<PopupActions>(null);
@@ -28,6 +29,10 @@ function BBQ() {
                     <hr />
                     <div className="buttonarea">
                         <Admin />
+                    </div>
+                    <hr />
+                    <div className="buttonarea">
+                        <PinnedMsgs />
                     </div>
                     <hr />
                     <div className="buttonarea">
