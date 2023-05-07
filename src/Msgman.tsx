@@ -26,8 +26,8 @@ function Msgman({ message, isActive }: { message: MessageData; isActive: boolean
     // The messages can then be seen in the Pinned Messages menu in the BBQ menu.
     // Undecided on whether this will be admin restricted or not
     async function pinMessage() {
-        if (!window.confirm("Pin Message: " + id + "?")) return;
-        await pinMsg(message)
+        if (!window.confirm(`Pin message: ${message.id}?`)) return;
+        await pinMsg(message);
     }
 
     // Delete a message from Firebase based on the message id.

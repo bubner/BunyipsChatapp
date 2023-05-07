@@ -278,7 +278,7 @@ export async function uploadFileMsg(url: string, type: string): Promise<void> {
     }).catch((error) => errorHandler(error));
 }
 
-export async function pinMsg(message: MessageData | undefined){
+export async function pinMsg(message: MessageData) {
     // Placeholder
 }
 
@@ -288,7 +288,7 @@ export async function updateMsg(id: string, content: object): Promise<void> {
 
 export async function deleteMsg(id: string): Promise<void> {
     // Get the message reference from Firebase
-    getData("messages/main", id).then(async (data: MessageData) => {
+    getData("messages/main", id).then(async (fdata: MessageData) => {
         if (!data.isMsg) {
             // Check if the document contains a file, if so, we'll have to delete from Firebase storage too
             const fileRef = sref(storage, getFileURL(data.text));
