@@ -1,5 +1,5 @@
 # BunyipsChatapp Source Code
-### NOTE: This repository has been archived due to project termination. However, as a result of the chatapp, some more thought has gone into the way the school system manages communications between students.
+### NOTE: This repository has been archived due to project termination. However, as a result of the chatapp, some more thought has gone into the way our school system manages communications between students. Potentially in the future this project will be revived under a new name with similar code, but this iteration will remain archived.
 
 ### Custom chat app for the MURRAY BRIDGE BUNYIPS
 
