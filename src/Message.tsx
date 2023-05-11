@@ -136,7 +136,7 @@ function Message(props: { message: MessageData; key: string }) {
                     <i>&lt;message deleted&gt;</i>
                 </p>
             )}
-            {message.photoURL !== "sys" && <Msgman message={message} isActive={isHovering} />}
+            {message.photoURL !== "sys" && <Msgman id={message.id} isActive={isHovering} />}
         </div>
     );
 }

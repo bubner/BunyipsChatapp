@@ -11,10 +11,18 @@ import { getFileURL } from "./Message";
 import Popup from "reactjs-popup";
 import { PopupActions } from "../node_modules/reactjs-popup/dist/types";
 
-function Msgman({ message, isActive }: { message: MessageData; isActive: boolean }) {
+function Msgman({ id, isActive }: { id: string; isActive: boolean }) {
     const [shouldDisplay, setShouldDisplay] = useState(false);
     const tref = useRef<PopupActions>(null);
     const tclose = () => tref.current?.close();
+
+    // Get message data to use throughout the module
+    const [message, setMessageData] = useState<MessageData>();
+    useEffect(() => {
+        getData("messages/main", id)
+            .then((data) => setMessageData(data))
+            .catch((err) => console.error(err));
+    }, [isActive, id]);
 
     // Don't display retraction option if already retracted
     const [isRetracted, setIsRetracted] = useState(false);
@@ -34,15 +42,15 @@ function Msgman({ message, isActive }: { message: MessageData; isActive: boolean
     // This message deletion is irreversible, and is designed for actual deletion.
     // Only administrator users can delete messages, as opposed to retracting them.
     async function deleteMessage() {
-        if (!window.confirm("Delete message: " + message.id + "?")) return;
-        await deleteMsg(message.id);
+        if (!window.confirm("Delete message: " + id + "?")) return;
+        await deleteMsg(id);
     }
 
     // Marks a message as deleted, and updates the message to show <deleted> as the text.
     // The original content is still available to an administator and in the messages collection.
     async function retractMsg() {
-        if (!window.confirm("Retract message: " + message.id + "?")) return;
-        await updateMsg(message.id, {
+        if (!window.confirm("Retract message: " + id + "?")) return;
+        await updateMsg(id, {
             isRetracted: true,
         });
         setIsRetracted(true);
@@ -110,7 +118,7 @@ function Msgman({ message, isActive }: { message: MessageData; isActive: boolean
                 />
                 <div className="maninner inner">
                     <p>
-                        <i>Managing message: {message.id}</i>
+                        <i>Managing message: {id}</i>
                     </p>
                     <hr />
                     {isAdmin && (
