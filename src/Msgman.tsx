@@ -6,7 +6,7 @@
 import "./Msgman.css";
 import "./CommonPopup.css";
 import { useState, useEffect, useRef } from "react";
-import { auth, pinMsg, deleteMsg, updateMsg, getData, toCommas, MessageData, UserData } from "./Firebase";
+import { auth, deleteMsg, updateMsg, getData, toCommas, MessageData, UserData } from "./Firebase";
 import { getFileURL } from "./Message";
 import Popup from "reactjs-popup";
 import { PopupActions } from "../node_modules/reactjs-popup/dist/types";
@@ -29,14 +29,6 @@ function Msgman({ id, isActive }: { id: string; isActive: boolean }) {
     useEffect(() => {
         if (message) setIsRetracted(message.isRetracted);
     }, [message]);
-
-    // Pins a message.
-    // The messages can then be seen in the Pinned Messages menu in the BBQ menu.
-    // Undecided on whether this will be admin restricted or not
-    async function pinMessage() {
-        if (!window.confirm("Pin Message: " + id + "?")) return;
-        await pinMsg(message)
-    }
 
     // Delete a message from Firebase based on the message id.
     // This message deletion is irreversible, and is designed for actual deletion.
