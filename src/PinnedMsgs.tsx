@@ -1,5 +1,5 @@
 /**
- *    Popup that shows all pinned messages.
+ *    Popup that shows all pinned messages
  *    @author Lachlan Paul, 2023
  */
 
@@ -14,10 +14,11 @@ function PinnedMsgs() {
     const tclose = () => tref.current?.close();
     return (
         <Popup ref={tref} trigger={<button className="bbqitem">Pinned Messages</button>} nested>
-            <>
-                <div className="outer" onClick={tclose} />
+        <>
+            <div className="outer" onClick={tclose} />
                 <div className="inner">
-                    <h4 className="heading text-center">Pinned Messages</h4>
+                    <h5 className="heading text-center">The Bunyips Chatapp Project</h5>
+
                 </div>
             </>
         </Popup>
